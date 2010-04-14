@@ -35,7 +35,7 @@ namespace SABSync
 {
     internal class Program
     {
-        private static string _tvDbApiKey = "5D2D188E86E07F4F";
+
         private static DirectoryInfo _tvRoot;
         private static DirectoryInfo _nzbDir;
         private static string _ignoreSeasons;
@@ -707,7 +707,7 @@ namespace SABSync
 
                     string dir = GetEpisodeDir(showName, seasonNumber, episodeNumber);
                     string fileMask = GetEpisodeFileMask(seasonNumber, episodeNumber);
-                    string episodeName = CheckTvDb(showName, seasonNumber, episodeNumber);
+                    string episodeName = TvDb.CheckTvDb(showName, seasonNumber, episodeNumber);
                     string titleFix = showName + " - " + seasonNumber + "x" + episodeNumber.ToString("D2") + " - " + episodeName;
 
                     if (_downloadPropers && title.Contains("PROPER") && !InNzbArchive(title, titleFix) && !IsInQueue(title, titleFix))
@@ -759,7 +759,7 @@ namespace SABSync
 
                     string dir = GetEpisodeDir(showName, year, month, day);
                     string fileMask = GetEpisodeFileMask(year, month, day);
-                    string episodeName = CheckTvDb(showName, year, month, day);
+                    string episodeName = TvDb.CheckTvDb(showName, year, month, day);
                     string titleFix = showName + " - " + year.ToString("D4") + "-" + month.ToString("D2") + "-" + day.ToString("D2") + " - " + episodeName;
 
                     if (_downloadPropers && title.Contains("PROPER") && !InNzbArchive(title, titleFix) && !IsInQueue(title, titleFix))
@@ -1052,187 +1052,7 @@ namespace SABSync
             return response;
         } // Ends AddToQueue (Non-Newzbin)
 
-        private static string CheckTvDb(string showName, int seasonNumber, int episodeNumber)
-        {
-            try
-            {
-                string episodeName = null;
-                string seriesId = GetSeriesId(showName);
-
-                if (seriesId != null)
-                    episodeName = GetEpisodeName(seriesId, seasonNumber, episodeNumber);
-
-                else
-                    episodeName = "unknown";
-                
-                return episodeName;
-            }
-            catch (Exception)
-            {
-                
-                throw;
-            }
-        }
-
-        private static string CheckTvDb(string showName, int year, int month, int day)
-        {
-            try
-            {
-                string episodeName = "unknown";
-                string seriesId = GetSeriesId(showName);
-
-                if (seriesId != null)
-                    episodeName = GetEpisodeName(seriesId, year, month, day);
-
-                else
-                    episodeName = "unknown";
-
-                return episodeName;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-        public static string GetSeriesId(string seriesName)
-        {
-            string seriesId = null;
-
-            try
-            {
-                string url = "http://thetvdb.com/api/GetSeries.php?seriesname=" + seriesName;
-            
-                XmlTextReader tvDbRssReader = new XmlTextReader(url);
-                XmlDocument tvDbRssDoc = new XmlDocument();
-                tvDbRssDoc.Load(tvDbRssReader);
-
-                var data = tvDbRssDoc.GetElementsByTagName(@"Data");
-
-                if (data.Count != 0)
-                {
-                    var series = ((XmlElement)data[0]).GetElementsByTagName("Series");
-
-                    if (series.Count == 0)
-                    {
-                        Log("No Series Found");
-                        return seriesId;
-                    }
-
-                    foreach (var s in series)
-                    {
-                        XmlElement tvDbElement = (XmlElement)s;
-
-                        string tvDbShowName = tvDbElement.GetElementsByTagName("SeriesName")[0].InnerText.ToLower();
-
-                        if (tvDbShowName.ToLower() == seriesName.ToLower())
-                        {
-                            seriesId = tvDbElement.GetElementsByTagName("seriesid")[0].InnerText.ToLower();
-                            return seriesId;
-                        }
-
-                        else
-                            continue;
-                    }
-                        XmlElement tvDbElementLast = (XmlElement)series.Item(0);
-                        seriesId = tvDbElementLast.GetElementsByTagName("seriesid")[0].InnerText.ToLower();
-                        return seriesId;
-                }
-            }
-            catch (Exception ex)
-            {
-                Log("An Error has occurred while get the Series ID: " + ex);
-            }
-            return null;
-        }
-
-        private static string GetEpisodeName(string seriesId, int seasonNumber, int episodeNumber)
-        {
-            try
-            {
-                string url = "http://thetvdb.com/api/" + _tvDbApiKey + "/series/" + seriesId + "/default/" + seasonNumber + "/" + episodeNumber;
-
-                XmlTextReader tvDbRssReader = new XmlTextReader(url);
-                XmlDocument tvDbRssDoc = new XmlDocument();
-                tvDbRssDoc.Load(tvDbRssReader);
-
-
-                var data = tvDbRssDoc.GetElementsByTagName(@"Data");
-
-                if (data.Count != 0)
-                {
-                    var episode = ((XmlElement)data[0]).GetElementsByTagName("Episode");
-
-                    if (episode.Count == 0)
-                    {
-                        Log("Episode Not Found");
-                        return null;
-                    }
-
-                    XmlElement tvDbElement = (XmlElement)episode.Item(0);
-                    string episodeName = tvDbElement.GetElementsByTagName("EpisodeName")[0].InnerText;
-                    Log("Episode Name is: " + episodeName);
-                    return episodeName;
-                }
-            }
-            catch (Exception ex)
-            {
-                Log("An Error has occurred while get the Series ID: " + ex);
-            }
-
-            return null;
-        }
-
-        private static string GetEpisodeName(string seriesId, int year, int month, int day)
-        {
-            try
-            {
-                string url = "http://thetvdb.com/api/" + _tvDbApiKey + "/series/" + seriesId + "/all/";
-
-                XmlTextReader tvDbRssReader = new XmlTextReader(url);
-                XmlDocument tvDbRssDoc = new XmlDocument();
-                tvDbRssDoc.Load(tvDbRssReader);
-
-                string rssAirDate = year.ToString("D4") + "-" + month.ToString("D2") + "-" + day.ToString("D2");
-                string episodeName = null;
-
-                var data = tvDbRssDoc.GetElementsByTagName(@"Data");
-
-                if (data.Count != 0)
-                {
-                    var episodes = ((XmlElement)data[0]).GetElementsByTagName("Episode");
-
-                    if (episodes.Count == 0)
-                    {
-                        Log("Episode Not Found");
-                        return null;
-                    }
-
-                    foreach (var e in episodes)
-                    {
-                        XmlElement tvDbElement = (XmlElement)e;
-                        string tvDbAirDate = tvDbElement.GetElementsByTagName("FirstAired")[0].InnerText;
-                        //Console.WriteLine(tvDbAirDate);
-
-                        if (tvDbAirDate == rssAirDate)
-                        {
-                            episodeName = tvDbElement.GetElementsByTagName("EpisodeName")[0].InnerText;
-                            return episodeName;
-                        }
-
-                        else
-                            continue;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Log("An Error has occurred while get the Series ID: " + ex);
-            }
-
-            return "unknown";
-        }
-
+    
         private static string ShowAlias(string showName)
         {
             var aliases = File.ReadAllLines(_alias.FullName);
@@ -1290,7 +1110,7 @@ namespace SABSync
                 Int32.TryParse(titleMatch.Groups["Season"].Value, out seasonNumber);
                 Int32.TryParse(titleMatch.Groups["Episode"].Value, out episodeNumber);
 
-                string episodeName = CheckTvDb(showName, seasonNumber, episodeNumber);
+                string episodeName = TvDb.CheckTvDb(showName, seasonNumber, episodeNumber);
                 titleFix = showName + " - " + seasonNumber + "x" + episodeNumber.ToString("D2") + " - " + episodeName;
 
             }
@@ -1317,7 +1137,7 @@ namespace SABSync
                 Int32.TryParse(titleMatchDaily.Groups["Month"].Value, out month);
                 Int32.TryParse(titleMatchDaily.Groups["Day"].Value, out day);
 
-                string episodeName = CheckTvDb(showName, year, month, day);
+                string episodeName = TvDb.CheckTvDb(showName, year, month, day);
                 titleFix = showName + " - " + year.ToString("D4") + "-" + month.ToString("D2") + "-" + day.ToString("D2") + " - " + episodeName;
 
             }
@@ -1347,7 +1167,7 @@ namespace SABSync
             return;
         }
 
-        private static void Log(string message)
+        internal static void Log(string message)
         {
             Console.WriteLine(message);
             try
@@ -1360,19 +1180,19 @@ namespace SABSync
             catch { }
         }
 
-        private static void Log(string message, params object[] para)
+        internal static void Log(string message, params object[] para)
         {
 
             Log(String.Format(message, para));
         }
 
-        private static void Log(string message, bool showInSummary)
+        internal static void Log(string message, bool showInSummary)
         {
             if (showInSummary) Summary.Add(message);
             Log(message);
         }
 
-        private static void Log(string message, bool showInSummary, params object[] para)
+        internal static void Log(string message, bool showInSummary, params object[] para)
         {
             Log(String.Format(message, para), showInSummary);
         }
