@@ -36,7 +36,7 @@ namespace SABSync
     internal class Program
     {
 
-        private static DirectoryInfo _tvRoot;
+        private static List<DirectoryInfo> _tvRoot = new List<DirectoryInfo>();
         private static DirectoryInfo _nzbDir;
         private static string _ignoreSeasons;
         private static string _tvTemplate;
@@ -45,7 +45,7 @@ namespace SABSync
         private static FileInfo _rss;
         private static FileInfo _alias;
         private static FileInfo _quality;
-        private static List<DirectoryInfo> _wantedShowNames;
+        private static List<string> _wantedShowNames = new List<string>();
         private static bool _sabReplaceChars;
         private static bool _downloadPropers;
         private static string _sabRequest;
@@ -74,6 +74,12 @@ namespace SABSync
                 LoadConfig();
 
                 Log("Watching {0} shows", _wantedShowNames.Count);
+
+                foreach (var list in _wantedShowNames)
+                {
+                    Console.WriteLine(list);
+                }
+                Console.ReadKey();
                 Log("_ignoreSeasons: {0}", _ignoreSeasons);
 
                 {
@@ -261,19 +267,34 @@ namespace SABSync
 
             Log("Process successfully completed. Duration {0:##.#}s", sw.Elapsed.TotalSeconds);
             Log(DateTime.Now.ToString());
-            //Console.ReadKey();
+            Console.ReadKey();
         }
 
         private static void LoadConfig()
         {
             Log("Loading configuration...");
 
-            _tvRoot = new DirectoryInfo(ConfigurationManager.AppSettings["tvRoot"]); //Get _tvRoot from app.config
-            if (!_tvRoot.Exists)
-                throw new ApplicationException("Invalid TV Root folder. " + _tvRoot);
+            string[] tvRootArray = ConfigurationManager.AppSettings["tvRoot"].TrimEnd(';').Split(';');
 
+            foreach (string tvDir in tvRootArray)
+            {
+                DirectoryInfo tvRootDi = new DirectoryInfo(tvDir);
+                _tvRoot.Add(tvRootDi);
+            }
 
-            _wantedShowNames =new List<DirectoryInfo> (_tvRoot.GetDirectories());
+            foreach (var tr in _tvRoot)
+            {
+                //Console.WriteLine(tr);
+                if (!tr.Exists)
+                    throw new ApplicationException("Invalid TV Root folder. " + _tvRoot);
+
+                foreach (var show in tr.GetDirectories())
+                {
+                    if (!_wantedShowNames.Contains(show.ToString()))
+                        _wantedShowNames.Add(show.ToString());             
+                }
+            }
+           
             _rss = new FileInfo(ConfigurationManager.AppSettings["rss"]); //Get rss config file from app.config
             if (!_rss.Exists)
                 throw new ApplicationException("Invalid RSS file path. " + _rss);
@@ -293,7 +314,6 @@ namespace SABSync
             _tvTemplate = ConfigurationManager.AppSettings["tvTemplate"]; //Get _tvTemplate from app.config
             if (String.IsNullOrEmpty(_tvTemplate))
                 throw new ApplicationException("Undefined tvTemplate");
-
 
             _tvDailyTemplate = ConfigurationManager.AppSettings["tvDailyTemplate"];
             //Get _tvDailyTemplate from app.config
@@ -381,7 +401,7 @@ namespace SABSync
             return reports;
         }
 
-        private static string GetEpisodeDir(string showName, int seasonNumber, int episodeNumber)
+        private static string GetEpisodeDir(string showName, int seasonNumber, int episodeNumber, DirectoryInfo tvDir)
         {
             showName = CleanString(showName);
 
@@ -394,8 +414,7 @@ namespace SABSync
             string zeroEReplace = String.Format("{0:00}", episodeNumber);
             string eReplace = Convert.ToString(episodeNumber);
 
-            string path = Path.GetDirectoryName(_tvRoot + "\\" + _tvTemplate);
-
+            string path = Path.GetDirectoryName(tvDir + "\\" + _tvTemplate);
 
             path = path.Replace(".%ext", "");
             path = path.Replace("%sn", snReplace);
@@ -409,14 +428,14 @@ namespace SABSync
             return path;
         }
 
-        private static string GetEpisodeFileMask(int seasonNumber, int episodeNumber)
+        private static string GetEpisodeFileMask(int seasonNumber, int episodeNumber, DirectoryInfo tvDir)
         {
             string zeroSReplace = String.Format("{0:00}", seasonNumber);
             string sReplace = Convert.ToString(seasonNumber);
             string zeroEReplace = String.Format("{0:00}", episodeNumber);
             string eReplace = Convert.ToString(episodeNumber);
 
-            string fileName = Path.GetFileName(_tvRoot + "\\" + _tvTemplate);
+            string fileName = Path.GetFileName(tvDir + "\\" + _tvTemplate);
 
             fileName = fileName.Replace(".%ext", "");
             fileName = fileName.Replace("%en", "*");
@@ -433,9 +452,9 @@ namespace SABSync
             return fileName;
         }
 
-        private static string GetEpisodeDir(string showName, int year, int month, int day)
+        private static string GetEpisodeDir(string showName, int year, int month, int day, DirectoryInfo tvDir)
         {
-            string path = Path.GetDirectoryName(_tvRoot + "\\" + _tvDailyTemplate);
+            string path = Path.GetDirectoryName(tvDir + "\\" + _tvDailyTemplate);
 
             showName = CleanString(showName);
 
@@ -461,9 +480,9 @@ namespace SABSync
             return path;
         } //Ends GetDailyShowNamingScheme
 
-        private static string GetEpisodeFileMask(int year, int month, int day)
+        private static string GetEpisodeFileMask(int year, int month, int day, DirectoryInfo tvDir)
         {
-            string fileMask = Path.GetFileName(_tvRoot + "\\" + _tvDailyTemplate);
+            string fileMask = Path.GetFileName(tvDir + "\\" + _tvDailyTemplate);
 
             string yearReplace = Convert.ToString(year);
             string zeroMReplace = String.Format("{0:00}", month);
@@ -513,7 +532,7 @@ namespace SABSync
         {
             foreach (var di in _wantedShowNames)
             {
-                if (String.Equals(di.Name, CleanString(wantedShowName), StringComparison.InvariantCultureIgnoreCase))
+                if (String.Equals(di, CleanString(wantedShowName), StringComparison.InvariantCultureIgnoreCase))
                 {
                     Log("'{0}' is being watched.", wantedShowName);
                     return true;
@@ -556,10 +575,14 @@ namespace SABSync
                     if (!IsShowWanted(showName))
                         return false;
 
-                    string dir = GetEpisodeDir(showName, seasonNumber, episodeNumber);
-                    string fileMask = GetEpisodeFileMask(seasonNumber, episodeNumber);
-                    if (IsOnDisk(dir, fileMask))
-                        return false;
+                    foreach (var tvDir in _tvRoot)
+                    {
+                        string dir = GetEpisodeDir(showName, seasonNumber, episodeNumber, tvDir);
+                        string fileMask = GetEpisodeFileMask(seasonNumber, episodeNumber, tvDir);
+
+                        if (IsOnDisk(dir, fileMask))
+                            return false;
+                    }
 
                     if (IsSeasonIgnored(showName, seasonNumber))
                         return false;
@@ -610,10 +633,14 @@ namespace SABSync
                     if (!IsShowWanted(showName))
                         return false;
 
-                    string dir = GetEpisodeDir(showName, seasonNumber, episodeNumber);
-                    string fileMask = GetEpisodeFileMask(seasonNumber, episodeNumber);
-                    if (IsOnDisk(dir, fileMask))
-                        return false;
+                    foreach (var tvDir in _tvRoot)
+                    {
+                        string dir = GetEpisodeDir(showName, seasonNumber, episodeNumber, tvDir);
+                        string fileMask = GetEpisodeFileMask(seasonNumber, episodeNumber, tvDir);
+
+                        if (IsOnDisk(dir, fileMask))
+                            return false;
+                    }
 
                     if (IsSeasonIgnored(showName, seasonNumber))
                         return false;
@@ -646,10 +673,14 @@ namespace SABSync
                     if (!IsShowWanted(showName))
                         return false;
 
-                    string dir = GetEpisodeDir(showName, year, month, day);
-                    string fileMask = GetEpisodeFileMask(year, month, day);
-                    if (IsOnDisk(dir, fileMask))
-                        return false;
+                    foreach (var tvDir in _tvRoot)
+                    {
+                        string dir = GetEpisodeDir(showName, year, month, day, tvDir);
+                        string fileMask = GetEpisodeFileMask(year, month, day, tvDir);
+
+                        if (IsOnDisk(dir, fileMask))
+                            return false;
+                    }
 
                     if (IsInQueue(title, reportId))
                         return false;
@@ -713,17 +744,21 @@ namespace SABSync
                     if (!IsShowWanted(showName))
                         return false;
 
-                    string dir = GetEpisodeDir(showName, seasonNumber, episodeNumberOne);
-                    string fileMask = GetEpisodeFileMask(seasonNumber, episodeNumberOne);
-                    string episodeOneName = CheckTvDb(showName, seasonNumber, episodeNumberOne);
-                    string episodeTwoName = CheckTvDb(showName, seasonNumber, episodeNumberTwo);
+                    string episodeOneName = TvDb.CheckTvDb(showName, seasonNumber, episodeNumberOne);
+                    string episodeTwoName = TvDb.CheckTvDb(showName, seasonNumber, episodeNumberTwo);
                     string titleFix = showName + " - " + seasonNumber + "x" + episodeNumberOne.ToString("D2") + "-" + seasonNumber + "x" + episodeNumberTwo.ToString("D2") + " - " + episodeOneName + " & " + episodeTwoName;
 
-                    if (_downloadPropers && title.Contains("PROPER") && !InNzbArchive(title, titleFix) && !IsInQueue(title, titleFix))
-                        DeleteForProper(dir, fileMask);
+                    foreach (var tvDir in _tvRoot)
+                    {
+                        string dir = GetEpisodeDir(showName, seasonNumber, episodeNumberOne, tvDir);
+                        string fileMask = GetEpisodeFileMask(seasonNumber, episodeNumberOne, tvDir);
 
-                    if (IsOnDisk(dir, fileMask))
-                        return false;
+                        if (_downloadPropers && title.Contains("PROPER") && !InNzbArchive(title, titleFix) && !IsInQueue(title, titleFix))
+                            DeleteForProper(dir, fileMask);
+
+                        if (IsOnDisk(dir, fileMask))
+                            return false;
+                    }
 
                     if (IsSeasonIgnored(showName, seasonNumber))
                         return false;
@@ -761,16 +796,20 @@ namespace SABSync
                     if (!IsShowWanted(showName))
                         return false;
 
-                    string dir = GetEpisodeDir(showName, seasonNumber, episodeNumber);
-                    string fileMask = GetEpisodeFileMask(seasonNumber, episodeNumber);
                     string episodeName = TvDb.CheckTvDb(showName, seasonNumber, episodeNumber);
                     string titleFix = showName + " - " + seasonNumber + "x" + episodeNumber.ToString("D2") + " - " + episodeName;
 
-                    if (_downloadPropers && title.Contains("PROPER") && !InNzbArchive(title, titleFix) && !IsInQueue(title, titleFix))
-                        DeleteForProper(dir, fileMask);
+                    foreach (var tvDir in _tvRoot)
+                    {
+                        string dir = GetEpisodeDir(showName, seasonNumber, episodeNumber, tvDir);
+                        string fileMask = GetEpisodeFileMask(seasonNumber, episodeNumber, tvDir);
 
-                    if (IsOnDisk(dir, fileMask))
-                        return false;
+                        if (_downloadPropers && title.Contains("PROPER") && !InNzbArchive(title, titleFix) && !IsInQueue(title, titleFix))
+                            DeleteForProper(dir, fileMask);
+
+                        if (IsOnDisk(dir, fileMask))
+                            return false;
+                    }
 
                     if (IsSeasonIgnored(showName, seasonNumber))
                         return false;
@@ -812,16 +851,22 @@ namespace SABSync
                     if (!IsShowWanted(showName))
                         return false;
 
-                    string dir = GetEpisodeDir(showName, year, month, day);
-                    string fileMask = GetEpisodeFileMask(year, month, day);
+                    //string dir = GetEpisodeDir(showName, year, month, day);
+                    //string fileMask = GetEpisodeFileMask(year, month, day);
                     string episodeName = TvDb.CheckTvDb(showName, year, month, day);
                     string titleFix = showName + " - " + year.ToString("D4") + "-" + month.ToString("D2") + "-" + day.ToString("D2") + " - " + episodeName;
 
-                    if (_downloadPropers && title.Contains("PROPER") && !InNzbArchive(title, titleFix) && !IsInQueue(title, titleFix))
-                        DeleteForProper(dir, fileMask);
+                    foreach (var tvDir in _tvRoot)
+                    {
+                        string dir = GetEpisodeDir(showName, year, month, day, tvDir);
+                        string fileMask = GetEpisodeFileMask(year, month, day, tvDir);
 
-                    if (IsOnDisk(dir, fileMask))
-                        return false;
+                        if (_downloadPropers && title.Contains("PROPER") && !InNzbArchive(title, titleFix) && !IsInQueue(title, titleFix))
+                            DeleteForProper(dir, fileMask);
+
+                        if (IsOnDisk(dir, fileMask))
+                            return false;
+                    }
 
                     if (!IsQualityWanted(showName, title))
                         return false;
@@ -1106,7 +1151,6 @@ namespace SABSync
             Log("Queue Response: [{0}]", response);
             return response;
         } // Ends AddToQueue (Non-Newzbin)
-
     
         private static string ShowAlias(string showName)
         {
@@ -1176,8 +1220,8 @@ namespace SABSync
                 Int32.TryParse(titleMatchMulti.Groups["EpisodeOne"].Value, out episodeNumberOne);
                 Int32.TryParse(titleMatchMulti.Groups["EpisodeTwo"].Value, out episodeNumberTwo);
 
-                string episodeOneName = CheckTvDb(showName, seasonNumber, episodeNumberOne);
-                string episodeTwoName = CheckTvDb(showName, seasonNumber, episodeNumberTwo);
+                string episodeOneName = TvDb.CheckTvDb(showName, seasonNumber, episodeNumberOne);
+                string episodeTwoName = TvDb.CheckTvDb(showName, seasonNumber, episodeNumberTwo);
                 titleFix = showName + " - " + seasonNumber + "x" + episodeNumberOne.ToString("D2") + "-" +
                                   seasonNumber + "x" + episodeNumberTwo.ToString("D2") + " - " + episodeOneName +
                                   " & " + episodeTwoName;
