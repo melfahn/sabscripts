@@ -149,6 +149,8 @@ namespace SABSync
                                     reportId = Convert.ToInt64(Regex.Match(item.Guid.Name, @"\d{5,10}").Value);
                                     rssTitle = item.Title;
                                     nzbSite = "unknown";
+                                    downloadLink = item.Link.ToString();
+                                    downloadLink = downloadLink.Replace("&", "%26");
                                 }
 
                                 //Check if Show is Wanted
@@ -683,9 +685,63 @@ namespace SABSync
                     title = title.Substring(0, 79);
                 }
 
+                string[] titleSplitMulti = null;
                 string[] titleSplit = null;
                 string[] titleSplitDaily = null;
+
+                string patternMulti = @"S(?<Season>(?:\d{1,2}))E(?<EpisodeOne>(?:\d{1,2}))E(?<EpisodeTwo>(?:\d{1,2}))";
                 string pattern = @"S(?<Season>(?:\d{1,2}))E(?<Episode>(?:\d{1,2}))";
+                string patternDaily = @"(?<Year>\d{4}).{1}(?<Month>\d{2}).{1}(?<Day>\d{2})";
+
+                Match titleMatchMulti = Regex.Match(title, patternMulti);
+
+                if (titleMatchMulti.Success)
+                {
+                    titleSplitMulti = Regex.Split(title, patternMulti);
+                    string showName = titleSplitMulti[0].Replace('.', ' ');
+                    showName = showName.TrimEnd();
+                    showName = ShowAlias(showName);
+
+                    int seasonNumber = 0;
+                    int episodeNumberOne = 0;
+                    int episodeNumberTwo = 0;
+
+                    Int32.TryParse(titleMatchMulti.Groups["Season"].Value, out seasonNumber);
+                    Int32.TryParse(titleMatchMulti.Groups["EpisodeOne"].Value, out episodeNumberOne);
+                    Int32.TryParse(titleMatchMulti.Groups["EpisodeTwo"].Value, out episodeNumberTwo);
+
+                    if (!IsShowWanted(showName))
+                        return false;
+
+                    string dir = GetEpisodeDir(showName, seasonNumber, episodeNumberOne);
+                    string fileMask = GetEpisodeFileMask(seasonNumber, episodeNumberOne);
+                    string episodeOneName = CheckTvDb(showName, seasonNumber, episodeNumberOne);
+                    string episodeTwoName = CheckTvDb(showName, seasonNumber, episodeNumberTwo);
+                    string titleFix = showName + " - " + seasonNumber + "x" + episodeNumberOne.ToString("D2") + "-" + seasonNumber + "x" + episodeNumberTwo.ToString("D2") + " - " + episodeOneName + " & " + episodeTwoName;
+
+                    if (_downloadPropers && title.Contains("PROPER") && !InNzbArchive(title, titleFix) && !IsInQueue(title, titleFix))
+                        DeleteForProper(dir, fileMask);
+
+                    if (IsOnDisk(dir, fileMask))
+                        return false;
+
+                    if (IsSeasonIgnored(showName, seasonNumber))
+                        return false;
+
+                    if (!IsQualityWanted(showName, title))
+                        return false;
+
+                    if (IsInQueue(title, titleFix))
+                        return false;
+
+                    if (InNzbArchive(title, titleFix))
+                        return false;
+
+                    if (IsQueued(titleFix))
+                        return false;
+
+                    return true;
+                }
 
                 Match titleMatch = Regex.Match(title, pattern);
                 
@@ -735,7 +791,6 @@ namespace SABSync
                 }
 
                 //Daily Show Title Check
-                string patternDaily = @"(?<Year>\d{4}).{1}(?<Month>\d{2}).{1}(?<Day>\d{2})";
 
                 Match titleMatchDaily = Regex.Match(title, patternDaily);
 
@@ -976,7 +1031,7 @@ namespace SABSync
         {
             //Checks Queued List for "Fixed" name, resolves issue when Item is added, but not properly renamed and it is found at another source.
 
-            if (Queued.Contains(rssTitleFix))
+            if (Queued.Contains(rssTitleFix + ": ok"))
                 return true;
 
             return false;
@@ -1090,10 +1145,43 @@ namespace SABSync
 
         private static string GetTitleFix(string title)
         {
+
+
+
+
             string titleFix = null;
 
+            string[] titleSplitMulti = null;
             string[] titleSplit = null;
+            string[] titleSplitDaily = null;
+
+            string patternMulti = @"S(?<Season>(?:\d{1,2}))E(?<EpisodeOne>(?:\d{1,2}))E(?<EpisodeTwo>(?:\d{1,2}))";
             string pattern = @"S(?<Season>(?:\d{1,2}))E(?<Episode>(?:\d{1,2}))";
+            string patternDaily = @"(?<Year>\d{4}).{1}(?<Month>\d{2}).{1}(?<Day>\d{2})";
+
+            Match titleMatchMulti = Regex.Match(title, patternMulti);
+
+            if (titleMatchMulti.Success)
+            {
+                titleSplitMulti = Regex.Split(title, patternMulti);
+                string showName = titleSplitMulti[0].Replace('.', ' ');
+                showName = showName.TrimEnd();
+                showName = ShowAlias(showName);
+
+                int seasonNumber = 0;
+                int episodeNumberOne = 0;
+                int episodeNumberTwo = 0;
+
+                Int32.TryParse(titleMatchMulti.Groups["Season"].Value, out seasonNumber);
+                Int32.TryParse(titleMatchMulti.Groups["EpisodeOne"].Value, out episodeNumberOne);
+                Int32.TryParse(titleMatchMulti.Groups["EpisodeTwo"].Value, out episodeNumberTwo);
+
+                string episodeOneName = CheckTvDb(showName, seasonNumber, episodeNumberOne);
+                string episodeTwoName = CheckTvDb(showName, seasonNumber, episodeNumberTwo);
+                titleFix = showName + " - " + seasonNumber + "x" + episodeNumberOne.ToString("D2") + "-" +
+                                  seasonNumber + "x" + episodeNumberTwo.ToString("D2") + " - " + episodeOneName +
+                                  " & " + episodeTwoName;
+            }
 
             Match titleMatch = Regex.Match(title, pattern);
 
@@ -1116,11 +1204,7 @@ namespace SABSync
             }
 
             //Daily Show Title Check
-            string[] titleSplitDaily = null;
-            string patternDaily = @"(?<Year>\d{4}).{1}(?<Month>\d{2}).{1}(?<Day>\d{2})";
-
             Match titleMatchDaily = Regex.Match(title, patternDaily);
-            
 
             if (titleMatchDaily.Success)
             {
