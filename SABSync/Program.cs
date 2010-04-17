@@ -107,6 +107,7 @@ namespace SABSync
                             if (!item.Title.EndsWith("(Passworded)", StringComparison.InvariantCultureIgnoreCase))
                             {
                                 Int64 reportId = 0;
+                                string nzbId = null;
                                 string rssTitle = null;
                                 string nzbSite = null;
                                 string downloadLink = null;
@@ -120,7 +121,7 @@ namespace SABSync
 
                                 else if (url.ToLower().Contains("nzbs.org"))
                                 {
-                                    reportId = Convert.ToInt64(Regex.Match(item.Guid.Name, @"\d{5,10}").Value);
+                                    nzbId = Regex.Match(item.Link.ToString(), @"\d{5,10}").Value;
                                     rssTitle = item.Title;
                                     nzbSite = "nzbsDotOrg";
                                     downloadLink = item.Link.ToString();
@@ -129,7 +130,7 @@ namespace SABSync
 
                                 else if (url.ToLower().Contains("tvnzb.com"))
                                 {
-                                    reportId = Convert.ToInt64(Regex.Match(item.Link.ToString(), @"\d{5,10}").Value);
+                                    nzbId = Regex.Match(item.Link.ToString(), @"\d{5,10}").Value;
                                     rssTitle = item.Title;
                                     nzbSite = "tvnzb";
                                     downloadLink = item.Link.ToString();
@@ -138,7 +139,7 @@ namespace SABSync
 
                                 else if (url.ToLower().Contains("nzbmatrix.com"))
                                 {
-                                    reportId = Convert.ToInt64(Regex.Match(item.Guid.Name, @"\d{6,10}").Value);
+                                    nzbId = Regex.Match(item.Link.ToString(), @"\d{6,10}").Value;
                                     rssTitle = item.Title;
                                     nzbSite = "nzbmatrix";
                                     downloadLink = item.Link.ToString();
@@ -147,7 +148,7 @@ namespace SABSync
 
                                 else
                                 {
-                                    reportId = Convert.ToInt64(Regex.Match(item.Guid.Name, @"\d{5,10}").Value);
+                                    nzbId = Regex.Match(item.Link.ToString(), @"\d{6,10}").Value;
                                     rssTitle = item.Title;
                                     nzbSite = "unknown";
                                     downloadLink = item.Link.ToString();
@@ -168,7 +169,7 @@ namespace SABSync
 
                                 else if (nzbSite == "nzbsDotOrg")
                                 {
-                                    if (IsEpisodeWanted(rssTitle))
+                                    if (IsEpisodeWanted(rssTitle, nzbId))
                                     {
                                         string titleFix = GetTitleFix(rssTitle);
                                         string queueResponse = AddToQueue(rssTitle, downloadLink, titleFix);
@@ -187,7 +188,7 @@ namespace SABSync
 
                                     if (qualityWanted)
                                     {
-                                        if (IsEpisodeWanted(rssTitle))
+                                        if (IsEpisodeWanted(rssTitle, nzbId))
                                         {
                                             string titleFix = GetTitleFix(rssTitle);
                                             string queueResponse = AddToQueue(rssTitle, downloadLink, titleFix);
@@ -198,7 +199,7 @@ namespace SABSync
 
                                 else if (nzbSite == "nzbmatrix")
                                 {
-                                    if (IsEpisodeWanted(rssTitle))
+                                    if (IsEpisodeWanted(rssTitle, nzbId))
                                     {
                                         string titleFix = GetTitleFix(rssTitle);
                                         string queueResponse = AddToQueue(rssTitle, downloadLink, titleFix);
@@ -217,7 +218,7 @@ namespace SABSync
 
                                     if (qualityWanted)
                                     {
-                                        if (IsEpisodeWanted(rssTitle))
+                                        if (IsEpisodeWanted(rssTitle, nzbId))
                                         {
                                             string titleFix = GetTitleFix(rssTitle);
                                             string queueResponse = AddToQueue(rssTitle, downloadLink, titleFix);
@@ -472,6 +473,11 @@ namespace SABSync
             path = path.Replace("%0d", zeroDReplace);
             path = path.Replace("%d", dReplace);
 
+            //Trim path down to just season and episode file mask (for shows that do not have episode name) ie. [*S01E01*] instead of [* - S01E01 - *]
+            path = path.TrimEnd(' ', '*', '.', '-', '_');
+            path = path.TrimStart(' ', '*', '.', '-', '_');
+            path = "*" + path + "*";
+
             return path;
         } //Ends GetDailyShowNamingScheme
 
@@ -544,8 +550,6 @@ namespace SABSync
 
             try
             {
-
-
                 if (title.Length > 80)
                 {
                     title = title.Substring(0, 79);
@@ -564,7 +568,6 @@ namespace SABSync
 
                     Int32.TryParse(seasonEpisodeSplit[0], out seasonNumber);
                     Int32.TryParse(seasonEpisodeSplit[1], out episodeNumber);
-
 
                     // Go through each video file extension
                     if (!IsShowWanted(showName))
@@ -699,7 +702,7 @@ namespace SABSync
             return false;
         }
 
-        private static bool IsEpisodeWanted(string title)
+        private static bool IsEpisodeWanted(string title, string nzbId)
         {
             Log("----------------------------------------------------------------");
             Log("Verifying '{0}'", title);
@@ -748,7 +751,7 @@ namespace SABSync
                         string dir = GetEpisodeDir(showName, seasonNumber, episodeNumberOne, tvDir);
                         string fileMask = GetEpisodeFileMask(seasonNumber, episodeNumberOne, tvDir);
 
-                        if (_downloadPropers && title.Contains("PROPER") && !InNzbArchive(title, titleFix) && !IsInQueue(title, titleFix))
+                        if (_downloadPropers && title.Contains("PROPER") && !InNzbArchive(title, titleFix) && !IsInQueue(title, titleFix, nzbId))
                             DeleteForProper(dir, fileMask);
 
                         if (IsOnDisk(dir, fileMask))
@@ -761,7 +764,7 @@ namespace SABSync
                     if (!IsQualityWanted(showName, title))
                         return false;
 
-                    if (IsInQueue(title, titleFix))
+                    if (IsInQueue(title, titleFix, nzbId))
                         return false;
 
                     if (InNzbArchive(title, titleFix))
@@ -799,7 +802,7 @@ namespace SABSync
                         string dir = GetEpisodeDir(showName, seasonNumber, episodeNumber, tvDir);
                         string fileMask = GetEpisodeFileMask(seasonNumber, episodeNumber, tvDir);
 
-                        if (_downloadPropers && title.Contains("PROPER") && !InNzbArchive(title, titleFix) && !IsInQueue(title, titleFix))
+                        if (_downloadPropers && title.Contains("PROPER") && !InNzbArchive(title, titleFix) && !IsInQueue(title, titleFix, nzbId))
                             DeleteForProper(dir, fileMask);
 
                         if (IsOnDisk(dir, fileMask))
@@ -812,7 +815,7 @@ namespace SABSync
                     if (!IsQualityWanted(showName, title))
                         return false;
 
-                    if (IsInQueue(title, titleFix))
+                    if (IsInQueue(title, titleFix, nzbId))
                         return false;
 
                     if (InNzbArchive(title, titleFix))
@@ -846,8 +849,6 @@ namespace SABSync
                     if (!IsShowWanted(showName))
                         return false;
 
-                    //string dir = GetEpisodeDir(showName, year, month, day);
-                    //string fileMask = GetEpisodeFileMask(year, month, day);
                     string episodeName = TvDb.CheckTvDb(showName, year, month, day);
                     string titleFix = showName + " - " + year.ToString("D4") + "-" + month.ToString("D2") + "-" + day.ToString("D2") + " - " + episodeName;
 
@@ -856,7 +857,7 @@ namespace SABSync
                         string dir = GetEpisodeDir(showName, year, month, day, tvDir);
                         string fileMask = GetEpisodeFileMask(year, month, day, tvDir);
 
-                        if (_downloadPropers && title.Contains("PROPER") && !InNzbArchive(title, titleFix) && !IsInQueue(title, titleFix))
+                        if (_downloadPropers && title.Contains("PROPER") && !InNzbArchive(title, titleFix) && !IsInQueue(title, titleFix, nzbId))
                             DeleteForProper(dir, fileMask);
 
                         if (IsOnDisk(dir, fileMask))
@@ -866,7 +867,7 @@ namespace SABSync
                     if (!IsQualityWanted(showName, title))
                         return false;
 
-                    if (IsInQueue(title, titleFix))
+                    if (IsInQueue(title, titleFix, nzbId))
                         return false;
 
                     if (InNzbArchive(title, titleFix))
@@ -904,6 +905,37 @@ namespace SABSync
                 {
                     Log("Episode on disk. '{0}'", true, matchingFiles[0]);
                     return true;
+                }
+            }
+            return false;
+        }
+
+        private static bool IsOnDisk(string dir, int seasonNumber, int episodeNumber)
+        {
+            if (!Directory.Exists(dir))
+                return false;
+
+            //Create list for formats (less code... I hope)
+            List<string> formats = new List<string>();
+
+            //Create Strings for addional searching for episodes and add to formats List
+            formats.Add("*" + seasonNumber + "x" + episodeNumber.ToString("D2") + "*");
+            formats.Add("*" + "S" + seasonNumber.ToString("D2") + "E" + episodeNumber.ToString("D2") + "*");
+            formats.Add("*" + seasonNumber + episodeNumber.ToString("D2") + "*");
+
+            foreach (var format in formats)
+            {
+                Log("Checking directory: {0} for [{1}]", dir, format);
+
+                foreach (var ext in _videoExt)
+                {
+                    var matchingFiles = Directory.GetFiles(dir, format + ext);
+
+                    if (matchingFiles.Length != 0)
+                    {
+                        Log("Episode on disk. '{0}'", true, matchingFiles[0]);
+                        return true;
+                    }
                 }
             }
             return false;
@@ -1017,7 +1049,7 @@ namespace SABSync
             return false;
         } //Ends IsInQueue
 
-        private static bool IsInQueue(string rssTitle, string rssTitleFix)
+        private static bool IsInQueue(string rssTitle, string rssTitleFix, string nzbId)
         {
             try
             {
@@ -1051,7 +1083,7 @@ namespace SABSync
                         string fileName = queueElement.GetElementsByTagName("filename")[0].InnerText.ToLower();
 
 
-                        if (fileName.ToLower() == CleanString(rssTitle).ToLower() || fileName.ToLower() == CleanString(rssTitleFix).ToLower())
+                        if (fileName.ToLower() == CleanString(rssTitle).ToLower() || fileName.ToLower() == CleanString(rssTitleFix).ToLower() || fileName.ToLower().Contains(nzbId))
                         {
                             Log("Episode in queue - '{0}'", true, rssTitle);
                             return true;
