@@ -13,14 +13,11 @@ namespace SABSync
         {
             try
             {
-                string episodeName = null;
+                string episodeName = "unknown";
                 string seriesId = GetSeriesId(showName);
 
                 if (seriesId != null)
                     episodeName = GetEpisodeName(seriesId, seasonNumber, episodeNumber);
-
-                else
-                    episodeName = "unknown";
 
                 return episodeName;
             }
@@ -40,9 +37,6 @@ namespace SABSync
 
                 if (seriesId != null)
                     episodeName = GetEpisodeName(seriesId, year, month, day);
-
-                else
-                    episodeName = "unknown";
 
                 return episodeName;
             }
@@ -189,6 +183,5 @@ namespace SABSync
 
             return "unknown";
         }
-
     }
 }

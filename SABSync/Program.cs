@@ -75,11 +75,6 @@ namespace SABSync
 
                 Log("Watching {0} shows", _wantedShowNames.Count);
 
-                foreach (var list in _wantedShowNames)
-                {
-                    Console.WriteLine(list);
-                }
-                Console.ReadKey();
                 Log("_ignoreSeasons: {0}", _ignoreSeasons);
 
                 {
@@ -267,7 +262,7 @@ namespace SABSync
 
             Log("Process successfully completed. Duration {0:##.#}s", sw.Elapsed.TotalSeconds);
             Log(DateTime.Now.ToString());
-            Console.ReadKey();
+            //Console.ReadKey();
         }
 
         private static void LoadConfig()
@@ -1189,10 +1184,6 @@ namespace SABSync
 
         private static string GetTitleFix(string title)
         {
-
-
-
-
             string titleFix = null;
 
             string[] titleSplitMulti = null;
