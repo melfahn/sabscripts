@@ -1133,19 +1133,25 @@ namespace SABSync
 
             string nzbFileName = rssTitle.TrimEnd('.');
             nzbFileName = CleanString(nzbFileName);
-            nzbFileName = nzbFileName.Replace('.', '*');
-            nzbFileName = nzbFileName.Replace(' ', '*');
-            nzbFileName = nzbFileName.Replace('-', '*');
+            nzbFileName = nzbFileName.Replace('-', ' ');
+            nzbFileName = nzbFileName.Replace('.', ' ');
+            nzbFileName = nzbFileName.Replace('_', ' ');
 
             string nzbFileNameFix = rssTitleFix.TrimEnd('.');
             nzbFileNameFix = CleanString(nzbFileNameFix);
 
-            var matchingNzbFiles = Directory.GetFiles(_nzbDir.ToString(), nzbFileName + ".nzb.gz"); 
-
-            if (matchingNzbFiles.Length != 0)
+            foreach (var file in Directory.GetFiles(_nzbDir.ToString(), "*.nzb.gz"))
             {
-                Log("Episode in archive: '{0}'", true, matchingNzbFiles[0]);
-                return true;
+                string foundFile = file.Replace(".nzb.gz", "");
+                foundFile = foundFile.Replace('.', ' ');
+                foundFile = foundFile.Replace('-', ' ');
+                foundFile = foundFile.Replace('_', ' ');
+
+                if (foundFile == _nzbDir + "\\" + nzbFileName)
+                {
+                    Log("Episode in archive: '{0}'", true, nzbFileName + ".nzb.gz");
+                    return true;
+                }
             }
 
             if (File.Exists(_nzbDir + "\\" + nzbFileNameFix + ".nzb.gz"))
