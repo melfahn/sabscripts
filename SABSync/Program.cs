@@ -54,6 +54,7 @@ namespace SABSync
         private static readonly List<string> Summary = new List<string>();
         private static readonly FileInfo LogFile = new FileInfo(new FileInfo(Process.GetCurrentProcess().MainModule.FileName).Directory.FullName + "\\log\\" + DateTime.Now.ToString("MM.dd-HH-mm") + ".txt");
         private static bool _verboseLogging;
+        private static int _deleteLogs;
 
         private static void Main()
         {
@@ -147,6 +148,15 @@ namespace SABSync
                                     downloadLink = downloadLink.Replace("&", "%26");
                                 }
 
+                                else if (url.ToLower().Contains("nzbsrus.com"))
+                                {
+                                    nzbId = Regex.Match(item.Link.ToString(), @"\d{6,10}").Value;
+                                    rssTitle = item.Title;
+                                    nzbSite = "nzbsrus";
+                                    downloadLink = item.Link.ToString();
+                                    downloadLink = downloadLink.Replace("&", "%26");
+                                }
+
                                 else
                                 {
                                     nzbId = Regex.Match(item.Link.ToString(), @"\d{6,10}").Value;
@@ -160,7 +170,6 @@ namespace SABSync
 
                                 if (nzbSite == "newzbin")
                                 {
-                                    Console.WriteLine("Newzbin");
                                     if (IsEpisodeWanted(rssTitle, reportId))
                                     {
                                         string queueResponse = AddToQueue(reportId);
@@ -208,6 +217,16 @@ namespace SABSync
                                     }
                                 }
 
+                                else if (nzbSite == "nzbsrus")
+                                {
+                                    if (IsEpisodeWanted(rssTitle, nzbId))
+                                    {
+                                        string titleFix = GetTitleFix(rssTitle);
+                                        string queueResponse = AddToQueue(rssTitle, downloadLink, titleFix);
+                                        Queued.Add(titleFix + ": " + queueResponse);
+                                    }
+                                }
+
                                 else
                                 {
                                     bool qualityWanted = false;
@@ -243,6 +262,10 @@ namespace SABSync
             }
             sw.Stop();
             Log("=====================================================================" + Environment.NewLine);
+            int logFilesDeleted = DeleteLogs();
+
+            if (logFilesDeleted != 0)
+                Log(Environment.NewLine);
 
             foreach (var logItem in Summary)
             {
@@ -264,7 +287,7 @@ namespace SABSync
 
             Log("Process successfully completed. Duration {0:##.#}s", sw.Elapsed.TotalSeconds);
             Log(DateTime.Now.ToString());
-            //Console.ReadKey();
+            Console.ReadKey();
         }
 
         private static void LoadConfig()
@@ -272,8 +295,9 @@ namespace SABSync
             Log("Loading configuration...");
 
             _verboseLogging = Convert.ToBoolean(ConfigurationManager.AppSettings["verboseLogging"]);
+            _deleteLogs = Convert.ToInt32(ConfigurationManager.AppSettings["deleteLogs"]);
 
-            string[] tvRootArray = ConfigurationManager.AppSettings["tvRoot"].TrimEnd(';').Split(';');
+            string[] tvRootArray = ConfigurationManager.AppSettings["tvRoot"].TrimStart(';').TrimEnd(';').Split(';');
 
             foreach (string tvDir in tvRootArray)
             {
@@ -1042,6 +1066,40 @@ namespace SABSync
             return false; //If Show Name is not being ignored or that season is not ignored return false
         } //Ends IsSeasonIgnored
 
+        //private static bool IsQualityWanted(string showName, string rssTitle)
+        //{
+        //    var qualities = File.ReadAllLines(_quality.FullName);
+
+        //    foreach (var q in qualities)
+        //    {
+        //        var qualityParts = q.Split('|');
+        //        string quality = null;
+        //        string name = null;
+
+        //        if (qualityParts.Length > 1)
+        //        {
+        //            name = qualityParts[0];
+        //            quality = qualityParts[1];
+        //        }
+
+        //        if (showName.ToLower() == name.ToLower())
+        //        {
+        //            if (rssTitle.ToLower().Contains(quality.ToLower()))
+        //            {
+        //                Log("Quality is Wanted.");
+        //                return true;
+        //            }
+
+        //            else
+        //                return false;
+        //        }
+
+        //        else
+        //            continue;
+        //    }
+        //    return true;
+        //}
+
         private static bool IsQualityWanted(string showName, string rssTitle)
         {
             var qualities = File.ReadAllLines(_quality.FullName);
@@ -1062,7 +1120,7 @@ namespace SABSync
                 {
                     if (rssTitle.ToLower().Contains(quality.ToLower()))
                     {
-                        Log("Quality is Wanted.");
+                        Log("Quality -{0}- is wanted for: {1}.", quality, showName);
                         return true;
                     }
 
@@ -1073,7 +1131,17 @@ namespace SABSync
                 else
                     continue;
             }
-            return true;
+
+            foreach (var quality in _downloadQuality)
+            {
+                if (rssTitle.ToLower().Contains(quality.ToLower()))
+                {
+                    Log("Quality is wanted - Default");
+                    return true;
+                }
+            }
+            Log("Quality is not wanted");
+            return false;
         }
 
         private static bool IsInQueue(string rssTitle, Int64 reportId)
@@ -1259,12 +1327,13 @@ namespace SABSync
             titleFix = CleanString(titleFix);
             titleFix = CleanUrlString(titleFix);
             string nzbFileDownload = String.Format(_sabRequest, "mode=addurl&name=" + downloadLink + "&cat=tv&nzbname=" + titleFix);
+            Log("DEBUG: " + nzbFileDownload);
             Log("Adding report [{0}] to the queue.", rssTitle);
             WebClient client = new WebClient();
             string response = client.DownloadString(nzbFileDownload).Replace("\n", String.Empty);
             Log("Queue Response: [{0}]", response);
             return response;
-        } // Ends AddToQueue (Non-Newzbin)
+        } //Ends AddToQueue (Non-Newzbin)
     
         private static string ShowAlias(string showName)
         {
@@ -1416,6 +1485,29 @@ namespace SABSync
                 }
             }
             return;
+        }
+
+        private static int DeleteLogs()
+        {
+            int deletedCount = 0;
+
+            if (_deleteLogs > 0)
+            {
+                string logDir = LogFile.Directory.FullName;
+
+                foreach (var logFileName in Directory.GetFiles(logDir, "*.txt"))
+                {
+                    FileInfo logFileInfo = new FileInfo(logFileName);
+
+                    if (logFileInfo.LastWriteTime < DateTime.Now.AddDays(-(_deleteLogs)))
+                    {
+                        Log("Deleting Log File: " + Path.GetFileName(logFileName));
+                        File.Delete(logFileName);
+                        deletedCount++;
+                    }
+                }
+            }
+            return deletedCount;
         }
 
         internal static void Log(string message)
