@@ -287,7 +287,7 @@ namespace SABSync
 
             Log("Process successfully completed. Duration {0:##.#}s", sw.Elapsed.TotalSeconds);
             Log(DateTime.Now.ToString());
-            Console.ReadKey();
+            //Console.ReadKey();
         }
 
         private static void LoadConfig()
