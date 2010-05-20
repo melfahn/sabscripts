@@ -19,59 +19,69 @@ namespace SABSyncGUI
         {
             InitializeComponent();
             UpdateBindedUi();
-
         }
 
         private void UpdateBindedUi()
         {
-            string[] sabInfoSplit = Settings.SabnzbdInfo.Split(':');
-
-            string hostname = null;
-            string port = null;
-            if (sabInfoSplit.Length == 2)
+            if (File.Exists("SABSync.exe") && File.Exists("SABSync.exe.config"))
             {
-                hostname = sabInfoSplit[0];
-                port = sabInfoSplit[1];
+                string[] sabInfoSplit = Settings.SabnzbdInfo.Split(':');
+
+                string hostname = null;
+                string port = null;
+                if (sabInfoSplit.Length == 2)
+                {
+                    hostname = sabInfoSplit[0];
+                    port = sabInfoSplit[1];
+                }
+                else
+                {
+                    hostname = "127.0.0.1";
+                    port = "8080";
+                }
+
+                txtTvRoot.Text = Settings.TvRootPath;
+                txtTvTemplate.Text = Settings.TvTemplate;
+                txtTvDailyTemplate.Text = Settings.TvDailyTemplate;
+                txtVideoExt.Text = Settings.VideoExt;
+                txtIgnoreSeasons.Text = Settings.IgnoreSeasons;
+                txtNzbDir.Text = Settings.NzbDir;
+                txtSabInfoHost.Text = hostname;
+                txtSabInfoPort.Text = port;
+                txtUsername.Text = Settings.Username;
+                txtPassword.Text = Settings.Password;
+                txtApiKey.Text = Settings.ApiKey;
+                txtPriority.Text = Settings.Priority;
+                txtRssConfig.Text = Settings.RssConfig;
+                txtAliasConfig.Text = Settings.AliasConfig;
+                txtQualityConfig.Text = Settings.QualityConfig;
+                txtDownloadQuality.Text = Settings.DownloadQuality;
+                txtDeleteLogs.Text = Settings.DeleteLogs;
+                chkReplaceChars.Checked = Convert.ToBoolean(Settings.SabReplaceChars);
+                chkVerboseLogging.Checked = Convert.ToBoolean(Settings.VerboseLogging);
+                chkDownloadPropers.Checked = Convert.ToBoolean(Settings.DownloadPropers);
+
+                //Get Priority as a String
+                ; ; string priority = Settings.Priority;
+
+                if (priority == "-1")
+                    txtPriority.Text = "Low";
+
+                if (priority == "0")
+                    txtPriority.Text = "Normal";
+
+                if (priority == "1")
+                    txtPriority.Text = "High";
             }
+
             else
             {
-                hostname = "127.0.0.1";
-                port = "8080";
+                //statusStripLabel.Text = "Missing SABSync.exe, must be run from the same Directory!";
+                if (MessageBox.Show("Missing SABSync.exe, must be run from the same Directory as SABSync.exe", "Error Loading Config", MessageBoxButtons.OK, MessageBoxIcon.Information) == DialogResult.OK)
+                {
+                    statusStripLabel.Text = "Please close and copy to the folder containing SABSync.exe";
+                }
             }
-
-            txtTvRoot.Text = Settings.TvRootPath;
-            txtTvTemplate.Text = Settings.TvTemplate;
-            txtTvDailyTemplate.Text = Settings.TvDailyTemplate;
-            txtVideoExt.Text = Settings.VideoExt;
-            txtIgnoreSeasons.Text = Settings.IgnoreSeasons;
-            txtNzbDir.Text = Settings.NzbDir;
-            txtSabInfoHost.Text = hostname;
-            txtSabInfoPort.Text = port;
-            txtUsername.Text = Settings.Username;
-            txtPassword.Text = Settings.Password;
-            txtApiKey.Text = Settings.ApiKey;
-            txtPriority.Text = Settings.Priority;
-            txtRssConfig.Text = Settings.RssConfig;
-            txtAliasConfig.Text = Settings.AliasConfig;
-            txtQualityConfig.Text = Settings.QualityConfig;
-            txtDownloadQuality.Text = Settings.DownloadQuality;
-            txtDeleteLogs.Text = Settings.DeleteLogs;
-            chkReplaceChars.Checked = Convert.ToBoolean(Settings.SabReplaceChars);
-            chkVerboseLogging.Checked = Convert.ToBoolean(Settings.VerboseLogging);
-            chkDownloadPropers.Checked = Convert.ToBoolean(Settings.DownloadPropers);
-
-            //Get Priority as a String
-            string priority = Settings.Priority;
-
-            if (priority == "-1")
-                txtPriority.Text = "Low";
-
-            if (priority == "0")
-                txtPriority.Text = "Normal";
-
-            if (priority == "1")
-                txtPriority.Text = "High";
-
         }
 
         private void SaveConfigFiles()
@@ -571,7 +581,7 @@ namespace SABSyncGUI
             {
                 string user = null;
 
-                string computerName = localhost;
+                string computerName = "localhost";
                 computerName = Environment.MachineName;
 
                 int time = Convert.ToInt32(numMinutes.Value);

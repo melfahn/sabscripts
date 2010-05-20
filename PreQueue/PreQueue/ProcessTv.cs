@@ -21,7 +21,7 @@ namespace PreQueue
             int episodeNumber = episodeNumberSab;
             string episodeName = episodeNameSab;
 
-            return String.Format("{0} - {1}x{2} - {3}", showName, seasonNumber, episodeNumber, episodeName);
+            return String.Format("{0} - {1}x{2:D2} - {3}", showName, seasonNumber, episodeNumber, episodeName);
         }
 
         internal static string GetNzbName(string showNameSab, int seasonNumberSab, int episodeNumberSab)
@@ -35,10 +35,10 @@ namespace PreQueue
             string nzbName = null;
 
             if (episodeName != null)
-                nzbName = String.Format("{0} - {1}x{2} - {3}", showName, seasonNumber, episodeNumber, episodeName);
+                nzbName = String.Format("{0} - {1}x{2:D2} - {3}", showName, seasonNumber, episodeNumber, episodeName);
 
             else
-                nzbName = String.Format("{0} - {1}x{2}", showName, seasonNumber, episodeNumber);
+                nzbName = String.Format("{0} - {1}x{2:D2}", showName, seasonNumber, episodeNumber);
 
             return nzbName;
         }
