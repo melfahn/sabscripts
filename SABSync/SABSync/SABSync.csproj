@@ -69,10 +69,7 @@
   <ItemGroup>
     <Content Include="References\RSS.NET.dll" />
     <Content Include="References\RSS.NET.XML" />
-    <Content Include="SABSync-Mark.ico" />
     <Content Include="SABSync.ico" />
-    <Content Include="sabsync_16.ico" />
-    <Content Include="sabsync_32.ico" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Alias.config">
@@ -84,6 +81,7 @@
     </None>
     <None Include="RSS.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

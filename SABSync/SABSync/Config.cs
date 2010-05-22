@@ -153,7 +153,7 @@ namespace SABSync
 
                 foreach (DirectoryInfo folder in rootFolder.GetDirectories())
                 {
-                    string show = folder.ToString();
+                    string show = folder.Name;
 
                     if (IsExcluded(folder) || list.Contains(show))
                         continue;
