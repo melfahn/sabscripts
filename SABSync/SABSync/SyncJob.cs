@@ -167,7 +167,7 @@ namespace SABSync
             string zeroEReplace = String.Format("{0:00}", episodeNumber);
             string eReplace = Convert.ToString(episodeNumber);
 
-            string path = Path.GetDirectoryName(tvDir + "\\" + Config.TvTemplate);
+            string path = Path.GetDirectoryName(tvDir + Path.DirectorySeparatorChar.ToString() + Config.TvTemplate);
 
             path = path.Replace(".%ext", "");
             path = path.Replace("%sn", snReplace);
@@ -177,6 +177,9 @@ namespace SABSync
             path = path.Replace("%s", sReplace);
             path = path.Replace("%0e", zeroEReplace);
             path = path.Replace("%e", eReplace);
+
+            if (Config.VerboseLogging)
+                Log(path);
 
             return path;
         }
@@ -191,7 +194,7 @@ namespace SABSync
             string zeroEReplace = String.Format("{0:00}", episodeNumber);
             string eReplace = Convert.ToString(episodeNumber);
 
-            string fileMask = Path.GetFileName(tvDir + "\\" + Config.TvTemplate);
+            string fileMask = Path.GetFileName(tvDir + Path.DirectorySeparatorChar.ToString() + Config.TvTemplate);
 
             fileMask = fileMask.Replace(".%ext", "");
             fileMask = fileMask.Replace("%en", "*");
@@ -210,6 +213,9 @@ namespace SABSync
             fileMask = fileMask.TrimStart(' ', '*', '.', '-', '_');
             fileMask = "*" + fileMask + "*";
 
+            if (Config.VerboseLogging)
+                Log(fileMask);
+
             return fileMask;
         }
 
@@ -219,7 +225,7 @@ namespace SABSync
                 Log("Building string for Episode Dir");
             //int year, month, day;
 
-            string path = Path.GetDirectoryName(tvDir + "\\" + Config.TvDailyTemplate);
+            string path = Path.GetDirectoryName(tvDir + Path.DirectorySeparatorChar.ToString() + Config.TvDailyTemplate);
 
             showName = CleanString(showName);
 
@@ -242,6 +248,9 @@ namespace SABSync
             path = path.Replace("%0d", zeroDReplace);
             path = path.Replace("%d", dReplace);
 
+            if (Config.VerboseLogging)
+                Log(path);
+
             return path;
         }
 
@@ -252,7 +261,7 @@ namespace SABSync
             if (Config.VerboseLogging)
                 Log("Building string for Episode File Mask");
 
-            string fileMask = Path.GetFileName(tvDir + "\\" + Config.TvDailyTemplate);
+            string fileMask = Path.GetFileName(tvDir + Path.DirectorySeparatorChar.ToString() + Config.TvDailyTemplate);
 
             string yearReplace = Convert.ToString(firstAired.Year);
             string zeroMReplace = String.Format("{0:00}", firstAired.Month);
@@ -277,6 +286,9 @@ namespace SABSync
             fileMask = fileMask.TrimEnd(' ', '*', '.', '-', '_');
             fileMask = fileMask.TrimStart(' ', '*', '.', '-', '_');
             fileMask = "*" + fileMask + "*";
+
+            if (Config.VerboseLogging)
+                Log(fileMask);
 
             return fileMask;
         }
@@ -535,6 +547,10 @@ namespace SABSync
             if (IsQueued(titleFix))
                 return false;
 
+            if (!needProper)
+                if (Sab.IsInHistory(title, titleFix))
+                    return false;
+
             return true;
         }
 
@@ -583,6 +599,10 @@ namespace SABSync
                 )
                 return false;
 
+            if (!needProper)
+                if (Sab.IsInHistory(title, titleFix))
+                    return false;
+
             return true;
         }
 
@@ -629,6 +649,10 @@ namespace SABSync
                     || IsQueued(titleFix)
                 )
                 return false;
+
+            if (!needProper)
+                if (Sab.IsInHistory(title, titleFix))
+                    return false;
 
             return true;
         }
@@ -682,6 +706,10 @@ namespace SABSync
             if (IsQueued(titleFix))
                 return false;
 
+            if (!needProper)
+                if (Sab.IsInHistory(title, titleFix))
+                    return false;
+
             return true;
         }
 
@@ -723,7 +751,11 @@ namespace SABSync
         private bool IsOnDisk(string dir, string fileMask)
         {
             if (!Directory.Exists(dir))
+            {
+                if (Config.VerboseLogging)
+                    Log("Directory does not exist: {0}", dir);
                 return false;
+            }
 
             Log("Checking directory: {0} for [{1}]", dir, fileMask);
 
@@ -744,7 +776,11 @@ namespace SABSync
         private bool IsOnDisk(string dir, int seasonNumber, int episodeNumber)
         {
             if (!Directory.Exists(dir))
+            {
+                if (Config.VerboseLogging)
+                    Log("Directory does not exist: {0}", dir);
                 return false;
+            }
 
             //Create list for formats (less code... I hope)
             //Create Strings for addional searching for episodes and add to formats List
@@ -852,7 +888,7 @@ namespace SABSync
             string nzbFileName = rssTitle.TrimEnd('.');
             nzbFileName = CleanString(nzbFileName);
 
-            if (File.Exists(Config.NzbDir + "\\" + nzbFileName + ".nzb.gz"))
+            if (File.Exists(Config.NzbDir + Path.DirectorySeparatorChar.ToString() + nzbFileName + ".nzb.gz"))
             {
                 RejectInNzbArchive++;
                 Log("Episode in archive: " + nzbFileName + ".nzb.gz", true);
@@ -883,14 +919,14 @@ namespace SABSync
                 foundFile = foundFile.Replace('-', ' ');
                 foundFile = foundFile.Replace('_', ' ');
 
-                if (foundFile == Config.NzbDir.ToString().TrimEnd('\\').Replace('/', '\\') + "\\" + nzbFileName)
+                if (foundFile == Config.NzbDir.ToString().TrimEnd(Path.DirectorySeparatorChar).Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar.ToString() + nzbFileName)
                 {
                     Log("Episode in archive: '{0}'", true, nzbFileName + ".nzb.gz");
                     return true;
                 }
             }
 
-            if (File.Exists(Config.NzbDir + "\\" + nzbFileNameFix + ".nzb.gz"))
+            if (File.Exists(Config.NzbDir + Path.DirectorySeparatorChar.ToString() + nzbFileNameFix + ".nzb.gz"))
             {
                 RejectInNzbArchive++;
                 Log("Episode in archive: " + nzbFileName + ".nzb.gz", true);

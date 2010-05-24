@@ -80,6 +80,11 @@ namespace SABSync.Tests
             return false;
         }
 
+        public bool IsInHistory(string rssTitle, string rssTitleFix)
+        {
+            return false;
+        }
+
         #endregion
     }
 }
