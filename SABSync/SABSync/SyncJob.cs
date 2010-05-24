@@ -761,7 +761,7 @@ namespace SABSync
 
             foreach (string ext in Config.VideoExt)
             {
-                string[] matchingFiles = Directory.GetFiles(dir, fileMask + ext);
+                string[] matchingFiles = Directory.GetFiles(dir, fileMask + ext, SearchOption.AllDirectories);
 
                 if (matchingFiles.Length != 0)
                 {
@@ -797,7 +797,7 @@ namespace SABSync
 
                 foreach (string ext in Config.VideoExt)
                 {
-                    string[] matchingFiles = Directory.GetFiles(dir, format + ext);
+                    string[] matchingFiles = Directory.GetFiles(dir, format + ext, SearchOption.AllDirectories);
 
                     if (matchingFiles.Length != 0)
                     {
