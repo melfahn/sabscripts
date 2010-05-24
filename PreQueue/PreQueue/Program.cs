@@ -88,7 +88,7 @@ namespace PreQueue
                     }
 
                     //Console Category
-                    else if (category.ToLower() == "consoles")
+                    else if (category.ToLower() == "consoles" || category.ToLower() == "games")
                     {
                         category = ProcessConsole.GetNzbName(nzbNameSab);
                         SendToSab(nzbName, postProc, category, script, prioritySab, null);
@@ -103,6 +103,8 @@ namespace PreQueue
 
                         else
                             nzbName = ProcessTv.GetNzbName(showNameSab, seasonNumberSab, episodeNumberSab);
+
+                        category = "tv";
 
                         SendToSab(nzbName, postProc, category, script, prioritySab, null);
                         return;
