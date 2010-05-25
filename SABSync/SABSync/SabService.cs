@@ -170,26 +170,27 @@ namespace SABSync
 
         public bool IsInHistory(string rssTitle, string rssTitleFix)
         {
+            //slot other than container for nzb is an issue (slot for each post download step)
             try
             {
                 Logger.Log("Checking History for: [{0}] or [{1}]", rssTitle, rssTitleFix);
 
-                string queueRssUrl = String.Format(Config.SabRequest, "mode=history&output=xml&start=1&limit=20");
+                string historyRssUrl = String.Format(Config.SabRequest, "mode=history&output=xml&start=1&limit=20");
 
-                var queueRssReader = new XmlTextReader(queueRssUrl);
-                var queueRssDoc = new XmlDocument();
-                queueRssDoc.Load(queueRssReader);
+                var historyRssReader = new XmlTextReader(historyRssUrl);
+                var historyRssDoc = new XmlDocument();
+                historyRssDoc.Load(historyRssReader);
 
-                XmlNodeList queue = queueRssDoc.GetElementsByTagName(@"history");
-                XmlNodeList error = queueRssDoc.GetElementsByTagName(@"error");
+                XmlNodeList history = historyRssDoc.GetElementsByTagName(@"history");
+                XmlNodeList error = historyRssDoc.GetElementsByTagName(@"error");
                 if (error.Count != 0)
                 {
                     Logger.Log("Sab History Error: {0}", true, error[0].InnerText);
                 }
 
-                else if (queue.Count != 0)
+                else if (history.Count != 0)
                 {
-                    XmlNodeList slot = ((XmlElement)queue[0]).GetElementsByTagName("slot");
+                    XmlNodeList slot = ((XmlElement)history[0]).GetElementsByTagName("slot");
 
                     foreach (object s in slot)
                     {
@@ -199,13 +200,14 @@ namespace SABSync
                         if (String.IsNullOrEmpty(queueElement.InnerText))
                             return false;
 
-                        string fileName = queueElement.GetElementsByTagName("filename")[0].InnerText.ToLower();
+                        string name = queueElement.GetElementsByTagName("name")[0].InnerText.ToLower();
+                        string nzbName = queueElement.GetElementsByTagName("nzb_name")[0].InnerText.ToLower().Replace(".nzb", "").Replace('.', ' ').Replace('-', ' ');
 
                         if (Config.VerboseLogging)
-                            Logger.Log("Checking History Item for match: " + fileName);
+                            Logger.Log("Checking History Item for match: " + name);
 
-                        if (fileName.ToLower() == CleanString(rssTitle).ToLower() ||
-                            fileName.ToLower() == CleanString(rssTitleFix).ToLower())
+                        if (name.ToLower() == CleanString(rssTitle).ToLower() ||
+                            nzbName.ToLower() == CleanString(rssTitleFix).ToLower())
                         {
                             Logger.Log("Episode in history - '{0}'", true, rssTitle);
                             return true;

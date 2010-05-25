@@ -184,7 +184,7 @@ namespace SABSync
                 Logger.Log("An Error has occurred while get the Series ID: " + ex);
             }
 
-            return "unknown";
+            return null;
         }
     }
 }

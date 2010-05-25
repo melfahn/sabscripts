@@ -9,7 +9,7 @@ namespace SABSync
 
         internal static string CheckTvRage(string showName, int seasonNumber, int episodeNumber)
         {
-            string episodeName = "unknown";
+            string episodeName = null;
             string seriesId = GetShowId(showName);
 
             if (seriesId != null)
@@ -20,7 +20,7 @@ namespace SABSync
 
         internal static string CheckTvRage(string showName, int year, int month, int day)
         {
-            string episodeName = "unknown";
+            string episodeName = null;
             string seriesId = GetShowId(showName);
 
             if (seriesId != null)

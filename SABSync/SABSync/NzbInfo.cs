@@ -8,6 +8,7 @@ namespace SABSync
         public string Title { get; set; }
         public NzbSite Site { get; set; }
         public Uri Link { get; set; }
+        public string Description { get; set; }
 
         public bool IsPassworded()
         {
