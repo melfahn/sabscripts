@@ -33,6 +33,7 @@ namespace SABSync
             IgnoreSeasons = Settings["ignoreSeasons"] ?? string.Empty;
             SabReplaceChars = Convert.ToBoolean(Settings["sabReplaceChars"] ?? "false");
             VerboseLogging = Convert.ToBoolean(Settings["verboseLogging"] ?? "false");
+            HtmlLogging = Convert.ToBoolean(Settings["htmlLogging"] ?? "false");
             VideoExt = (Settings["videoExt"] ?? string.Empty).Trim(';', ' ').Split(';');
         }
 
@@ -99,6 +100,8 @@ namespace SABSync
         }
 
         public bool VerboseLogging { get; set; }
+
+        public bool HtmlLogging { get; set; }
 
         public string[] VideoExt { get; set; }
 

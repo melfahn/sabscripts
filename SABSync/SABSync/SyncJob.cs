@@ -76,7 +76,7 @@ namespace SABSync
             try
             {
                 Log("INFO: Downloading feed {0} from {1}", feedInfo.Name, feedInfo.Url);
-                feed = RssFeed.Read(feedInfo.Url);
+                feed = RssFeed.Read(feedInfo.Url.ToString());
             }
             catch (Exception e)
             {
