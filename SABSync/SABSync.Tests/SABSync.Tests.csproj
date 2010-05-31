@@ -142,9 +142,11 @@
     <Content Include="ConfigSettings.txt" />
     <Content Include="Feed.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="Feed.nzbmatrix.com.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="Notes.txt" />
   </ItemGroup>
