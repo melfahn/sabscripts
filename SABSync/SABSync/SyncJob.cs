@@ -925,39 +925,41 @@ namespace SABSync
         private bool InNzbArchive(string rssTitle, string rssTitleFix)
         {
             Log("Checking for Imported NZB for [{0}] or [{1}]", rssTitle, rssTitleFix);
-            //return !File.Exists(Config.NzbDir + "\\" + rssTitle + ".nzb.gz");
 
-            string nzbFileName = rssTitle.TrimEnd('.');
-            nzbFileName = CleanString(nzbFileName);
-            nzbFileName = nzbFileName.Replace('-', ' ');
-            nzbFileName = nzbFileName.Replace('.', ' ');
-            nzbFileName = nzbFileName.Replace('_', ' ');
+            bool inNzbArchive = false;
 
-            string nzbFileNameFix = rssTitleFix.TrimEnd('.');
-            nzbFileNameFix = CleanString(nzbFileNameFix);
+            string nzbFileName = ReplaceSeparatorChars(CleanString(rssTitle.TrimEnd('.')));
 
-            foreach (string file in Directory.GetFiles(Config.NzbDir.ToString(), "*.nzb.gz"))
+            foreach (FileInfo fi in Config.NzbDir.GetFiles("*.nzb.gz"))
             {
-                string foundFile = file.Replace(".nzb.gz", "");
-                foundFile = foundFile.Replace('.', ' ');
-                foundFile = foundFile.Replace('-', ' ');
-                foundFile = foundFile.Replace('_', ' ');
-
-                if (foundFile == Config.NzbDir.ToString().TrimEnd(Path.DirectorySeparatorChar).Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar.ToString() + nzbFileName)
+                string archiveFileName = ReplaceSeparatorChars(fi.Name.Replace(".nzb.gz", string.Empty));
+                if (nzbFileName == archiveFileName)
                 {
-                    Log("Episode in archive: '{0}'", true, nzbFileName + ".nzb.gz");
-                    return true;
+                    inNzbArchive = true;
+                    break;
                 }
             }
 
-            if (File.Exists(Config.NzbDir + Path.DirectorySeparatorChar.ToString() + nzbFileNameFix + ".nzb.gz"))
+            // TODO: would this ever be true?
+            string nzbFileNameFix = CleanString(rssTitleFix.TrimEnd('.'));
+            if (File.Exists(Path.Combine(Config.NzbDir.FullName, nzbFileNameFix + ".nzb.gz")))
+            {
+                inNzbArchive = true;
+            }
+
+            if (inNzbArchive)
             {
                 RejectInNzbArchive++;
-                Log("Episode in archive: " + nzbFileName + ".nzb.gz", true);
+                Log("Episode in archive: '{0}'", true, nzbFileName + ".nzb.gz");
                 return true;
             }
 
             return false;
+        }
+
+        private static string ReplaceSeparatorChars(string s)
+        {
+            return s.Replace('.', ' ').Replace('-', ' ').Replace('_', ' ');
         }
 
         private string ShowAlias(string showName)
