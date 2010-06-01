@@ -8,12 +8,10 @@ namespace SABSync
     {
         private static readonly IList<NzbSite> Sites = new List<NzbSite>
         {
-            new NzbSite {Name = "newzbin", Url = "newzbin.com", Pattern = @"\d{7,10}"},
             new NzbSite {Name = "nzbmatrix", Url = "nzbmatrix.com", Pattern = @"\d{6,10}"},
             new NzbSite {Name = "nzbsDotOrg", Url = "nzbs.org", Pattern = @"\d{5,10}"},
             new NzbSite {Name = "nzbsrus", Url = "nzbsrus.com", Pattern = @"\d{6,10}"},
-            new NzbSite {Name = "tvnzb", Url = "tvnzb.com", Pattern = @"\d{5,10}"},
-            new NzbSite {Name = "lilx", Url = "lilx.net", Pattern = @"\d{6,10}"}
+            new NzbSite {Name = "lilx", Url = "lilx.net", Pattern = @"\d{6,10}"},
         };
 
         public string Name { get; set; }

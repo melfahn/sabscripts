@@ -1,3 +1,2 @@
 ﻿NzbMatrix|Feed.nzbmatrix.com.xml
-Feed.newzbin.com.xml
 Feed|Feed.xml

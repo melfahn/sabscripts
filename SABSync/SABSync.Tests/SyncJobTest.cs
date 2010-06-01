@@ -14,7 +14,7 @@ namespace SABSync.Tests
 
             Expect(job.AcceptCount, Is.EqualTo(3), "AcceptCount");
             Expect(job.FeedItemCount, Is.EqualTo(20), "FeedItemCount");
-            Expect(job.MyFeedsCount, Is.EqualTo(3), "MyFeedsCount");
+            Expect(job.MyFeedsCount, Is.EqualTo(2), "MyFeedsCount");
             Expect(job.MyShowsCount, Is.EqualTo(5), "MyShowsCount");
             Expect(job.MyShowsInFeedCount, Is.EqualTo(8), "MyShowsInFeedCount");
             Expect(job.RejectDownloadQualityCount, Is.EqualTo(1), "RejectDownloadQualityCount");
@@ -60,16 +60,6 @@ namespace SABSync.Tests
         public string AddByUrl(NzbInfo nzb)
         {
             return "ok - AddByUrl";
-        }
-
-        public string AddByNewzbinId(NzbInfo nzb)
-        {
-            return "ok - AddByNewsbinId";
-        }
-
-        public bool IsInQueue(string rssTitle, long reportId)
-        {
-            return false;
         }
 
         public bool IsInQueue(string rssTitle, string rssTitleFix, string nzbId)

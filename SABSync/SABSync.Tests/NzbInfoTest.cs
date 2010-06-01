@@ -11,7 +11,6 @@ namespace SABSync.Tests
 
         //private readonly List<NzbSite> _sites = new List<NzbSite>
         //{
-        //    new NzbSite {Name = "newzbin", Url = "newzbin.com", Pattern = @"\d{7,10}"},
         //    new NzbSite {Name = "nzbsDotOrg", Url = "nzbs.org", Pattern = @"\d{5,10}"},
         //    new NzbSite {Name = "tvnzb", Url = "tvnzb.com", Pattern = @"\d{5,10}"},
         //    new NzbSite {Name = "nzbmatrix", Url = "nzbmatrix.com", Pattern = @"\d{6,10}"},

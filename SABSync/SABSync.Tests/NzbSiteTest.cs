@@ -9,17 +9,10 @@ namespace SABSync.Tests
     {
         private readonly List<NzbSite> _sites = new List<NzbSite>
         {
-            new NzbSite {Name = "newzbin", Url = "newzbin.com", Pattern = @"\d{7,10}"},
             new NzbSite {Name = "nzbsDotOrg", Url = "nzbs.org", Pattern = @"\d{5,10}"},
-            new NzbSite {Name = "tvnzb", Url = "tvnzb.com", Pattern = @"\d{5,10}"},
             new NzbSite {Name = "nzbmatrix", Url = "nzbmatrix.com", Pattern = @"\d{6,10}"},
             new NzbSite {Name = "nzbsrus", Url = "nzbsrus.com", Pattern = @"\d{6,10}"},
         };
-
-        private NzbSite TvNzbSite
-        {
-            get { return _sites.Single(s => s.Name == "tvnzb"); }
-        }
 
         private NzbSite NzbMatrixSite
         {
@@ -33,7 +26,7 @@ namespace SABSync.Tests
         {
             const string url = @"http://nzbmatrix.com/api-nzb-download.php?id=5437";
 
-            Expect(TvNzbSite.ParseId(url), EqualTo(string.Empty));
+            Expect(NzbMatrixSite.ParseId(url), EqualTo(string.Empty));
         }
 
         [Test]
@@ -41,7 +34,7 @@ namespace SABSync.Tests
         {
             const string url = @"http://nzbmatrix.com/api-nzb-download.php?id=625437";
 
-            Expect(TvNzbSite.ParseId(url), EqualTo("625437"));
+            Expect(NzbMatrixSite.ParseId(url), EqualTo("625437"));
         }
     }
 }

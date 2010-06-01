@@ -86,7 +86,6 @@ RSS.config:
 	
 Alias.config:
 	Show Name in Feed|Show Name on TheTVDB.com & On Disk 
-	(Cleaner looking names, more like Newzbin)
 	The Office|The Office (US)
 	- If the show name in the RSS feed is: 
 		"The Office", it should be found as 
