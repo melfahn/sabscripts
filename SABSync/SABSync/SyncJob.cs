@@ -5,8 +5,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Rss;
 
-// TODO: using System.ServiceModel.Syndication;
-
 namespace SABSync
 {
     public class SyncJob
@@ -103,22 +101,43 @@ namespace SABSync
 
         private void QueueIfWanted(NzbInfo nzb)
         {
-            if (nzb.IsPassworded())
+            Log(string.Empty);
+            Log("----------------------------------------------------------------");
+            Log("Verifying '{0}'", nzb.Title);
+            try
             {
-                RejectPasswordedCount++;
-                Log("Skipping Passworded Report {0}", nzb.Title);
-                return;
+                if (nzb.IsPassworded())
+                {
+                    RejectPasswordedCount++;
+                    Log("Skipping Passworded Report {0}", nzb.Title);
+                    return;
+                }
+
+                var feedItem = new FeedItem {NzbId = nzb.Id, Title = nzb.Title, Description = nzb.Description};
+                Episode episode = ParseEpisode(feedItem);
+                if (episode == null)
+                {
+                    Log("Unsupported Title: {0}", feedItem.Title);
+                    return;
+                }
+
+                if (!IsShowWanted(episode.ShowName))
+                    return;
+
+                if (!IsEpisodeWanted(episode))
+                    return;
+
+                nzb.Title = GetTitleFix(nzb.Title).TrimEnd(' ', '-');
+                string queueResponse = Sab.AddByUrl(nzb);
+
+                // TODO: check if Queued.Add need unfixed Title (was previously)
+                AcceptCount++;
+                Queued.Add(string.Format("{0}: {1}", nzb.Title, queueResponse));
             }
-
-            if (!IsEpisodeWanted(nzb.Title, nzb.Id, nzb.Description))
-                return;
-            
-            nzb.Title = GetTitleFix(nzb.Title).TrimEnd(' ', '-');
-            string queueResponse = Sab.AddByUrl(nzb);
-
-            // TODO: check if Queued.Add need unfixed Title (was previously)
-            AcceptCount++;
-            Queued.Add(string.Format("{0}: {1}", nzb.Title, queueResponse));
+            catch (Exception e)
+            {
+                Log("Unsupported Title: {0} - {1}", nzb.Title, e);
+            }
         }
 
         private void LogSummary()
@@ -316,264 +335,135 @@ namespace SABSync
             return false;
         }
 
-        //Ends IsShowWanted
-
-        private bool IsEpWantedS01E01E02(Match match, string title, string nzbId)
+        private Episode ParseEpisode(FeedItem feedItem)
         {
-            string[] titleSplitMulti = Regex.Split(title, PatternS01E01E02);
-            string showName = titleSplitMulti[0].Replace('.', ' ');
-            showName = showName.TrimEnd();
-            showName = ShowAlias(showName);
-
-            int seasonNumber;
-            int episodeNumberOne;
-            int episodeNumberTwo;
-
-            Int32.TryParse(match.Groups["Season"].Value, out seasonNumber);
-            Int32.TryParse(match.Groups["EpisodeOne"].Value, out episodeNumberOne);
-            Int32.TryParse(match.Groups["EpisodeTwo"].Value, out episodeNumberTwo);
-
-            if (!IsShowWanted(showName))
-                return false;
-
-            if (IsSeasonIgnored(showName, seasonNumber))
-                return false;
-
-            if (!IsQualityWanted(showName, title))
-                return false;
-
-            string episodeOneName = TvDb.CheckTvDb(showName, seasonNumber, episodeNumberOne);
-            string episodeTwoName = TvDb.CheckTvDb(showName, seasonNumber, episodeNumberTwo);
-            string titleFix = showName + " - " + seasonNumber + "x" + episodeNumberOne.ToString("D2") + "-" +
-                seasonNumber + "x" + episodeNumberTwo.ToString("D2") + " - " + episodeOneName + " & " + episodeTwoName;
-
-            titleFix = titleFix.TrimEnd(' ', '-');
-
-            bool needProper = false;
-
-            if (Config.DownloadPropers && title.Contains("PROPER"))
-            {
-                if (!Sab.IsInQueue(title, titleFix, nzbId) && !InNzbArchive(title, titleFix))
-                    needProper = true;
-            }
-
-
-            foreach (DirectoryInfo tvDir in Config.TvRootFolders)
-            {
-                string dir = GetEpisodeDir(showName, seasonNumber, episodeNumberOne, tvDir);
-                string fileMask = GetEpisodeFileMask(seasonNumber, episodeNumberOne, tvDir);
-
-                if (needProper)
-                    DeleteForProper(dir, fileMask);
-
-                if (IsOnDisk(dir, fileMask))
-                    return false;
-
-                if (IsOnDisk(dir, seasonNumber, episodeNumberOne))
-                    return false;
-            }
-
-            if (Sab.IsInQueue(title, titleFix, nzbId))
-                return false;
-
-            if (InNzbArchive(title, titleFix))
-                return false;
-
-            if (IsQueued(titleFix))
-                return false;
-
-            return true;
+            return MatchSeasonEpisodeMulti(feedItem) ??
+                MatchSeasonEpisode(feedItem) ??
+                    MatchFirstAiredEpisode(feedItem);
         }
 
-        private bool IsEpWantedS01E01(Match match, string title, string nzbId, string description)
+        private Episode MatchSeasonEpisodeMulti(FeedItem item)
         {
-            string showName = ShowAlias(Regex.Split(title, PatternS01E01)[0].Replace('.', ' ').TrimEnd(' ', '-'));
-            string episodeName;
-            int seasonNumber, episodeNumber;
-            int.TryParse(match.Groups["Season"].Value, out seasonNumber);
-            int.TryParse(match.Groups["Episode"].Value, out episodeNumber);
+            Match match = Regex.Match(item.Title, PatternS01E01E02);
+            if (!match.Success) return null;
 
-            if (!IsShowWanted(showName))
-                return false;
+            return new Episode
+            {
+                FeedItem = item,
+                ShowName = ParseShowName(item, PatternS01E01E02),
+                SeasonNumber = int.Parse(match.Groups["Season"].Value),
+                EpisodeNumber = int.Parse(match.Groups["EpisodeOne"].Value),
+                EpisodeNumber2 = int.Parse(match.Groups["EpisodeTwo"].Value),
+            };
+        }
 
-            //Get Epsiode name from title (used for lilx.net feeds)
-            if (Regex.Split(title, PatternS01E01)[3].StartsWith(" - "))
-                episodeName = Regex.Split(title, PatternS01E01)[3].TrimStart('-', ' ');
+        private Episode MatchSeasonEpisode(FeedItem item)
+        {
+            string episodeName = null;
+            string pattern = PatternS01E01;
 
+            Match match = Regex.Match(item.Title, pattern);
+            if (!match.Success)
+            {
+                pattern = Pattern1X01;
+                match = Regex.Match(item.Title, Pattern1X01);
+                if (!match.Success)
+                    return null;
+            }
             else
-                episodeName = TvDb.CheckTvDb(showName, seasonNumber, episodeNumber);
-            
-            string titleFix = string.Format("{0} - {1}x{2:D2} - {3}",
-                showName, seasonNumber, episodeNumber, episodeName).TrimEnd(' ', '-');
-
-            bool needProper = false;
-
-            if (IsSeasonIgnored(showName, seasonNumber)
-                || !IsQualityWanted(showName, title, description)
-                )
-                return false;
-
-            if (Config.DownloadPropers && title.Contains("PROPER"))
-                if (!Sab.IsInQueue(title, titleFix, nzbId) && !InNzbArchive(title, titleFix))
-                    needProper = true;
-
-            foreach (DirectoryInfo tvDir in Config.TvRootFolders)
             {
-                string dir = GetEpisodeDir(showName, seasonNumber, episodeNumber, tvDir);
-                string fileMask = GetEpisodeFileMask(seasonNumber, episodeNumber, tvDir);
-
-                if (needProper)
-                    DeleteForProper(dir, fileMask);
-
-                if (IsOnDisk(dir, fileMask)
-                    || IsOnDisk(dir, seasonNumber, episodeNumber)
-                    )
-                    return false;
+                // Get episode name from title (used for lilx.net feeds)
+                string[] part = Regex.Split(item.Title, PatternS01E01);
+                if (part.Length > 2 && part[3].StartsWith(" - "))
+                    episodeName = part[3].TrimStart('-', ' ');
             }
-
-            if (Sab.IsInQueue(title, titleFix, nzbId)
-                || InNzbArchive(title, titleFix)
-                    || IsQueued(titleFix)
-                )
-                return false;
-
-
-
-            return true;
+            return new Episode
+            {
+                FeedItem = item,
+                ShowName = ParseShowName(item, pattern),
+                SeasonNumber = int.Parse(match.Groups["Season"].Value),
+                EpisodeNumber = int.Parse(match.Groups["Episode"].Value),
+                Name = episodeName,
+            };
         }
 
-        private bool IsEpWanted1X01(Match match, string title, string nzbId)
+        private Episode MatchFirstAiredEpisode(FeedItem item)
         {
-            string showName = ShowAlias(Regex.Split(title, Pattern1X01)[0].Replace('.', ' ').TrimEnd());
-            int seasonNumber, episodeNumber;
-            int.TryParse(match.Groups["Season"].Value, out seasonNumber);
-            int.TryParse(match.Groups["Episode"].Value, out episodeNumber);
-            if (!IsShowWanted(showName))
+            Match match = Regex.Match(item.Title, PatternDaily);
+            if (!match.Success) return null;
+
+            return new Episode
+            {
+                FeedItem = item,
+                ShowName = ParseShowName(item, PatternDaily),
+                FirstAired = DateTime.Parse(string.Format("{0}-{1}-{2}",
+                    match.Groups["Year"].Value,
+                    match.Groups["Month"].Value,
+                    match.Groups["Day"].Value)),
+            };
+        }
+
+        private string ParseShowName(FeedItem item, string pattern)
+        {
+            string showName = Regex.Split(item.Title, pattern)[0].Replace('.', ' ').TrimEnd(' ', '-');
+            return ShowAlias(showName);
+        }
+
+        private bool IsEpisodeWanted(Episode episode)
+        {
+            GetEpisodeName(episode);
+
+            // TODO: add ignore season support for first aired (ignore <= date?)
+            if (!episode.IsFirstAired && IsSeasonIgnored(episode.ShowName, episode.SeasonNumber))
                 return false;
 
-            string episodeName = TvDb.CheckTvDb(showName, seasonNumber, episodeNumber);
-            string titleFix = string.Format("{0} - {1}x{2:D2} - {3}",
-                showName, seasonNumber, episodeNumber, episodeName).TrimEnd(' ', '-');
+            if (!IsQualityWanted(episode.ShowName, episode.FeedItem.Title, episode.FeedItem.Description))
+                return false;
 
             bool needProper = false;
-
-            if (IsSeasonIgnored(showName, seasonNumber)
-                || !IsQualityWanted(showName, title)
-                )
-                return false;
-
-            if (Config.DownloadPropers && title.Contains("PROPER"))
-                if (!Sab.IsInQueue(title, titleFix, nzbId) && !InNzbArchive(title, titleFix))
+            if (Config.DownloadPropers && episode.FeedItem.Title.Contains("PROPER"))
+                if (!Sab.IsInQueue(episode.FeedItem.Title, episode.FeedItem.TitleFix, episode.FeedItem.NzbId)
+                    && !InNzbArchive(episode.FeedItem.Title, episode.FeedItem.TitleFix))
                     needProper = true;
 
             foreach (DirectoryInfo tvDir in Config.TvRootFolders)
             {
-                string dir = GetEpisodeDir(showName, seasonNumber, episodeNumber, tvDir);
-                string fileMask = GetEpisodeFileMask(seasonNumber, episodeNumber, tvDir);
+                string dir = episode.IsFirstAired
+                    ? GetEpisodeDir(episode.ShowName, episode.FirstAired, tvDir)
+                    : GetEpisodeDir(episode.ShowName, episode.SeasonNumber, episode.EpisodeNumber, tvDir);
+                string fileMask = episode.IsFirstAired
+                    ? GetEpisodeFileMask(episode.FirstAired, tvDir)
+                    : GetEpisodeFileMask(episode.SeasonNumber, episode.EpisodeNumber, tvDir);
 
                 if (needProper)
                     DeleteForProper(dir, fileMask);
 
-                if (IsOnDisk(dir, fileMask)
-                    || IsOnDisk(dir, seasonNumber, episodeNumber)
-                    )
+                if (IsOnDisk(dir, fileMask) ||
+                    IsOnDisk(dir, episode.SeasonNumber, episode.EpisodeNumber))
                     return false;
             }
 
-            if (Sab.IsInQueue(title, titleFix, nzbId)
-                || InNzbArchive(title, titleFix)
-                    || IsQueued(titleFix)
-                )
+            if (Sab.IsInQueue(episode.FeedItem.Title, episode.FeedItem.TitleFix, episode.FeedItem.NzbId) ||
+                InNzbArchive(episode.FeedItem.Title, episode.FeedItem.TitleFix) ||
+                    IsQueued(episode.FeedItem.TitleFix))
                 return false;
 
             return true;
         }
 
-        private bool IsEpWantedDaily(Match match, string title, string nzbId)
+        private void GetEpisodeName(Episode episode)
         {
-            string showName = ShowAlias(Regex.Split(title, PatternDaily)[0].Replace('.', ' ').TrimEnd());
-
-            DateTime firstAired = DateTime.Parse(
-                match.Groups["Year"].Value + "-" +
-                    match.Groups["Month"].Value + "-" +
-                        match.Groups["Day"].Value);
-
-            if (!IsShowWanted(showName))
-                return false;
-
-            string episodeName = TvDb.CheckTvDb(showName, firstAired);
-            string titleFix = showName + " - " + firstAired.ToString("yyyy-MM-dd") + " - " + episodeName;
-
-            titleFix = titleFix.TrimEnd(' ', '-');
-
-            bool needProper = false;
-
-            if (!IsQualityWanted(showName, title))
-                return false;
-
-            if (Config.DownloadPropers && title.Contains("PROPER"))
+            if (episode.IsFirstAired)
             {
-                if (!Sab.IsInQueue(title, titleFix, nzbId) && !InNzbArchive(title, titleFix))
-                    needProper = true;
+                episode.Name = episode.Name ?? TvDb.CheckTvDb(episode.ShowName, episode.FirstAired);
+                episode.FeedItem.TitleFix = string.Format("{0} - {1} - {2}",
+                    episode.ShowName, episode.FirstAired.ToString("yyyy-MM-dd"), episode.Name).TrimEnd(' ', '-');
+                return;
             }
-
-            foreach (DirectoryInfo tvDir in Config.TvRootFolders)
-            {
-                string dir = GetEpisodeDir(showName, firstAired, tvDir);
-                string fileMask = GetEpisodeFileMask(firstAired, tvDir);
-
-                if (needProper)
-                    DeleteForProper(dir, fileMask);
-
-                if (IsOnDisk(dir, fileMask))
-                    return false;
-            }
-
-            if (Sab.IsInQueue(title, titleFix, nzbId))
-                return false;
-
-            if (InNzbArchive(title, titleFix))
-                return false;
-
-            if (IsQueued(titleFix))
-                return false;
-
-            return true;
-        }
-
-        private bool IsEpisodeWanted(string title, string nzbId, string description)
-        {
-            Log("----------------------------------------------------------------");
-            Log("Verifying '{0}'", title);
-            try
-            {
-                //Check for S01E01E02
-                Match titleMatchMulti = Regex.Match(title, PatternS01E01E02);
-                if (titleMatchMulti.Success)
-                    return IsEpWantedS01E01E02(titleMatchMulti, title, nzbId);
-
-                //Check for S01E01
-                Match titleMatch = Regex.Match(title, PatternS01E01);
-                if (titleMatch.Success)
-                    return IsEpWantedS01E01(titleMatch, title, nzbId, description);
-
-                //Check for 1x01
-                Match titleMatchX = Regex.Match(title, Pattern1X01);
-                if (titleMatchX.Success)
-                    return IsEpWanted1X01(titleMatchX, title, nzbId);
-
-                //Daily Show Title Check
-                Match titleMatchDaily = Regex.Match(title, PatternDaily);
-                if (titleMatchDaily.Success)
-                    return IsEpWantedDaily(titleMatchDaily, title, nzbId);
-            }
-            catch (Exception e)
-            {
-                Log("Unsupported Title: {0} - {1}", title, e);
-                return false;
-            }
-            Log("Unsupported Title: {0}", title);
-            return false;
+            episode.Name = episode.Name ??
+                TvDb.CheckTvDb(episode.ShowName, episode.SeasonNumber, episode.EpisodeNumber);
+            episode.FeedItem.TitleFix = string.Format("{0} - {1}x{2:D2} - {3}",
+                episode.ShowName, episode.SeasonNumber, episode.EpisodeNumber, episode.Name).TrimEnd(' ', '-');
         }
 
         private bool IsOnDisk(string dir, string fileMask)
@@ -659,42 +549,10 @@ namespace SABSync
                             RejectIgnoredSeasonCount++;
                             Log("Ignoring '{0}' Season '{1}'  ", showName, seasonNumber);
                             return true;
-                        } //End if seasonNumber Less than or Equal to seasonIgnore
-                    } //Ends if showNameIgnore equals showName
-                } //Ends foreach loop for showsSeasonIgnore
-            } //Ends if Config.IgnoreSeasons contains showName
-            return false; //If Show Name is not being ignored or that season is not ignored return false
-        }
-
-        //Ends IsSeasonIgnored
-
-        private bool IsQualityWanted(string showName, string rssTitle)
-        {
-            foreach (ShowQuality q in Config.ShowQualities)
-            {
-                if (showName.ToLower() == q.Name.ToLower())
-                {
-                    if (rssTitle.ToLower().Contains(q.Quality.ToLower()))
-                    {
-                        Log("Quality -{0}- is wanted for: {1}.", q.Quality, showName);
-                        return true;
+                        }
                     }
-                    RejectShowQualityCount++;
-                    Log("Quality is not wanted");
-                    return false;
                 }
             }
-
-            foreach (string quality in Config.DownloadQualities)
-            {
-                if (rssTitle.ToLower().Contains(quality.ToLower()))
-                {
-                    Log("Quality is wanted - Default");
-                    return true;
-                }
-            }
-            RejectDownloadQualityCount++;
-            Log("Quality is not wanted");
             return false;
         }
 
@@ -704,7 +562,9 @@ namespace SABSync
             {
                 if (showName.ToLower() == q.Name.ToLower())
                 {
-                    if (rssTitle.ToLower().Contains(q.Quality.ToLower()) || description.ToLower().Contains(q.Quality.ToLower()))
+                    bool titleContainsQuality = rssTitle.ToLower().Contains(q.Quality.ToLower());
+                    bool descriptionContainsQuality = description.ToLower().Contains(q.Quality.ToLower());
+                    if (titleContainsQuality || descriptionContainsQuality)
                     {
                         Log("Quality -{0}- is wanted for: {1}.", q.Quality, showName);
                         return true;
@@ -717,7 +577,11 @@ namespace SABSync
 
             foreach (string quality in Config.DownloadQualities)
             {
-                if (rssTitle.ToLower().Contains(quality.ToLower()) || description.ToLower().Contains(quality.ToLower()))
+                bool titleHasQuality = rssTitle.ToLower().Contains(quality.ToLower());
+                bool descriptionHasQuality = description != null
+                    ? description.ToLower().Contains(quality.ToLower())
+                    : false;
+                if (titleHasQuality || descriptionHasQuality)
                 {
                     Log("Quality is wanted - Default");
                     return true;
@@ -730,7 +594,8 @@ namespace SABSync
 
         private bool IsQueued(string rssTitleFix)
         {
-            //Checks Queued List for "Fixed" name, resolves issue when Item is added, but not properly renamed and it is found at another source.
+            //Checks Queued List for "Fixed" name, resolves issue when Item is added, 
+            //but not properly renamed and it is found at another source.
 
             if (Queued.Contains(rssTitleFix + ": ok"))
                 return true;
@@ -811,17 +676,12 @@ namespace SABSync
 
             string titleFix = null;
 
-            const string patternMulti = @"[Ss](?<Season>(?:\d{1,2}))[Ee](?<EpisodeOne>(?:\d{1,2}))E(?<EpisodeTwo>(?:\d{1,2}))";
-            const string pattern = @"[Ss](?<Season>(?:\d{1,2}))[Ee](?<Episode>(?:\d{1,2}))";
-            const string patternX = @"(?<Season>(?:\d{1,2}))[Xx](?<Episode>(?:\d{1,2}))";
-            const string patternDaily = @"(?<Year>\d{4}).{1}(?<Month>\d{2}).{1}(?<Day>\d{2})";
-
             //S01E01E02
-            Match titleMatchMulti = Regex.Match(title, patternMulti);
+            Match titleMatchMulti = Regex.Match(title, PatternS01E01E02);
 
             if (titleMatchMulti.Success)
             {
-                string[] titleSplitMulti = Regex.Split(title, patternMulti);
+                string[] titleSplitMulti = Regex.Split(title, PatternS01E01E02);
                 string showName = titleSplitMulti[0].Replace('.', ' ');
                 showName = showName.TrimEnd();
                 showName = ShowAlias(showName);
@@ -842,11 +702,11 @@ namespace SABSync
             }
 
             //S01E01
-            Match titleMatch = Regex.Match(title, pattern);
+            Match titleMatch = Regex.Match(title, PatternS01E01);
 
             if (titleMatch.Success)
             {
-                string[] titleSplit = Regex.Split(title, pattern);
+                string[] titleSplit = Regex.Split(title, PatternS01E01);
                 string showName = titleSplit[0].Replace('.', ' ').TrimEnd(' ', '-');
                 showName = showName.TrimEnd();
                 showName = ShowAlias(showName);
@@ -869,11 +729,11 @@ namespace SABSync
             }
 
             //1x01
-            Match titleMatchX = Regex.Match(title, patternX);
+            Match titleMatchX = Regex.Match(title, Pattern1X01);
 
             if (titleMatchX.Success)
             {
-                string[] titleSplitX = Regex.Split(title, patternX);
+                string[] titleSplitX = Regex.Split(title, Pattern1X01);
                 string showName = titleSplitX[0].Replace('.', ' ');
                 showName = showName.TrimEnd();
                 showName = ShowAlias(showName);
@@ -889,11 +749,11 @@ namespace SABSync
             }
 
             //Daily Show Title
-            Match titleMatchDaily = Regex.Match(title, patternDaily);
+            Match titleMatchDaily = Regex.Match(title, PatternDaily);
 
             if (titleMatchDaily.Success)
             {
-                string[] titleSplitDaily = Regex.Split(title, patternDaily);
+                string[] titleSplitDaily = Regex.Split(title, PatternDaily);
                 string showName = titleSplitDaily[0].Replace('.', ' ');
                 showName = showName.TrimEnd();
                 showName = ShowAlias(showName);
@@ -955,16 +815,5 @@ namespace SABSync
         {
             Log(String.Format(message, para), showInSummary);
         }
-
-        #region Nested type: Show
-
-        public class Show
-        {
-            public string Name { get; set; }
-            public int Season { get; set; }
-            public int Episode { get; set; }
-        }
-
-        #endregion
     }
 }

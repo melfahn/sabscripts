@@ -131,7 +131,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.cs" />
+    <Compile Include="Episode.cs" />
     <Compile Include="FeedInfo.cs" />
+    <Compile Include="FeedItem.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="NzbInfo.cs" />
     <Compile Include="NzbSite.cs" />

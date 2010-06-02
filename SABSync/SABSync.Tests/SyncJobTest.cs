@@ -16,12 +16,12 @@ namespace SABSync.Tests
             Expect(job.FeedItemCount, Is.EqualTo(20), "FeedItemCount");
             Expect(job.MyFeedsCount, Is.EqualTo(2), "MyFeedsCount");
             Expect(job.MyShowsCount, Is.EqualTo(5), "MyShowsCount");
+            Expect(job.RejectPasswordedCount, Is.EqualTo(2), "RejectPasswordedCount");
             Expect(job.MyShowsInFeedCount, Is.EqualTo(8), "MyShowsInFeedCount");
             Expect(job.RejectDownloadQualityCount, Is.EqualTo(1), "RejectDownloadQualityCount");
             Expect(job.RejectIgnoredSeasonCount, Is.EqualTo(1), "RejectIgnoredSeasonCount");
             Expect(job.RejectInNzbArchive, Is.EqualTo(1), "RejectInNzbArchive");
             Expect(job.RejectOnDiskCount, Is.EqualTo(1), "RejectOnDiskCount");
-            Expect(job.RejectPasswordedCount, Is.EqualTo(2), "RejectPasswordedCount");
             Expect(job.RejectShowQualityCount, Is.EqualTo(1), "RejectShowQualityCount");
         }
     }
