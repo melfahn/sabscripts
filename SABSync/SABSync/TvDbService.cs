@@ -5,60 +5,50 @@ namespace SABSync
 {
     public interface ITvDbService
     {
-        string CheckTvDb(string showName, int seasonNumber, int episodeNumber);
-        string CheckTvDb(string showName, DateTime firstAired);
+        void CheckTvDb(Episode episode);
     }
 
     public class TvDbService : ITvDbService
     {
         private const string TvDbApiKey = "5D2D188E86E07F4F";
         private static readonly Logger Logger = new Logger();
-        private string _lastEpisodeName;
-        private int _lastEpisodeNumber;
-        private DateTime _lastFirstAired;
-        private int _lastSeasonNumber;
-        private string _lastShowName;
+        private Episode _last;
 
         #region ITvDbService Members
 
-        public string CheckTvDb(string showName, int seasonNumber, int episodeNumber)
+        public void CheckTvDb(Episode episode)
         {
-            if (showName == _lastShowName &&
-                seasonNumber == _lastSeasonNumber && episodeNumber == _lastEpisodeNumber)
-                return _lastEpisodeName;
+            if (!string.IsNullOrWhiteSpace(episode.Name))
+                return;
 
-            string episodeName = null;
-            string seriesId = GetSeriesId(showName);
+            bool isSameEpisode = _last != null && episode.ShowName == _last.ShowName &&
+                (episode.IsDaily
+                    ? episode.FirstAired == _last.FirstAired
+                    : episode.SeasonNumber == _last.SeasonNumber &&
+                        episode.EpisodeNumber == _last.EpisodeNumber &&
+                            episode.EpisodeNumber == _last.EpisodeNumber2);
+            if (isSameEpisode)
+            {
+                episode.Name = _last.Name;
+                episode.Name2 = _last.Name2;
+                return;
+            }
 
-            if (seriesId != null)
-                episodeName = GetEpisodeName(seriesId, seasonNumber, episodeNumber);
+            string seriesId = GetSeriesId(episode.ShowName);
+            if (seriesId == null)
+                return;
 
-            _lastShowName = showName;
-            _lastSeasonNumber = seasonNumber;
-            _lastEpisodeNumber = episodeNumber;
-            _lastEpisodeName = episodeName;
+            episode.Name = episode.IsDaily
+                ? GetEpisodeName(seriesId, episode.FirstAired)
+                : GetEpisodeName(seriesId, episode.SeasonNumber, episode.EpisodeNumber);
 
-            return episodeName;
+            if (episode.EpisodeNumber2 != 0)
+                episode.Name2 = GetEpisodeName(seriesId, episode.SeasonNumber, episode.EpisodeNumber2);
+
+            _last = episode;
         }
 
-        public string CheckTvDb(string showName, DateTime firstAired)
-        {
-            if (showName == _lastShowName &&
-                firstAired == _lastFirstAired)
-                return _lastEpisodeName;
-
-            string episodeName = null;
-            string seriesId = GetSeriesId(showName);
-
-            if (seriesId != null)
-                episodeName = GetEpisodeName(seriesId, firstAired);
-
-            _lastShowName = showName;
-            _lastFirstAired = firstAired;
-            _lastEpisodeName = episodeName;
-
-            return episodeName;
-        }
+        #endregion
 
         private static string GetSeriesId(string seriesName)
         {
@@ -143,8 +133,6 @@ namespace SABSync
             return null;
         }
 
-        #endregion
-
         private static string GetEpisodeName(string seriesId, DateTime firstAired)
         {
             try
@@ -168,7 +156,7 @@ namespace SABSync
                         return null;
                     }
 
-                    var myFirstAired = firstAired.ToString("yyyy-MM-dd");
+                    string myFirstAired = firstAired.ToString("yyyy-MM-dd");
 
                     foreach (XmlElement e in episodes)
                     {

@@ -127,7 +127,7 @@ namespace SABSync
                 if (!IsEpisodeWanted(episode))
                     return;
 
-                nzb.Title = GetTitleFix(nzb.Title).TrimEnd(' ', '-');
+                nzb.Title = episode.FeedItem.TitleFix;
                 string queueResponse = Sab.AddByUrl(nzb);
 
                 // TODO: check if Queued.Add need unfixed Title (was previously)
@@ -264,8 +264,6 @@ namespace SABSync
             return path;
         }
 
-        //Ends GetDailyShowNamingScheme
-
         private string GetEpisodeFileMask(DateTime firstAired, DirectoryInfo tvDir)
         {
             if (Config.VerboseLogging)
@@ -302,8 +300,6 @@ namespace SABSync
 
             return fileMask;
         }
-
-        //Ends GetDailyShowNamingScheme
 
         private string CleanString(string name)
         {
@@ -414,7 +410,7 @@ namespace SABSync
             GetEpisodeName(episode);
 
             // TODO: add ignore season support for first aired (ignore <= date?)
-            if (!episode.IsFirstAired && IsSeasonIgnored(episode.ShowName, episode.SeasonNumber))
+            if (!episode.IsDaily && IsSeasonIgnored(episode.ShowName, episode.SeasonNumber))
                 return false;
 
             if (!IsQualityWanted(episode.ShowName, episode.FeedItem.Title, episode.FeedItem.Description))
@@ -428,10 +424,10 @@ namespace SABSync
 
             foreach (DirectoryInfo tvDir in Config.TvRootFolders)
             {
-                string dir = episode.IsFirstAired
+                string dir = episode.IsDaily
                     ? GetEpisodeDir(episode.ShowName, episode.FirstAired, tvDir)
                     : GetEpisodeDir(episode.ShowName, episode.SeasonNumber, episode.EpisodeNumber, tvDir);
-                string fileMask = episode.IsFirstAired
+                string fileMask = episode.IsDaily
                     ? GetEpisodeFileMask(episode.FirstAired, tvDir)
                     : GetEpisodeFileMask(episode.SeasonNumber, episode.EpisodeNumber, tvDir);
 
@@ -453,17 +449,8 @@ namespace SABSync
 
         private void GetEpisodeName(Episode episode)
         {
-            if (episode.IsFirstAired)
-            {
-                episode.Name = episode.Name ?? TvDb.CheckTvDb(episode.ShowName, episode.FirstAired);
-                episode.FeedItem.TitleFix = string.Format("{0} - {1} - {2}",
-                    episode.ShowName, episode.FirstAired.ToString("yyyy-MM-dd"), episode.Name).TrimEnd(' ', '-');
-                return;
-            }
-            episode.Name = episode.Name ??
-                TvDb.CheckTvDb(episode.ShowName, episode.SeasonNumber, episode.EpisodeNumber);
-            episode.FeedItem.TitleFix = string.Format("{0} - {1}x{2:D2} - {3}",
-                episode.ShowName, episode.SeasonNumber, episode.EpisodeNumber, episode.Name).TrimEnd(' ', '-');
+            TvDb.CheckTvDb(episode);
+            GetTitleFix(episode);
         }
 
         private bool IsOnDisk(string dir, string fileMask)
@@ -669,107 +656,25 @@ namespace SABSync
             return showName;
         }
 
-        private string GetTitleFix(string title)
+        private void GetTitleFix(Episode episode)
         {
             if (Config.VerboseLogging)
-                Log("Getting Fixed Title for: " + title);
+                Log("Getting Fixed Title for: " + episode.FeedItem.Title);
 
-            string titleFix = null;
+            string titleFix;
 
-            //S01E01E02
-            Match titleMatchMulti = Regex.Match(title, PatternS01E01E02);
+            if (episode.IsDaily)
+                titleFix = string.Format("{0} - {1}", episode.FirstAired.ToString("yyyy-MM-dd"), episode.Name);
+            else if (episode.IsMulti)
+                titleFix = string.Format("{0}x{1:D2}-{0:D2}x{2} - {3} & {4}",
+                    episode.SeasonNumber, episode.EpisodeNumber, episode.EpisodeNumber2, episode.Name, episode.Name2);
+            else
+                titleFix = string.Format("{0}x{1:D2} - {2}", episode.SeasonNumber, episode.EpisodeNumber, episode.Name);
 
-            if (titleMatchMulti.Success)
-            {
-                string[] titleSplitMulti = Regex.Split(title, PatternS01E01E02);
-                string showName = titleSplitMulti[0].Replace('.', ' ');
-                showName = showName.TrimEnd();
-                showName = ShowAlias(showName);
+            episode.FeedItem.TitleFix = string.Format("{0} - {1}", episode.ShowName, titleFix).TrimEnd(' ', '-');
 
-                int seasonNumber;
-                int episodeNumberOne;
-                int episodeNumberTwo;
-
-                Int32.TryParse(titleMatchMulti.Groups["Season"].Value, out seasonNumber);
-                Int32.TryParse(titleMatchMulti.Groups["EpisodeOne"].Value, out episodeNumberOne);
-                Int32.TryParse(titleMatchMulti.Groups["EpisodeTwo"].Value, out episodeNumberTwo);
-
-                string episodeOneName = TvDb.CheckTvDb(showName, seasonNumber, episodeNumberOne);
-                string episodeTwoName = TvDb.CheckTvDb(showName, seasonNumber, episodeNumberTwo);
-                titleFix = showName + " - " + seasonNumber + "x" + episodeNumberOne.ToString("D2") + "-" +
-                    seasonNumber + "x" + episodeNumberTwo.ToString("D2") + " - " + episodeOneName +
-                        " & " + episodeTwoName;
-            }
-
-            //S01E01
-            Match titleMatch = Regex.Match(title, PatternS01E01);
-
-            if (titleMatch.Success)
-            {
-                string[] titleSplit = Regex.Split(title, PatternS01E01);
-                string showName = titleSplit[0].Replace('.', ' ').TrimEnd(' ', '-');
-                showName = showName.TrimEnd();
-                showName = ShowAlias(showName);
-
-                int seasonNumber;
-                int episodeNumber;
-                string episodeName;
-
-                Int32.TryParse(titleMatch.Groups["Season"].Value, out seasonNumber);
-                Int32.TryParse(titleMatch.Groups["Episode"].Value, out episodeNumber);
-
-                //Get Epsiode name from title (used for lilx.net feeds)
-                if (Regex.Split(title, PatternS01E01)[3].StartsWith(" - "))
-                    episodeName = Regex.Split(title, PatternS01E01)[3].TrimStart('-', ' ');
-
-                else
-                    episodeName = TvDb.CheckTvDb(showName, seasonNumber, episodeNumber);
-
-                titleFix = showName + " - " + seasonNumber + "x" + episodeNumber.ToString("D2") + " - " + episodeName;
-            }
-
-            //1x01
-            Match titleMatchX = Regex.Match(title, Pattern1X01);
-
-            if (titleMatchX.Success)
-            {
-                string[] titleSplitX = Regex.Split(title, Pattern1X01);
-                string showName = titleSplitX[0].Replace('.', ' ');
-                showName = showName.TrimEnd();
-                showName = ShowAlias(showName);
-
-                int seasonNumber;
-                int episodeNumber;
-
-                Int32.TryParse(titleMatchX.Groups["Season"].Value, out seasonNumber);
-                Int32.TryParse(titleMatchX.Groups["Episode"].Value, out episodeNumber);
-
-                string episodeName = TvDb.CheckTvDb(showName, seasonNumber, episodeNumber);
-                titleFix = showName + " - " + seasonNumber + "x" + episodeNumber.ToString("D2") + " - " + episodeName;
-            }
-
-            //Daily Show Title
-            Match titleMatchDaily = Regex.Match(title, PatternDaily);
-
-            if (titleMatchDaily.Success)
-            {
-                string[] titleSplitDaily = Regex.Split(title, PatternDaily);
-                string showName = titleSplitDaily[0].Replace('.', ' ');
-                showName = showName.TrimEnd();
-                showName = ShowAlias(showName);
-
-                DateTime firstAired = DateTime.Parse(
-                    titleMatchDaily.Groups["Year"].Value + "-" +
-                        titleMatchDaily.Groups["Month"].Value + "-" +
-                            titleMatchDaily.Groups["Day"].Value);
-
-                string episodeName = TvDb.CheckTvDb(showName, firstAired);
-                titleFix = showName + " - " + firstAired.ToString("yyyy-MM-dd") + " - " + episodeName;
-            }
             if (Config.VerboseLogging)
-                Log("Title Fix is: " + titleFix);
-
-            return titleFix;
+                Log("Title Fix is: {0}", episode.FeedItem.TitleFix);
         }
 
         private void DeleteForProper(string dir, string fileMask)

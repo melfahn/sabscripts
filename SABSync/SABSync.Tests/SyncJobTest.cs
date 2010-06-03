@@ -1,5 +1,4 @@
-﻿using System;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 namespace SABSync.Tests
 {
@@ -30,24 +29,9 @@ namespace SABSync.Tests
     {
         #region ITvDbService Members
 
-        public string CheckTvDb(string showName, int seasonNumber, int episodeNumber)
+        public void CheckTvDb(Episode episode)
         {
-            return "unknown";
-        }
-
-        public string CheckTvDb(string showName, DateTime firstAired)
-        {
-            return "unknown";
-        }
-
-        public string GetSeriesId(string seriesName)
-        {
-            return "unknown";
-        }
-
-        public string GetEpisodeName(string seriesId, int seasonNumber, int episodeNumber)
-        {
-            return "unknown";
+            episode.Name = "Episode Name";
         }
 
         #endregion
