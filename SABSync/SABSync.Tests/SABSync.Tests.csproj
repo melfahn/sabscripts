@@ -150,9 +150,9 @@
   <ItemGroup>
     <Folder Include="TV2\24\" />
     <Folder Include="TV2\Bones\" />
-    <Folder Include="TV2\The Daily Show\" />
+    <Folder Include="TV2\The Daily Show with Jon Stewart\" />
     <Folder Include="TV\24\" />
-    <Folder Include="TV\CSI\" />
+    <Folder Include="TV\CSI- Crime Scene Investigation\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

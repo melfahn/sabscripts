@@ -633,15 +633,13 @@ namespace SABSync
         {
             foreach (ShowAlias alias in Config.ShowAliases)
             {
-                if (Config.VerboseLogging)
-                    Log("Checking for alias: " + alias.BadName);
-
                 if (showName.ToLower() == alias.BadName.ToLower())
                 {
                     showName = alias.Alias;
 
                     if (Config.VerboseLogging)
-                        Log("Alias found, new name is: " + showName);
+                        Log("DEBUG: Show Alias={0}", showName);
+                    break;
                 }
             }
 

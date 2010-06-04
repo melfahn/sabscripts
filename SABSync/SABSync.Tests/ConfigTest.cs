@@ -46,7 +46,14 @@ namespace SABSync.Tests
         [Test]
         public void MyShows()
         {
-            var shows = new[] { "24", "The Mentalist", "Bones", "CSI", "The Daily Show" };
+            var shows = new[]
+            {
+                "24", 
+                "The Mentalist", 
+                "Bones", 
+                "CSI- Crime Scene Investigation", 
+                "The Daily Show with Jon Stewart"
+            };
 
             Expect(Config.MyShows, Is.EquivalentTo(shows));
         }

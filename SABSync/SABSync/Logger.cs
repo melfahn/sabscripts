@@ -23,6 +23,11 @@ namespace SABSync
             if (!Directory.Exists(_logPath))
                 Directory.CreateDirectory(_logPath);
         }
+        
+        public void Log()
+        {
+            Log(string.Empty);
+        }
 
         public void Log(string message)
         {

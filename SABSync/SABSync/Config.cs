@@ -152,7 +152,11 @@ namespace SABSync
             var list = new List<string>();
             foreach (DirectoryInfo rootFolder in TvRootFolders)
             {
-                if (VerboseLogging) Logger.Log("TVRoot Directory: {0}", rootFolder);
+                if (VerboseLogging)
+                {
+                    Logger.Log(string.Empty);
+                    Logger.Log("DEBUG: TVRoot Directory: {0}", rootFolder);
+                }
 
                 foreach (DirectoryInfo folder in rootFolder.GetDirectories())
                 {
@@ -161,7 +165,7 @@ namespace SABSync
                     if (IsExcluded(folder) || list.Contains(show))
                         continue;
 
-                    if (VerboseLogging) Logger.Log("Adding show to wanted shows list: {0}", show);
+                    if (VerboseLogging) Logger.Log("DEBUG: Show: {0}", show);
                     list.Add(show);
                 }
             }
@@ -187,7 +191,8 @@ namespace SABSync
         private IList<FeedInfo> GetFeeds()
         {
             FileInfo configFile = GetConfigFile("rss");
-            Logger.Log("Loading RSS feed list from {0}", configFile);
+            if (VerboseLogging)
+                Logger.Log("DEBUG: Loading RSS feed list from: {0}", configFile.Name);
 
             return (from pair in GetPipeDelimitedPairs(configFile)
                     let name = pair.Value == null ? null : pair.Key
@@ -197,7 +202,8 @@ namespace SABSync
 
         private IList<ShowAlias> GetShowAliases()
         {
-            return (from pair in GetPipeDelimitedPairs(GetConfigFile("alias"))
+            FileInfo configFile = GetConfigFile("alias");
+            return (from pair in GetPipeDelimitedPairs(configFile)
                     select new ShowAlias {BadName = pair.Key, Alias = pair.Value}).ToList();
         }
 
