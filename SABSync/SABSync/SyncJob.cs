@@ -161,21 +161,32 @@ namespace SABSync
             Log("Number of reports added to the queue: " + Queued.Count);
         }
 
-        private string GetEpisodeDir(string showName, int seasonNumber, int episodeNumber, DirectoryInfo tvDir)
+        private string GetEpisodeDir(Episode episode, DirectoryInfo tvDir)
         {
             if (Config.VerboseLogging)
                 Log("Building string for Episode Dir");
 
-            showName = CleanString(showName);
+            string path = episode.IsDaily 
+                ? GetPathForDaily(episode, tvDir) 
+                : GetPathForSeasonEpisode(episode, tvDir);
 
+            if (Config.VerboseLogging)
+                Log(path);
+
+            return path;
+        }
+
+        private string GetPathForSeasonEpisode(Episode episode, DirectoryInfo tvDir)
+        {
+            string showName = CleanString(episode.ShowName);
             string snReplace = showName;
             string sDotNReplace = showName.Replace(' ', '.');
             string sUnderNReplace = showName.Replace(' ', '_');
 
-            string zeroSReplace = String.Format("{0:00}", seasonNumber);
-            string sReplace = Convert.ToString(seasonNumber);
-            string zeroEReplace = String.Format("{0:00}", episodeNumber);
-            string eReplace = Convert.ToString(episodeNumber);
+            string zeroSReplace = String.Format("{0:00}", episode.SeasonNumber);
+            string sReplace = Convert.ToString(episode.SeasonNumber);
+            string zeroEReplace = String.Format("{0:00}", episode.EpisodeNumber);
+            string eReplace = Convert.ToString(episode.EpisodeNumber);
 
             string path = Path.GetDirectoryName(tvDir + Path.DirectorySeparatorChar.ToString() + Config.TvTemplate);
 
@@ -187,22 +198,56 @@ namespace SABSync
             path = path.Replace("%s", sReplace);
             path = path.Replace("%0e", zeroEReplace);
             path = path.Replace("%e", eReplace);
-
-            if (Config.VerboseLogging)
-                Log(path);
-
             return path;
         }
 
-        private string GetEpisodeFileMask(int seasonNumber, int episodeNumber, DirectoryInfo tvDir)
+        private string GetPathForDaily(Episode episode, DirectoryInfo tvDir)
+        {
+            string showName = CleanString(episode.ShowName);
+            string tReplace = showName;
+            string dotTReplace = showName.Replace(' ', '.');
+            string underTReplace = showName.Replace(' ', '_');
+            string yearReplace = Convert.ToString(episode.FirstAired.Year);
+            string zeroMReplace = String.Format("{0:00}", episode.FirstAired.Month);
+            string mReplace = Convert.ToString(episode.FirstAired.Month);
+            string zeroDReplace = String.Format("{0:00}", episode.FirstAired.Day);
+            string dReplace = Convert.ToString(episode.FirstAired.Day);
+
+            string path = Path.GetDirectoryName(tvDir + Path.DirectorySeparatorChar.ToString() + Config.TvDailyTemplate);
+
+            path = path.Replace(".%ext", "");
+            path = path.Replace("%t", tReplace);
+            path = path.Replace("%.t", dotTReplace);
+            path = path.Replace("%_t", underTReplace);
+            path = path.Replace("%y", yearReplace);
+            path = path.Replace("%0m", zeroMReplace);
+            path = path.Replace("%m", mReplace);
+            path = path.Replace("%0d", zeroDReplace);
+            path = path.Replace("%d", dReplace);
+            return path;
+        }
+
+        private string GetEpisodeFileMask(Episode episode, DirectoryInfo tvDir)
         {
             if (Config.VerboseLogging)
                 Log("Building string for Episode File Mask");
 
-            string zeroSReplace = String.Format("{0:00}", seasonNumber);
-            string sReplace = Convert.ToString(seasonNumber);
-            string zeroEReplace = String.Format("{0:00}", episodeNumber);
-            string eReplace = Convert.ToString(episodeNumber);
+            string fileMask = episode.IsDaily
+                ? GetFileMaskForDaily(episode, tvDir)
+                : GetFileMaskForSeasonEpisode(episode, tvDir);
+
+            if (Config.VerboseLogging)
+                Log(fileMask);
+
+            return fileMask;
+        }
+
+        private string GetFileMaskForSeasonEpisode(Episode episode, DirectoryInfo tvDir)
+        {
+            string zeroSReplace = String.Format("{0:00}", episode.SeasonNumber);
+            string sReplace = Convert.ToString(episode.SeasonNumber);
+            string zeroEReplace = String.Format("{0:00}", episode.EpisodeNumber);
+            string eReplace = Convert.ToString(episode.EpisodeNumber);
 
             string fileMask = Path.GetFileName(tvDir + Path.DirectorySeparatorChar.ToString() + Config.TvTemplate);
 
@@ -222,60 +267,18 @@ namespace SABSync
             fileMask = fileMask.TrimEnd(' ', '*', '.', '-', '_');
             fileMask = fileMask.TrimStart(' ', '*', '.', '-', '_');
             fileMask = "*" + fileMask + "*";
-
-            if (Config.VerboseLogging)
-                Log(fileMask);
-
             return fileMask;
         }
 
-        private string GetEpisodeDir(string showName, DateTime firstAired, DirectoryInfo tvDir)
+        private string GetFileMaskForDaily(Episode episode, DirectoryInfo tvDir)
         {
-            if (Config.VerboseLogging)
-                Log("Building string for Episode Dir");
-            //int year, month, day;
-
-            string path = Path.GetDirectoryName(tvDir + Path.DirectorySeparatorChar.ToString() + Config.TvDailyTemplate);
-
-            showName = CleanString(showName);
-
-            string tReplace = showName;
-            string dotTReplace = showName.Replace(' ', '.');
-            string underTReplace = showName.Replace(' ', '_');
-            string yearReplace = Convert.ToString(firstAired.Year);
-            string zeroMReplace = String.Format("{0:00}", firstAired.Month);
-            string mReplace = Convert.ToString(firstAired.Month);
-            string zeroDReplace = String.Format("{0:00}", firstAired.Day);
-            string dReplace = Convert.ToString(firstAired.Day);
-
-            path = path.Replace(".%ext", "");
-            path = path.Replace("%t", tReplace);
-            path = path.Replace("%.t", dotTReplace);
-            path = path.Replace("%_t", underTReplace);
-            path = path.Replace("%y", yearReplace);
-            path = path.Replace("%0m", zeroMReplace);
-            path = path.Replace("%m", mReplace);
-            path = path.Replace("%0d", zeroDReplace);
-            path = path.Replace("%d", dReplace);
-
-            if (Config.VerboseLogging)
-                Log(path);
-
-            return path;
-        }
-
-        private string GetEpisodeFileMask(DateTime firstAired, DirectoryInfo tvDir)
-        {
-            if (Config.VerboseLogging)
-                Log("Building string for Episode File Mask");
-
             string fileMask = Path.GetFileName(tvDir + Path.DirectorySeparatorChar.ToString() + Config.TvDailyTemplate);
 
-            string yearReplace = Convert.ToString(firstAired.Year);
-            string zeroMReplace = String.Format("{0:00}", firstAired.Month);
-            string mReplace = Convert.ToString(firstAired.Month);
-            string zeroDReplace = String.Format("{0:00}", firstAired.Day);
-            string dReplace = Convert.ToString(firstAired.Day);
+            string yearReplace = Convert.ToString(episode.FirstAired.Year);
+            string zeroMReplace = String.Format("{0:00}", episode.FirstAired.Month);
+            string mReplace = Convert.ToString(episode.FirstAired.Month);
+            string zeroDReplace = String.Format("{0:00}", episode.FirstAired.Day);
+            string dReplace = Convert.ToString(episode.FirstAired.Day);
 
             fileMask = fileMask.Replace(".%ext", "*");
             fileMask = fileMask.Replace("%desc", "*");
@@ -294,9 +297,6 @@ namespace SABSync
             fileMask = fileMask.TrimEnd(' ', '*', '.', '-', '_');
             fileMask = fileMask.TrimStart(' ', '*', '.', '-', '_');
             fileMask = "*" + fileMask + "*";
-
-            if (Config.VerboseLogging)
-                Log(fileMask);
 
             return fileMask;
         }
@@ -424,12 +424,8 @@ namespace SABSync
 
             foreach (DirectoryInfo tvDir in Config.TvRootFolders)
             {
-                string dir = episode.IsDaily
-                    ? GetEpisodeDir(episode.ShowName, episode.FirstAired, tvDir)
-                    : GetEpisodeDir(episode.ShowName, episode.SeasonNumber, episode.EpisodeNumber, tvDir);
-                string fileMask = episode.IsDaily
-                    ? GetEpisodeFileMask(episode.FirstAired, tvDir)
-                    : GetEpisodeFileMask(episode.SeasonNumber, episode.EpisodeNumber, tvDir);
+                string dir = GetEpisodeDir(episode, tvDir);
+                string fileMask = GetEpisodeFileMask(episode, tvDir);
 
                 if (needProper)
                     DeleteForProper(dir, fileMask);
