@@ -410,10 +410,10 @@ namespace SABSync
             GetEpisodeName(episode);
 
             // TODO: add ignore season support for first aired (ignore <= date?)
-            if (!episode.IsDaily && IsSeasonIgnored(episode.ShowName, episode.SeasonNumber))
+            if (!episode.IsDaily && IsSeasonIgnored(episode))
                 return false;
 
-            if (!IsQualityWanted(episode.ShowName, episode.FeedItem.Title, episode.FeedItem.Description))
+            if (!IsQualityWanted(episode))
                 return false;
 
             bool needProper = false;
@@ -511,9 +511,9 @@ namespace SABSync
             return false;
         }
 
-        private bool IsSeasonIgnored(string showName, int seasonNumber)
+        private bool IsSeasonIgnored(Episode episode)
         {
-            if (Config.IgnoreSeasons.Contains(showName))
+            if (Config.IgnoreSeasons.Contains(episode.ShowName))
             {
                 string[] showsSeasonIgnore = Config.IgnoreSeasons.Trim(';', ' ').Split(';');
                 foreach (string showSeasonIgnore in showsSeasonIgnore)
@@ -525,12 +525,12 @@ namespace SABSync
                     string showNameIgnore = showNameIgnoreSplit[0];
                     int seasonIgnore = Convert.ToInt32(showNameIgnoreSplit[1]);
 
-                    if (showNameIgnore == showName)
+                    if (showNameIgnore == episode.ShowName)
                     {
-                        if (seasonNumber <= seasonIgnore)
+                        if (episode.SeasonNumber <= seasonIgnore)
                         {
                             RejectIgnoredSeasonCount++;
-                            Log("Ignoring '{0}' Season '{1}'  ", showName, seasonNumber);
+                            Log("Ignoring '{0}' Season '{1}'  ", episode.ShowName, episode.SeasonNumber);
                             return true;
                         }
                     }
@@ -539,31 +539,33 @@ namespace SABSync
             return false;
         }
 
-        private bool IsQualityWanted(string showName, string rssTitle, string description)
+        private bool IsQualityWanted(Episode episode)
         {
+            string description = (episode.FeedItem.Description ?? string.Empty).ToLower();
+            string title = episode.FeedItem.Title.ToLower();
+
             foreach (ShowQuality q in Config.ShowQualities)
             {
-                if (showName.ToLower() == q.Name.ToLower())
+                if (episode.ShowName.ToLower() != q.Name.ToLower()) continue;
+
+                string quality = q.Quality.ToLower();
+                bool titleContainsQuality = title.Contains(quality);
+                bool descriptionContainsQuality = description.Contains(quality);
+                if (titleContainsQuality || descriptionContainsQuality)
                 {
-                    bool titleContainsQuality = rssTitle.ToLower().Contains(q.Quality.ToLower());
-                    bool descriptionContainsQuality = description.ToLower().Contains(q.Quality.ToLower());
-                    if (titleContainsQuality || descriptionContainsQuality)
-                    {
-                        Log("Quality -{0}- is wanted for: {1}.", q.Quality, showName);
-                        return true;
-                    }
-                    RejectShowQualityCount++;
-                    Log("Quality is not wanted");
-                    return false;
+                    Log("Quality -{0}- is wanted for: {1}.", q.Quality, episode.ShowName);
+                    return true;
                 }
+                RejectShowQualityCount++;
+                Log("Quality is not wanted");
+                return false;
             }
 
-            foreach (string quality in Config.DownloadQualities)
+            foreach (string downloadQuality in Config.DownloadQualities)
             {
-                bool titleHasQuality = rssTitle.ToLower().Contains(quality.ToLower());
-                bool descriptionHasQuality = description != null
-                    ? description.ToLower().Contains(quality.ToLower())
-                    : false;
+                string quality = downloadQuality.ToLower();
+                bool titleHasQuality = title.Contains(quality);
+                bool descriptionHasQuality = description.Contains(quality);
                 if (titleHasQuality || descriptionHasQuality)
                 {
                     Log("Quality is wanted - Default");
