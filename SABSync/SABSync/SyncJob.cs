@@ -418,7 +418,7 @@ namespace SABSync
 
             bool needProper = false;
             if (Config.DownloadPropers && episode.FeedItem.Title.Contains("PROPER"))
-                if (!Sab.IsInQueue(episode.FeedItem.Title, episode.FeedItem.TitleFix, episode.FeedItem.NzbId)
+                if (!Sab.IsInQueue(episode)
                     && !InNzbArchive(episode.FeedItem.Title, episode.FeedItem.TitleFix))
                     needProper = true;
 
@@ -435,7 +435,7 @@ namespace SABSync
                     return false;
             }
 
-            if (Sab.IsInQueue(episode.FeedItem.Title, episode.FeedItem.TitleFix, episode.FeedItem.NzbId) ||
+            if (Sab.IsInQueue(episode) ||
                 InNzbArchive(episode.FeedItem.Title, episode.FeedItem.TitleFix) ||
                     IsQueued(episode.FeedItem.TitleFix))
                 return false;

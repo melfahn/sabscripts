@@ -7,8 +7,8 @@ namespace SABSync
     public interface ISabService
     {
         string AddByUrl(NzbInfo nzb);
-        bool IsInQueue(string rssTitle, string rssTitleFix, string nzbId);
-        bool IsInHistory(string rssTitle, string rssTitleFix);
+        bool IsInQueue(Episode episode);
+        //bool IsInHistory(string rssTitle, string rssTitleFix);
     }
 
     public class SabService : ISabService
@@ -45,8 +45,11 @@ namespace SABSync
         // TODO: refactor
         #region 
 
-        public bool IsInQueue(string rssTitle, string rssTitleFix, string nzbId)
+        public bool IsInQueue(Episode episode)
         {
+            string rssTitle = episode.FeedItem.Title;
+            string rssTitleFix = episode.FeedItem.TitleFix;
+            string nzbId = episode.FeedItem.NzbId;
             try
             {
                 Logger.Log("Checking Queue for: [{0}] or [{1}]", rssTitle, rssTitleFix);
@@ -99,60 +102,62 @@ namespace SABSync
             return false;
         }
 
-        public bool IsInHistory(string rssTitle, string rssTitleFix)
-        {
-            //slot other than container for nzb is an issue (slot for each post download step)
-            try
-            {
-                Logger.Log("Checking History for: [{0}] or [{1}]", rssTitle, rssTitleFix);
+        // TODO: fix this?
 
-                string historyRssUrl = String.Format(Config.SabRequest, "mode=history&output=xml&start=1&limit=20");
+        //public bool IsInHistory(string rssTitle, string rssTitleFix)
+        //{
+        //    //slot other than container for nzb is an issue (slot for each post download step)
+        //    try
+        //    {
+        //        Logger.Log("Checking History for: [{0}] or [{1}]", rssTitle, rssTitleFix);
 
-                var historyRssReader = new XmlTextReader(historyRssUrl);
-                var historyRssDoc = new XmlDocument();
-                historyRssDoc.Load(historyRssReader);
+        //        string historyRssUrl = String.Format(Config.SabRequest, "mode=history&output=xml&start=1&limit=20");
 
-                XmlNodeList history = historyRssDoc.GetElementsByTagName(@"history");
-                XmlNodeList error = historyRssDoc.GetElementsByTagName(@"error");
-                if (error.Count != 0)
-                {
-                    Logger.Log("Sab History Error: {0}", true, error[0].InnerText);
-                }
+        //        var historyRssReader = new XmlTextReader(historyRssUrl);
+        //        var historyRssDoc = new XmlDocument();
+        //        historyRssDoc.Load(historyRssReader);
 
-                else if (history.Count != 0)
-                {
-                    XmlNodeList slot = ((XmlElement)history[0]).GetElementsByTagName("slot");
+        //        XmlNodeList history = historyRssDoc.GetElementsByTagName(@"history");
+        //        XmlNodeList error = historyRssDoc.GetElementsByTagName(@"error");
+        //        if (error.Count != 0)
+        //        {
+        //            Logger.Log("Sab History Error: {0}", true, error[0].InnerText);
+        //        }
 
-                    foreach (object s in slot)
-                    {
-                        var queueElement = (XmlElement)s;
+        //        else if (history.Count != 0)
+        //        {
+        //            XmlNodeList slot = ((XmlElement)history[0]).GetElementsByTagName("slot");
 
-                        //Queue is empty
-                        if (String.IsNullOrEmpty(queueElement.InnerText))
-                            return false;
+        //            foreach (object s in slot)
+        //            {
+        //                var queueElement = (XmlElement)s;
 
-                        string name = queueElement.GetElementsByTagName("name")[0].InnerText.ToLower();
-                        string nzbName = queueElement.GetElementsByTagName("nzb_name")[0].InnerText.ToLower().Replace(".nzb", "").Replace('.', ' ').Replace('-', ' ');
+        //                //Queue is empty
+        //                if (String.IsNullOrEmpty(queueElement.InnerText))
+        //                    return false;
 
-                        if (Config.VerboseLogging)
-                            Logger.Log("Checking History Item for match: " + name);
+        //                string name = queueElement.GetElementsByTagName("name")[0].InnerText.ToLower();
+        //                string nzbName = queueElement.GetElementsByTagName("nzb_name")[0].InnerText.ToLower().Replace(".nzb", "").Replace('.', ' ').Replace('-', ' ');
 
-                        if (name.ToLower() == CleanString(rssTitle).ToLower() ||
-                            nzbName.ToLower() == CleanString(rssTitleFix).ToLower())
-                        {
-                            Logger.Log("Episode in history - '{0}'", true, rssTitle);
-                            return true;
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Log("An Error has occurred while checking the history. {0}", true, ex);
-            }
+        //                if (Config.VerboseLogging)
+        //                    Logger.Log("Checking History Item for match: " + name);
 
-            return false;
-        }
+        //                if (name.ToLower() == CleanString(rssTitle).ToLower() ||
+        //                    nzbName.ToLower() == CleanString(rssTitleFix).ToLower())
+        //                {
+        //                    Logger.Log("Episode in history - '{0}'", true, rssTitle);
+        //                    return true;
+        //                }
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Logger.Log("An Error has occurred while checking the history. {0}", true, ex);
+        //    }
+
+        //    return false;
+        //}
 
         #endregion
 
