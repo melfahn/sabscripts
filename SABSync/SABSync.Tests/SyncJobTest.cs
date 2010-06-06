@@ -29,7 +29,7 @@ namespace SABSync.Tests
     {
         #region ITvDbService Members
 
-        public void CheckTvDb(Episode episode)
+        public void GetEpisodeName(Episode episode)
         {
             episode.Name = "Episode Name";
         }
@@ -46,12 +46,7 @@ namespace SABSync.Tests
             return "ok - AddByUrl";
         }
 
-        public bool IsInQueue(string rssTitle, string rssTitleFix, string nzbId)
-        {
-            return false;
-        }
-
-        public bool IsInHistory(string rssTitle, string rssTitleFix)
+        public bool IsInQueue(Episode episode)
         {
             return false;
         }

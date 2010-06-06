@@ -407,20 +407,33 @@ namespace SABSync
 
         private bool IsEpisodeWanted(Episode episode)
         {
-            GetEpisodeName(episode);
-
-            // TODO: add ignore season support for first aired (ignore <= date?)
-            if (!episode.IsDaily && IsSeasonIgnored(episode))
+            if (IsSeasonIgnored(episode))
                 return false;
 
             if (!IsQualityWanted(episode))
                 return false;
 
-            bool needProper = false;
-            if (Config.DownloadPropers && episode.FeedItem.Title.Contains("PROPER"))
-                if (!Sab.IsInQueue(episode)
-                    && !InNzbArchive(episode.FeedItem.Title, episode.FeedItem.TitleFix))
-                    needProper = true;
+            TvDb.GetEpisodeName(episode);
+            GetTitleFix(episode);
+
+            if (Sab.IsInQueue(episode))
+                return false;
+
+            if (InNzbArchive(episode.FeedItem))
+                return false;
+
+            if (IsQueued(episode.FeedItem.TitleFix))
+                return false;
+
+            if (IsOnDisk(episode))
+                return false;
+
+            return true;
+        }
+
+        private bool IsOnDisk(Episode episode)
+        {
+            bool needProper = Config.DownloadPropers && episode.FeedItem.Title.Contains("PROPER");
 
             foreach (DirectoryInfo tvDir in Config.TvRootFolders)
             {
@@ -432,21 +445,10 @@ namespace SABSync
 
                 if (IsOnDisk(dir, fileMask) ||
                     IsOnDisk(dir, episode.SeasonNumber, episode.EpisodeNumber))
-                    return false;
+                    return true;
             }
 
-            if (Sab.IsInQueue(episode) ||
-                InNzbArchive(episode.FeedItem.Title, episode.FeedItem.TitleFix) ||
-                    IsQueued(episode.FeedItem.TitleFix))
-                return false;
-
-            return true;
-        }
-
-        private void GetEpisodeName(Episode episode)
-        {
-            TvDb.CheckTvDb(episode);
-            GetTitleFix(episode);
+            return false;
         }
 
         private bool IsOnDisk(string dir, string fileMask)
@@ -513,28 +515,31 @@ namespace SABSync
 
         private bool IsSeasonIgnored(Episode episode)
         {
-            if (Config.IgnoreSeasons.Contains(episode.ShowName))
+            // TODO: add ignore season support for first aired (ignore <= date?)
+            if (episode.IsDaily) return false;
+
+            if (!Config.IgnoreSeasons.Contains(episode.ShowName))
+                return false;
+            
+            string[] showsSeasonIgnore = Config.IgnoreSeasons.Trim(';', ' ').Split(';');
+            foreach (string showSeasonIgnore in showsSeasonIgnore)
             {
-                string[] showsSeasonIgnore = Config.IgnoreSeasons.Trim(';', ' ').Split(';');
-                foreach (string showSeasonIgnore in showsSeasonIgnore)
-                {
-                    if (Config.VerboseLogging)
-                        Log("Checking Ignored Season for match: " + showSeasonIgnore);
+                if (Config.VerboseLogging)
+                    Log("Checking Ignored Season for match: " + showSeasonIgnore);
 
-                    string[] showNameIgnoreSplit = showSeasonIgnore.Split('=');
-                    string showNameIgnore = showNameIgnoreSplit[0];
-                    int seasonIgnore = Convert.ToInt32(showNameIgnoreSplit[1]);
+                string[] showNameIgnoreSplit = showSeasonIgnore.Split('=');
+                string showNameIgnore = showNameIgnoreSplit[0];
+                int seasonIgnore = Convert.ToInt32(showNameIgnoreSplit[1]);
 
-                    if (showNameIgnore == episode.ShowName)
-                    {
-                        if (episode.SeasonNumber <= seasonIgnore)
-                        {
-                            RejectIgnoredSeasonCount++;
-                            Log("Ignoring '{0}' Season '{1}'  ", episode.ShowName, episode.SeasonNumber);
-                            return true;
-                        }
-                    }
-                }
+                if (showNameIgnore != episode.ShowName) 
+                    continue;
+
+                if (episode.SeasonNumber > seasonIgnore) 
+                    continue;
+
+                RejectIgnoredSeasonCount++;
+                Log("Ignoring '{0}' Season '{1}'  ", episode.ShowName, episode.SeasonNumber);
+                return true;
             }
             return false;
         }
@@ -588,8 +593,10 @@ namespace SABSync
             return false;
         }
 
-        private bool InNzbArchive(string rssTitle, string rssTitleFix)
+        private bool InNzbArchive(FeedItem feedItem)
         {
+            string rssTitle = feedItem.Title;
+            string rssTitleFix = feedItem.TitleFix;
             Log("Checking for Imported NZB for [{0}] or [{1}]", rssTitle, rssTitleFix);
 
             bool inNzbArchive = false;

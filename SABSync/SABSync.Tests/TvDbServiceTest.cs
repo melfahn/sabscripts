@@ -20,7 +20,7 @@ namespace SABSync.Tests
             };
             var service = new TvDbService();
 
-            service.CheckTvDb(episode);
+            service.GetEpisodeName(episode);
 
             Expect(episode.Name, Is.EqualTo("Mario Batali"));
         }

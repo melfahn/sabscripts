@@ -5,7 +5,7 @@ namespace SABSync
 {
     public interface ITvDbService
     {
-        void CheckTvDb(Episode episode);
+        void GetEpisodeName(Episode episode);
     }
 
     public class TvDbService : ITvDbService
@@ -16,7 +16,7 @@ namespace SABSync
 
         #region ITvDbService Members
 
-        public void CheckTvDb(Episode episode)
+        public void GetEpisodeName(Episode episode)
         {
             if (!string.IsNullOrWhiteSpace(episode.Name))
                 return;
