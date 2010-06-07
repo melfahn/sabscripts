@@ -33,7 +33,7 @@ namespace SABSync
 
         public XDocument GetHistory()
         {
-            string uri = string.Format(Config.SabRequest, "mode=history&output=xml&start=0&limit=20");
+            string uri = string.Format(Config.SabRequest, "mode=history&output=xml&start=0&limit=100");
             return XDocument.Load(uri);
         }
 
