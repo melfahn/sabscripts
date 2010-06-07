@@ -429,7 +429,8 @@ namespace SABSync
             if (IsOnDisk(episode))
                 return false;
 
-            if (Sab.IsInHistory(episode))
+            bool isProper = episode.IsProper && Config.DownloadPropers;
+            if (!isProper && Sab.IsInHistory(episode))
             {
                 RejectSabHistoryCount++;
                 return false;
@@ -440,14 +441,12 @@ namespace SABSync
 
         private bool IsOnDisk(Episode episode)
         {
-            bool needProper = Config.DownloadPropers && episode.FeedItem.Title.Contains("PROPER");
-
             foreach (DirectoryInfo tvDir in Config.TvRootFolders)
             {
                 string dir = GetEpisodeDir(episode, tvDir);
                 string fileMask = GetEpisodeFileMask(episode, tvDir);
 
-                if (needProper)
+                if (episode.IsProper && Config.DownloadPropers)
                     DeleteForProper(dir, fileMask);
 
                 if (IsOnDisk(dir, fileMask) ||

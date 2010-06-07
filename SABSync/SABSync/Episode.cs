@@ -13,6 +13,11 @@ namespace SABSync
         public int EpisodeNumber2 { get; set; }
         public DateTime AirDate { get; set; }
 
+        public bool IsProper
+        {
+            get { return FeedItem.Title.Contains("PROPER"); }
+        }
+
         public bool IsDaily
         {
             get { return SeasonNumber == 0 && EpisodeNumber == 0 && EpisodeNumber2 == 0; }
