@@ -16,13 +16,13 @@ namespace SABSync.Tests
             var episode = new Episode
             {
                 ShowName = "The Daily Show",
-                FirstAired = DateTime.Parse("2010-05-06"),
+                AirDate = DateTime.Parse("2010-05-06"),
             };
             var service = new TvDbService();
 
             service.GetEpisodeName(episode);
 
-            Expect(episode.Name, Is.EqualTo("Mario Batali"));
+            Expect(episode.EpisodeName, Is.EqualTo("Mario Batali"));
         }
     }
 }

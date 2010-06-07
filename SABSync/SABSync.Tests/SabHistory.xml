@@ -1,0 +1,1047 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<history>
+  <active_lang>us-en</active_lang>
+  <paused>False</paused>
+  <session>1691fa6acd04b884a819b60e73c6f56e</session>
+  <restart_req>False</restart_req>
+  <power_options>True</power_options>
+  <slots>
+    <slot>
+      <action_line></action_line>
+      <show_details>True</show_details>
+      <script_log></script_log>
+      <meta>None</meta>
+      <fail_message></fail_message>
+      <loaded>False</loaded>
+      <id>844</id>
+      <size>379.55 MB</size>
+      <category>tv</category>
+      <pp>D</pp>
+      <completeness>0</completeness>
+      <script></script>
+      <nzb_name>Three Rivers - 1x09 - Win-Loss.nzb</nzb_name>
+      <download_time>228</download_time>
+      <storage>C:\Documents and Settings\John\My Documents\My Videos\TV\Three Rivers\Three Rivers - 1x09 - Win-Loss.avi</storage>
+      <status>Completed</status>
+      <script_line></script_line>
+      <completed>1275797662</completed>
+      <nzo_id>SABnzbd_nzo_spd19h</nzo_id>
+      <downloaded>397992160</downloaded>
+      <report>5647385</report>
+      <path>\Three Rivers\Three Rivers - 1x09 - Win-Loss.avi</path>
+      <postproc_time>24</postproc_time>
+      <name>Three Rivers - 1x09 - Win-Loss</name>
+      <url>https://newzbin.com/browse/post/5647385/</url>
+      <bytes>397992160</bytes>
+      <url_info>http://www.tvrage.com/shows/id-22754/episodes/1064934979/1x09/</url_info>
+      <stage_log>
+        <slot>
+          <name>Download</name>
+          <actions>
+            <item>Downloaded in 3 minutes 48 seconds at an average of 1.66 MB/s</item>
+          </actions>
+        </slot>
+        <slot>
+          <name>Repair</name>
+          <actions>
+            <item>[sample-three.rivers.s01e09.hdtv.xvid-fqm] Quick Check OK</item>
+            <item>[three.rivers.s01e09.hdtv.xvid-fqm] Quick Check OK</item>
+          </actions>
+        </slot>
+        <slot>
+          <name>Unpack</name>
+          <actions>
+            <item>[three.rivers.s01e09.hdtv.xvid-fqm] Unpacked 1 files/folders in 22 seconds</item>
+          </actions>
+        </slot>
+      </stage_log>
+    </slot>
+    <slot>
+      <action_line></action_line>
+      <show_details>True</show_details>
+      <script_log></script_log>
+      <meta>None</meta>
+      <fail_message></fail_message>
+      <loaded>False</loaded>
+      <id>843</id>
+      <size>1.41 GB</size>
+      <category>tv</category>
+      <pp>D</pp>
+      <completeness>0</completeness>
+      <script></script>
+      <nzb_name>Stargate.Universe.S01E19.Incursion.Pt.1.720p.WEB.DL.DD5.1.h.264-TjHD.nzb</nzb_name>
+      <download_time>901</download_time>
+      <storage>C:\Documents and Settings\John\My Documents\My Videos\TV\Stargate Universe</storage>
+      <status>Completed</status>
+      <script_line></script_line>
+      <completed>1275787916</completed>
+      <nzo_id>SABnzbd_nzo_wwfovv</nzo_id>
+      <downloaded>1511935223</downloaded>
+      <report></report>
+      <path>\Stargate Universe</path>
+      <postproc_time>91</postproc_time>
+      <name>Stargate Universe - 1x19 - Incursion (1)</name>
+      <url></url>
+      <bytes>1511935223</bytes>
+      <url_info></url_info>
+      <stage_log>
+        <slot>
+          <name>Download</name>
+          <actions>
+            <item>Downloaded in 15 minutes 1 second at an average of 1.60 MB/s</item>
+          </actions>
+        </slot>
+        <slot>
+          <name>Repair</name>
+          <actions>
+            <item>[Stargate.Universe.S01E19.Incursion.Pt.1.720p.WEB-DL.DD5.1.h.264-TjHD] Quick Check OK</item>
+          </actions>
+        </slot>
+        <slot>
+          <name>Unpack</name>
+          <actions>
+            <item>[Stargate.Universe.S01E19.Incursion.Pt.1.720p.WEB-DL.DD5.1.h.264-TjHD] Unpacked 1 files/folders in 1 min 29 seconds</item>
+          </actions>
+        </slot>
+      </stage_log>
+    </slot>
+    <slot>
+      <action_line></action_line>
+      <show_details>True</show_details>
+      <script_log></script_log>
+      <meta>None</meta>
+      <fail_message></fail_message>
+      <loaded>False</loaded>
+      <id>842</id>
+      <size>1.16 GB</size>
+      <category>tv</category>
+      <pp>D</pp>
+      <completeness>0</completeness>
+      <script></script>
+      <nzb_name>Doctor.Who.2005.5x10.Vincent.And.The.Doctor.720p.hdtv.x264..-fov.nzb</nzb_name>
+      <download_time>903</download_time>
+      <storage>C:\Documents and Settings\John\My Documents\My Videos\TV\Doctor Who (2005)</storage>
+      <status>Completed</status>
+      <script_line></script_line>
+      <completed>1275782525</completed>
+      <nzo_id>SABnzbd_nzo_xllwis</nzo_id>
+      <downloaded>1247828940</downloaded>
+      <report></report>
+      <path>\Doctor Who (2005)</path>
+      <postproc_time>62</postproc_time>
+      <name>Doctor Who (2005) - 5x10 - Vincent and the Doctor</name>
+      <url></url>
+      <bytes>1247828940</bytes>
+      <url_info></url_info>
+      <stage_log>
+        <slot>
+          <name>Download</name>
+          <actions>
+            <item>Downloaded in 15 minutes 3 seconds at an average of 1.32 MB/s</item>
+          </actions>
+        </slot>
+        <slot>
+          <name>Repair</name>
+          <actions>
+            <item>[Doctor Who (2005) - 5x10 - Vincent and the Doctor] No par2 sets</item>
+          </actions>
+        </slot>
+        <slot>
+          <name>Unpack</name>
+          <actions>
+            <item>[doctor_who_2005.5x10.vincent_and_the_doctor.720p_hdtv_x264-fov] Unpacked 1 files/folders in 1 min 1 sec</item>
+          </actions>
+        </slot>
+      </stage_log>
+    </slot>
+    <slot>
+      <action_line></action_line>
+      <show_details>True</show_details>
+      <script_log></script_log>
+      <meta>None</meta>
+      <fail_message></fail_message>
+      <loaded>False</loaded>
+      <id>841</id>
+      <size>367.37 MB</size>
+      <category>tv</category>
+      <pp>D</pp>
+      <completeness>0</completeness>
+      <script></script>
+      <nzb_name>Stargate.Universe.S01E19.Incursion.Part.1.HDTV.XviD-FQM.nzb</nzb_name>
+      <download_time>2032</download_time>
+      <storage>C:\Documents and Settings\John\My Documents\My Videos\TV\Stargate Universe</storage>
+      <status>Completed</status>
+      <script_line></script_line>
+      <completed>1275708224</completed>
+      <nzo_id>SABnzbd_nzo_9uujpy</nzo_id>
+      <downloaded>385216792</downloaded>
+      <report></report>
+      <path>\Stargate Universe</path>
+      <postproc_time>23</postproc_time>
+      <name>Stargate Universe - 1x19 - Incursion (1)</name>
+      <url></url>
+      <bytes>385216792</bytes>
+      <url_info></url_info>
+      <stage_log>
+        <slot>
+          <name>Download</name>
+          <actions>
+            <item>Downloaded in 33 minutes 52 seconds at an average of 185.05 KB/s</item>
+          </actions>
+        </slot>
+        <slot>
+          <name>Repair</name>
+          <actions>
+            <item>[stargate.universe.s01e19.hdtv.xvid-fqm] Quick Check OK</item>
+          </actions>
+        </slot>
+        <slot>
+          <name>Unpack</name>
+          <actions>
+            <item>[stargate.universe.s01e19.hdtv.xvid-fqm] Unpacked 1 files/folders in 23 seconds</item>
+          </actions>
+        </slot>
+      </stage_log>
+    </slot>
+    <slot>
+      <action_line></action_line>
+      <show_details>True</show_details>
+      <script_log></script_log>
+      <meta>None</meta>
+      <fail_message></fail_message>
+      <loaded>False</loaded>
+      <id>840</id>
+      <size>762.96 MB</size>
+      <category>movies</category>
+      <pp>D</pp>
+      <completeness>0</completeness>
+      <script></script>
+      <nzb_name>The Girl from Monaco (La fille de Monaco) (2008).nzb</nzb_name>
+      <download_time>472</download_time>
+      <storage>C:\Documents and Settings\John\My Documents\My Videos\Movies</storage>
+      <status>Completed</status>
+      <script_line></script_line>
+      <completed>1275694136</completed>
+      <nzo_id>SABnzbd_nzo_nuse2j</nzo_id>
+      <downloaded>800018254</downloaded>
+      <report>5175526</report>
+      <path></path>
+      <postproc_time>47</postproc_time>
+      <name>The Girl from Monaco (La fille de Monaco) (2008)</name>
+      <url>https://newzbin.com/browse/post/5175526/</url>
+      <bytes>800018254</bytes>
+      <url_info>http://www.imdb.com/title/tt1139800/</url_info>
+      <stage_log>
+        <slot>
+          <name>Download</name>
+          <actions>
+            <item>Downloaded in 7 minutes 52 seconds at an average of 1.61 MB/s</item>
+          </actions>
+        </slot>
+        <slot>
+          <name>Repair</name>
+          <actions>
+            <item>[vmt-gmon-xvid-sample-sample] Quick Check OK</item>
+            <item>[38112-subs] Quick Check OK</item>
+            <item>[vmt-gmon-xvid] Quick Check OK</item>
+          </actions>
+        </slot>
+        <slot>
+          <name>Unpack</name>
+          <actions>
+            <item>[vmt-gmon-xvid] Unpacked 1 files/folders in 44 seconds</item>
+            <item>[vmt-gmon-xvid-subs] Unpacked 1 files/folders in 0 seconds</item>
+          </actions>
+        </slot>
+      </stage_log>
+    </slot>
+    <slot>
+      <action_line></action_line>
+      <show_details>True</show_details>
+      <script_log></script_log>
+      <meta>None</meta>
+      <fail_message></fail_message>
+      <loaded>False</loaded>
+      <id>839</id>
+      <size>4.52 GB</size>
+      <category>movies</category>
+      <pp>D</pp>
+      <completeness>0</completeness>
+      <script></script>
+      <nzb_name>Billy Elliot (2000).nzb</nzb_name>
+      <download_time>7824</download_time>
+      <storage>C:\Documents and Settings\John\My Documents\My Videos\Movies\Billy Elliot (2000)</storage>
+      <status>Completed</status>
+      <script_line></script_line>
+      <completed>1275642517</completed>
+      <nzo_id>SABnzbd_nzo_oi2j4v</nzo_id>
+      <downloaded>4856427979</downloaded>
+      <report></report>
+      <path>\Billy Elliot (2000)</path>
+      <postproc_time>2108</postproc_time>
+      <name>Billy Elliot (2000)</name>
+      <url></url>
+      <bytes>4856427979</bytes>
+      <url_info></url_info>
+      <stage_log>
+        <slot>
+          <name>Download</name>
+          <actions>
+            <item>Downloaded in 2 hours 10 minutes 24 seconds at an average of 606.11 KB/s</item>
+          </actions>
+        </slot>
+        <slot>
+          <name>Repair</name>
+          <actions>
+            <item>[Billy Elliot] Repaired in 17 mins 12 seconds</item>
+          </actions>
+        </slot>
+        <slot>
+          <name>Unpack</name>
+          <actions>
+            <item>[Billy Elliot] Unpacked 3 files/folders in 3 mins 45 seconds</item>
+          </actions>
+        </slot>
+      </stage_log>
+    </slot>
+    <slot>
+      <action_line></action_line>
+      <show_details>True</show_details>
+      <script_log></script_log>
+      <meta>None</meta>
+      <fail_message></fail_message>
+      <loaded>False</loaded>
+      <id>838</id>
+      <size>1.13 GB</size>
+      <category>tv</category>
+      <pp>D</pp>
+      <completeness>0</completeness>
+      <script></script>
+      <nzb_name>Burn.Notice.S04E01.720p.HDTV.x264-IMMERSE.nzb</nzb_name>
+      <download_time>728</download_time>
+      <storage>C:\Documents and Settings\John\My Documents\My Videos\TV\Burn Notice</storage>
+      <status>Completed</status>
+      <script_line></script_line>
+      <completed>1275627509</completed>
+      <nzo_id>SABnzbd_nzo_rvrw9d</nzo_id>
+      <downloaded>1218293167</downloaded>
+      <report></report>
+      <path>\Burn Notice</path>
+      <postproc_time>61</postproc_time>
+      <name>Burn Notice - 4x01 - Friends and Enemies</name>
+      <url></url>
+      <bytes>1218293167</bytes>
+      <url_info></url_info>
+      <stage_log>
+        <slot>
+          <name>Download</name>
+          <actions>
+            <item>Downloaded in 12 minutes 8 seconds at an average of 1.59 MB/s</item>
+          </actions>
+        </slot>
+        <slot>
+          <name>Repair</name>
+          <actions>
+            <item>[burn.notice.s04e01.720p.hdtv.x264-immerse] Quick Check OK</item>
+          </actions>
+        </slot>
+        <slot>
+          <name>Unpack</name>
+          <actions>
+            <item>[burn.notice.s04e01.720p.hdtv.x264-immerse] Unpacked 1 files/folders in 1 min</item>
+          </actions>
+        </slot>
+      </stage_log>
+    </slot>
+    <slot>
+      <action_line></action_line>
+      <show_details>True</show_details>
+      <script_log></script_log>
+      <meta>None</meta>
+      <fail_message></fail_message>
+      <loaded>False</loaded>
+      <id>837</id>
+      <size>735.41 MB</size>
+      <category>tv</category>
+      <pp>D</pp>
+      <completeness>0</completeness>
+      <script></script>
+      <nzb_name>So You Think You Can Dance - 7x03 - Auditions #5 and #6 + Vegas Callbacks (Part.nzb</nzb_name>
+      <download_time>467</download_time>
+      <storage>C:\Documents and Settings\John\My Documents\My Videos\TV\So You Think You Can Dance</storage>
+      <status>Completed</status>
+      <script_line></script_line>
+      <completed>1275624687</completed>
+      <nzo_id>SABnzbd_nzo_fm_noe</nzo_id>
+      <downloaded>771131788</downloaded>
+      <report>5645304</report>
+      <path>\So You Think You Can Dance</path>
+      <postproc_time>44</postproc_time>
+      <name>So You Think You Can Dance - 7x03 - Auditions #5 and #6 + Vegas Callbacks (Part</name>
+      <url>https://newzbin.com/browse/post/5645304/</url>
+      <bytes>771131788</bytes>
+      <url_info>http://www.tvrage.com/So_You_Think_You_Can_Dance/episodes/1064924238/7x03/</url_info>
+      <stage_log>
+        <slot>
+          <name>Download</name>
+          <actions>
+            <item>Downloaded in 7 minutes 47 seconds at an average of 1.57 MB/s</item>
+          </actions>
+        </slot>
+        <slot>
+          <name>Repair</name>
+          <actions>
+            <item>[sample-so.you.think.you.can.dance.s07e03.pdtv.xvid-fqm] Quick Check OK</item>
+            <item>[so.you.think.you.can.dance.s07e03.pdtv.xvid-fqm] Quick Check OK</item>
+          </actions>
+        </slot>
+        <slot>
+          <name>Unpack</name>
+          <actions>
+            <item>[so.you.think.you.can.dance.s07e03.pdtv.xvid-fqm] Unpacked 1 files/folders in 42 seconds</item>
+          </actions>
+        </slot>
+      </stage_log>
+    </slot>
+    <slot>
+      <action_line></action_line>
+      <show_details>True</show_details>
+      <script_log></script_log>
+      <meta>None</meta>
+      <fail_message></fail_message>
+      <loaded>False</loaded>
+      <id>836</id>
+      <size>736.86 MB</size>
+      <category>tv</category>
+      <pp>D</pp>
+      <completeness>0</completeness>
+      <script></script>
+      <nzb_name>So You Think You Can Dance - 7x02 - Auditions #3 and #4.nzb</nzb_name>
+      <download_time>469</download_time>
+      <storage>C:\Documents and Settings\John\My Documents\My Videos\TV\So You Think You Can Dance</storage>
+      <status>Completed</status>
+      <script_line></script_line>
+      <completed>1275624250</completed>
+      <nzo_id>SABnzbd_nzo_ia_zyi</nzo_id>
+      <downloaded>772650957</downloaded>
+      <report>5644545</report>
+      <path>\So You Think You Can Dance</path>
+      <postproc_time>73</postproc_time>
+      <name>So You Think You Can Dance - 7x02 - Auditions #3 and #4</name>
+      <url>https://newzbin.com/browse/post/5644545/</url>
+      <bytes>772650957</bytes>
+      <url_info>http://www.tvrage.com/So_You_Think_You_Can_Dance/episodes/1064924234/7x02/</url_info>
+      <stage_log>
+        <slot>
+          <name>Download</name>
+          <actions>
+            <item>Downloaded in 7 minutes 49 seconds at an average of 1.57 MB/s</item>
+          </actions>
+        </slot>
+        <slot>
+          <name>Repair</name>
+          <actions>
+            <item>[so.you.think.you.can.dance.s07e02.pdtv.xvid-fqm] Quick Check OK</item>
+            <item>[sample-so.you.think.you.can.dance.s07e02.pdtv.xvid-fqm] Quick Check OK</item>
+          </actions>
+        </slot>
+        <slot>
+          <name>Unpack</name>
+          <actions>
+            <item>[so.you.think.you.can.dance.s07e02.pdtv.xvid-fqm] Unpacked 1 files/folders in 1 min 10 seconds</item>
+          </actions>
+        </slot>
+      </stage_log>
+    </slot>
+    <slot>
+      <action_line></action_line>
+      <show_details>True</show_details>
+      <script_log></script_log>
+      <meta>None</meta>
+      <fail_message></fail_message>
+      <loaded>False</loaded>
+      <id>835</id>
+      <size>194.34 MB</size>
+      <category>tv</category>
+      <pp>D</pp>
+      <completeness>0</completeness>
+      <script></script>
+      <nzb_name>The.Daily.Show.2010.06.03.Jonah.Hill.HDTV.XviD-FQM.nzb</nzb_name>
+      <download_time>123</download_time>
+      <storage>C:\Documents and Settings\John\My Documents\My Videos\TV\The Daily Show With Jon Stewart</storage>
+      <status>Completed</status>
+      <script_line></script_line>
+      <completed>1275624170</completed>
+      <nzo_id>SABnzbd_nzo_bnednz</nzo_id>
+      <downloaded>203783836</downloaded>
+      <report></report>
+      <path>\The Daily Show With Jon Stewart</path>
+      <postproc_time>17</postproc_time>
+      <name>The Daily Show with Jon Stewart - 2010-06-03 - Jonah Hill</name>
+      <url></url>
+      <bytes>203783836</bytes>
+      <url_info></url_info>
+      <stage_log>
+        <slot>
+          <name>Download</name>
+          <actions>
+            <item>Downloaded in 2 minutes 3 seconds at an average of 1.57 MB/s</item>
+          </actions>
+        </slot>
+        <slot>
+          <name>Repair</name>
+          <actions>
+            <item>[sample-the.daily.show.2010.06.03.hdtv.xvid-fqm] Quick Check OK</item>
+            <item>[the.daily.show.2010.06.03.hdtv.xvid-fqm] Quick Check OK</item>
+          </actions>
+        </slot>
+        <slot>
+          <name>Unpack</name>
+          <actions>
+            <item>[the.daily.show.2010.06.03.hdtv.xvid-fqm] Unpacked 1 files/folders in 17 seconds</item>
+          </actions>
+        </slot>
+      </stage_log>
+    </slot>
+    <slot>
+      <action_line></action_line>
+      <show_details>True</show_details>
+      <script_log></script_log>
+      <meta>None</meta>
+      <fail_message></fail_message>
+      <loaded>False</loaded>
+      <id>834</id>
+      <size>735.79 MB</size>
+      <category>tv</category>
+      <pp>D</pp>
+      <completeness>0</completeness>
+      <script></script>
+      <nzb_name>So.You.Think.You.Can.Dance.S07E03.WS.PDTV.XviD-FQM.nzb</nzb_name>
+      <download_time>459</download_time>
+      <storage>C:\Documents and Settings\John\My Documents\My Videos\TV\So You Think You Can Dance</storage>
+      <status>Completed</status>
+      <script_line></script_line>
+      <completed>1275623658</completed>
+      <nzo_id>SABnzbd_nzo_jbfacy</nzo_id>
+      <downloaded>771528917</downloaded>
+      <report></report>
+      <path>\So You Think You Can Dance</path>
+      <postproc_time>79</postproc_time>
+      <name>So You Think You Can Dance - 7x03 - Auditions #5 &amp; #6   Vegas Callbacks Part 1</name>
+      <url></url>
+      <bytes>771528917</bytes>
+      <url_info></url_info>
+      <stage_log>
+        <slot>
+          <name>Download</name>
+          <actions>
+            <item>Downloaded in 7 minutes 39 seconds at an average of 1.60 MB/s</item>
+          </actions>
+        </slot>
+        <slot>
+          <name>Repair</name>
+          <actions>
+            <item>[so.you.think.you.can.dance.s07e03.pdtv.xvid-fqm] Quick Check OK</item>
+            <item>[sample-so.you.think.you.can.dance.s07e03.pdtv.xvid-fqm] Quick Check OK</item>
+          </actions>
+        </slot>
+        <slot>
+          <name>Unpack</name>
+          <actions>
+            <item>[so.you.think.you.can.dance.s07e03.pdtv.xvid-fqm] Unpacked 1 files/folders in 1 min 18 seconds</item>
+          </actions>
+        </slot>
+      </stage_log>
+    </slot>
+    <slot>
+      <action_line></action_line>
+      <show_details>True</show_details>
+      <script_log></script_log>
+      <meta>None</meta>
+      <fail_message></fail_message>
+      <loaded>False</loaded>
+      <id>833</id>
+      <size>728.96 MB</size>
+      <category>tv</category>
+      <pp>D</pp>
+      <completeness>0</completeness>
+      <script></script>
+      <nzb_name>So You Think You Can Dance S07E01 Auditions 1 and 2 WS PDTV XviD FQM.nzb</nzb_name>
+      <download_time>450</download_time>
+      <storage>C:\Documents and Settings\John\My Documents\My Videos\TV\So You Think You Can Dance\So You Think You Can Dance - 7x01 -.avi</storage>
+      <status>Completed</status>
+      <script_line></script_line>
+      <completed>1275622942</completed>
+      <nzo_id>SABnzbd_nzo_zatntl</nzo_id>
+      <downloaded>764367497</downloaded>
+      <report></report>
+      <path>\So You Think You Can Dance\So You Think You Can Dance - 7x01 -.avi</path>
+      <postproc_time>43</postproc_time>
+      <name>So You Think You Can Dance S07E01 Auditions 1 and 2 WS PDTV XviD FQM</name>
+      <url></url>
+      <bytes>764367497</bytes>
+      <url_info></url_info>
+      <stage_log>
+        <slot>
+          <name>Download</name>
+          <actions>
+            <item>Downloaded in 7 minutes 30 seconds at an average of 1.62 MB/s</item>
+          </actions>
+        </slot>
+        <slot>
+          <name>Repair</name>
+          <actions>
+            <item>[so.you.think.you.can.dance.s07e01.pdtv.xvid-fqm] Quick Check OK</item>
+          </actions>
+        </slot>
+        <slot>
+          <name>Unpack</name>
+          <actions>
+            <item>[so.you.think.you.can.dance.s07e01.pdtv.xvid-fqm] Unpacked 1 files/folders in 42 seconds</item>
+          </actions>
+        </slot>
+      </stage_log>
+    </slot>
+    <slot>
+      <action_line></action_line>
+      <show_details>True</show_details>
+      <script_log></script_log>
+      <meta>None</meta>
+      <fail_message></fail_message>
+      <loaded>False</loaded>
+      <id>832</id>
+      <size>367.05 MB</size>
+      <category>tv</category>
+      <pp>D</pp>
+      <completeness>0</completeness>
+      <script></script>
+      <nzb_name>Burn.Notice.S04E01.Friends.and.Enemies.HDTV.XviD-FQM.nzb</nzb_name>
+      <download_time>221</download_time>
+      <storage>C:\Documents and Settings\John\My Documents\My Videos\TV\Burn Notice</storage>
+      <status>Completed</status>
+      <script_line></script_line>
+      <completed>1275619772</completed>
+      <nzo_id>SABnzbd_nzo_xfanhi</nzo_id>
+      <downloaded>384882146</downloaded>
+      <report></report>
+      <path>\Burn Notice</path>
+      <postproc_time>30</postproc_time>
+      <name>Burn Notice - 4x01 - Friends and Enemies</name>
+      <url></url>
+      <bytes>384882146</bytes>
+      <url_info></url_info>
+      <stage_log>
+        <slot>
+          <name>Download</name>
+          <actions>
+            <item>Downloaded in 3 minutes 41 seconds at an average of 1.66 MB/s</item>
+          </actions>
+        </slot>
+        <slot>
+          <name>Repair</name>
+          <actions>
+            <item>[burn.notice.s04e01.hdtv.xvid-fqm] Quick Check OK</item>
+          </actions>
+        </slot>
+        <slot>
+          <name>Unpack</name>
+          <actions>
+            <item>[burn.notice.s04e01.hdtv.xvid-fqm] Unpacked 1 files/folders in 30 seconds</item>
+          </actions>
+        </slot>
+      </stage_log>
+    </slot>
+    <slot>
+      <action_line></action_line>
+      <show_details>True</show_details>
+      <script_log></script_log>
+      <meta>None</meta>
+      <fail_message></fail_message>
+      <loaded>False</loaded>
+      <id>831</id>
+      <size>745.76 MB</size>
+      <category>movies</category>
+      <pp>D</pp>
+      <completeness>0</completeness>
+      <script></script>
+      <nzb_name>Chloe (2009).nzb</nzb_name>
+      <download_time>463</download_time>
+      <storage>C:\Documents and Settings\John\My Documents\My Videos\Movies</storage>
+      <status>Completed</status>
+      <script_line></script_line>
+      <completed>1275597477</completed>
+      <nzo_id>SABnzbd_nzo_dof23g</nzo_id>
+      <downloaded>781990643</downloaded>
+      <report>5645083</report>
+      <path></path>
+      <postproc_time>56</postproc_time>
+      <name>Chloe (2009)</name>
+      <url>https://newzbin.com/browse/post/5645083/</url>
+      <bytes>781990643</bytes>
+      <url_info>http://www.imdb.com/title/tt1352824/</url_info>
+      <stage_log>
+        <slot>
+          <name>Download</name>
+          <actions>
+            <item>Downloaded in 7 minutes 43 seconds at an average of 1.61 MB/s</item>
+          </actions>
+        </slot>
+        <slot>
+          <name>Repair</name>
+          <actions>
+            <item>[nedivx-chloe-subs] Quick Check OK</item>
+            <item>[nedivx-chloe-sample] Quick Check OK</item>
+            <item>[nedivx-chloe] Quick Check OK</item>
+          </actions>
+        </slot>
+        <slot>
+          <name>Unpack</name>
+          <actions>
+            <item>[nedivx-chloe-subs] Unpacked 2 files/folders in 0 seconds</item>
+            <item>[nedivx-chloe] Unpacked 1 files/folders in 0 seconds</item>
+          </actions>
+        </slot>
+      </stage_log>
+    </slot>
+    <slot>
+      <action_line></action_line>
+      <show_details>True</show_details>
+      <script_log></script_log>
+      <meta>None</meta>
+      <fail_message></fail_message>
+      <loaded>False</loaded>
+      <id>830</id>
+      <size>1.42 GB</size>
+      <category>tv</category>
+      <pp>D</pp>
+      <completeness>0</completeness>
+      <script></script>
+      <nzb_name>FlashForward.S01E22.Future.Shock.720p.WEB.DL.AVC.DD5.1.AAC2.0-acROBATTMBE.nzb</nzb_name>
+      <download_time>912</download_time>
+      <storage>C:\Documents and Settings\John\My Documents\My Videos\TV\Flashforward</storage>
+      <status>Completed</status>
+      <script_line></script_line>
+      <completed>1275557547</completed>
+      <nzo_id>SABnzbd_nzo_-gsywe</nzo_id>
+      <downloaded>1529183612</downloaded>
+      <report></report>
+      <path>\Flashforward</path>
+      <postproc_time>104</postproc_time>
+      <name>FlashForward - 1x22 - Future Shock</name>
+      <url></url>
+      <bytes>1529183612</bytes>
+      <url_info></url_info>
+      <stage_log>
+        <slot>
+          <name>Download</name>
+          <actions>
+            <item>Downloaded in 15 minutes 12 seconds at an average of 1.60 MB/s</item>
+          </actions>
+        </slot>
+        <slot>
+          <name>Repair</name>
+          <actions>
+            <item>[FlashForward.S01E22.Future.Shock.720p.WEB-DL.AVC.DD5.1.AAC2.0-acROBATT&amp;MBE] Quick Check OK</item>
+          </actions>
+        </slot>
+        <slot>
+          <name>Unpack</name>
+          <actions>
+            <item>[FlashForward.S01E22.Future.Shock.720p.WEB-DL.AVC.DD5.1.AAC2.0-acROBATT&amp;MBE] Unpacked 2 files/folders in 1 min 42 seconds</item>
+          </actions>
+        </slot>
+      </stage_log>
+    </slot>
+    <slot>
+      <action_line></action_line>
+      <show_details>True</show_details>
+      <script_log></script_log>
+      <meta>None</meta>
+      <fail_message></fail_message>
+      <loaded>False</loaded>
+      <id>829</id>
+      <size>193.39 MB</size>
+      <category>tv</category>
+      <pp>D</pp>
+      <completeness>0</completeness>
+      <script></script>
+      <nzb_name>The.Daily.Show.2010.06.02.Morgan.Freeman.HDTV.XviD-FQM.nzb</nzb_name>
+      <download_time>122</download_time>
+      <storage>C:\Documents and Settings\John\My Documents\My Videos\TV\The Daily Show With Jon Stewart</storage>
+      <status>Completed</status>
+      <script_line></script_line>
+      <completed>1275555918</completed>
+      <nzo_id>SABnzbd_nzo_-tulhy</nzo_id>
+      <downloaded>202789271</downloaded>
+      <report></report>
+      <path>\The Daily Show With Jon Stewart</path>
+      <postproc_time>13</postproc_time>
+      <name>The Daily Show with Jon Stewart - 2010-06-02 - Morgan Freeman</name>
+      <url></url>
+      <bytes>202789271</bytes>
+      <url_info></url_info>
+      <stage_log>
+        <slot>
+          <name>Download</name>
+          <actions>
+            <item>Downloaded in 2 minutes 2 seconds at an average of 1.57 MB/s</item>
+          </actions>
+        </slot>
+        <slot>
+          <name>Repair</name>
+          <actions>
+            <item>[the.daily.show.2010.06.02.hdtv.xvid-fqm] Quick Check OK</item>
+            <item>[sample-the.daily.show.2010.06.02.hdtv.xvid-fqm] Quick Check OK</item>
+          </actions>
+        </slot>
+        <slot>
+          <name>Unpack</name>
+          <actions>
+            <item>[the.daily.show.2010.06.02.hdtv.xvid-fqm] Unpacked 1 files/folders in 13 seconds</item>
+          </actions>
+        </slot>
+      </stage_log>
+    </slot>
+    <slot>
+      <action_line></action_line>
+      <show_details>True</show_details>
+      <script_log></script_log>
+      <meta>None</meta>
+      <fail_message></fail_message>
+      <loaded>False</loaded>
+      <id>828</id>
+      <size>373.90 MB</size>
+      <category>tv</category>
+      <pp>D</pp>
+      <completeness>0</completeness>
+      <script></script>
+      <nzb_name>MythBusters.S08E09.Fireball.Stun.Gun.HDTV.XviD-FQM.nzb</nzb_name>
+      <download_time>228</download_time>
+      <storage>C:\Documents and Settings\John\My Documents\My Videos\TV\Mythbusters</storage>
+      <status>Completed</status>
+      <script_line></script_line>
+      <completed>1275541467</completed>
+      <nzo_id>SABnzbd_nzo_wvfwex</nzo_id>
+      <downloaded>392061395</downloaded>
+      <report></report>
+      <path>\Mythbusters</path>
+      <postproc_time>22</postproc_time>
+      <name>MythBusters - 8x09 - Fireball Stun Gun</name>
+      <url></url>
+      <bytes>392061395</bytes>
+      <url_info></url_info>
+      <stage_log>
+        <slot>
+          <name>Download</name>
+          <actions>
+            <item>Downloaded in 3 minutes 48 seconds at an average of 1.63 MB/s</item>
+          </actions>
+        </slot>
+        <slot>
+          <name>Repair</name>
+          <actions>
+            <item>[sample-mythbusters.s08e09.hdtv.xvid-fqm] Quick Check OK</item>
+            <item>[mythbusters.s08e09.hdtv.xvid-fqm] Quick Check OK</item>
+          </actions>
+        </slot>
+        <slot>
+          <name>Unpack</name>
+          <actions>
+            <item>[mythbusters.s08e09.hdtv.xvid-fqm] Unpacked 1 files/folders in 21 seconds</item>
+          </actions>
+        </slot>
+      </stage_log>
+    </slot>
+    <slot>
+      <action_line></action_line>
+      <show_details>True</show_details>
+      <script_log></script_log>
+      <meta>None</meta>
+      <fail_message></fail_message>
+      <loaded>False</loaded>
+      <id>826</id>
+      <size>192.00 MB</size>
+      <category>tv</category>
+      <pp>D</pp>
+      <completeness>0</completeness>
+      <script></script>
+      <nzb_name>The.Daily.Show.2010.06.01.Arthur.Brooks.HDTV.XviD-FQM.nzb</nzb_name>
+      <download_time>110</download_time>
+      <storage>C:\Documents and Settings\John\My Documents\My Videos\TV\The Daily Show</storage>
+      <status>Completed</status>
+      <script_line></script_line>
+      <completed>1275452252</completed>
+      <nzo_id>SABnzbd_nzo_fpwf2p</nzo_id>
+      <downloaded>201331777</downloaded>
+      <report></report>
+      <path>\The Daily Show</path>
+      <postproc_time>15</postproc_time>
+      <name>The Daily Show - 2010-06-01 - unknown</name>
+      <url></url>
+      <bytes>201331777</bytes>
+      <url_info></url_info>
+      <stage_log>
+        <slot>
+          <name>Download</name>
+          <actions>
+            <item>Downloaded in 1 minute 50 seconds at an average of 1.74 MB/s</item>
+          </actions>
+        </slot>
+        <slot>
+          <name>Repair</name>
+          <actions>
+            <item>[the.daily.show.2010.06.01.hdtv.xvid-fqm] Quick Check OK</item>
+            <item>[sample-the.daily.show.2010.06.01.hdtv.xvid-fqm] Quick Check OK</item>
+          </actions>
+        </slot>
+        <slot>
+          <name>Unpack</name>
+          <actions>
+            <item>[the.daily.show.2010.06.01.hdtv.xvid-fqm] Unpacked 1 files/folders in 14 seconds</item>
+          </actions>
+        </slot>
+      </stage_log>
+    </slot>
+    <slot>
+      <action_line></action_line>
+      <show_details>True</show_details>
+      <script_log></script_log>
+      <meta>None</meta>
+      <fail_message></fail_message>
+      <loaded>False</loaded>
+      <id>825</id>
+      <size>374.95 MB</size>
+      <category>tv</category>
+      <pp>D</pp>
+      <completeness>0</completeness>
+      <script></script>
+      <nzb_name>Law.and.Order.Criminal.Intent.S09E10.Disciple.HDTV.XviD-FQM.nzb</nzb_name>
+      <download_time>227</download_time>
+      <storage>C:\Documents and Settings\John\My Documents\My Videos\TV\Law &amp; Order- Criminal Intent</storage>
+      <status>Completed</status>
+      <script_line></script_line>
+      <completed>1275450567</completed>
+      <nzo_id>SABnzbd_nzo_r57ptz</nzo_id>
+      <downloaded>393164222</downloaded>
+      <report></report>
+      <path>\Law &amp; Order- Criminal Intent</path>
+      <postproc_time>22</postproc_time>
+      <name>Law &amp; Order- Criminal Intent - 9x10 - Disciple</name>
+      <url></url>
+      <bytes>393164222</bytes>
+      <url_info></url_info>
+      <stage_log>
+        <slot>
+          <name>Download</name>
+          <actions>
+            <item>Downloaded in 3 minutes 47 seconds at an average of 1.65 MB/s</item>
+          </actions>
+        </slot>
+        <slot>
+          <name>Repair</name>
+          <actions>
+            <item>[sample-law.and.order.criminal.intent.s09e10.hdtv.xvid-fqm] Quick Check OK</item>
+            <item>[law.and.order.criminal.intent.s09e10.hdtv.xvid-fqm] Quick Check OK</item>
+          </actions>
+        </slot>
+        <slot>
+          <name>Unpack</name>
+          <actions>
+            <item>[law.and.order.criminal.intent.s09e10.hdtv.xvid-fqm] Unpacked 1 files/folders in 21 seconds</item>
+          </actions>
+        </slot>
+      </stage_log>
+    </slot>
+    <slot>
+      <action_line></action_line>
+      <show_details>True</show_details>
+      <script_log></script_log>
+      <meta>None</meta>
+      <fail_message></fail_message>
+      <loaded>False</loaded>
+      <id>824</id>
+      <size>6.96 GB</size>
+      <category>movies</category>
+      <pp>D</pp>
+      <completeness>0</completeness>
+      <script></script>
+      <nzb_name>The Wolfman 2010 Unrated 720p BluRay DTS x264 ESiR.nzb</nzb_name>
+      <download_time>4502</download_time>
+      <storage>C:\Documents and Settings\John\My Documents\My Videos\Movies</storage>
+      <status>Completed</status>
+      <script_line></script_line>
+      <completed>1275379063</completed>
+      <nzo_id>SABnzbd_nzo_n17vb4</nzo_id>
+      <downloaded>7468502686</downloaded>
+      <report></report>
+      <path></path>
+      <postproc_time>357</postproc_time>
+      <name>The Wolfman 2010 Unrated 720p BluRay DTS x264 ESiR</name>
+      <url></url>
+      <bytes>7468502686</bytes>
+      <url_info></url_info>
+      <stage_log>
+        <slot>
+          <name>Download</name>
+          <actions>
+            <item>Downloaded in 1 hour 15 minutes 2 seconds at an average of 1.58 MB/s</item>
+          </actions>
+        </slot>
+        <slot>
+          <name>Repair</name>
+          <actions>
+            <item>[The.Wolfman.2010.Unrated.720p.BluRay.DTS.x264-ESiR] Quick Check OK</item>
+            <item>[The.Wolfman.2010.Unrated.720p.BluRay.DTS.x264-ESiR Sample] Quick Check OK</item>
+          </actions>
+        </slot>
+        <slot>
+          <name>Unpack</name>
+          <actions>
+            <item>[The.Wolfman.2010.Unrated.720p.BluRay.DTS.x264-ESiR] Unpacked 1 files/folders in 5 mins 54 seconds</item>
+          </actions>
+        </slot>
+      </stage_log>
+    </slot>
+  </slots>
+  <speed>0 </speed>
+  <helpuri>http://wiki.sabnzbd.org/</helpuri>
+  <size>0B</size>
+  <uptime>18d</uptime>
+  <total_size>537.48 GB</total_size>
+  <month_size>25.98 GB</month_size>
+  <week_size>25.98 GB</week_size>
+  <version>0.5.2</version>
+  <new_rel_url></new_rel_url>
+  <diskspacetotal2>279.46</diskspacetotal2>
+  <color_scheme>white.css</color_scheme>
+  <diskspacetotal1>279.46</diskspacetotal1>
+  <nt>True</nt>
+  <status>Idle</status>
+  <last_warning>
+    2010-06-04 01:33:29,608
+    WARNING
+    &lt;Article: article=48f6e150$0$3529$6c4159fb@news.tweaknews.nl, bytes=395264, partnum=63, art_id=None&gt; missing
+  </last_warning>
+  <have_warnings>20</have_warnings>
+  <cache_art>0</cache_art>
+  <sizeleft>0B</sizeleft>
+  <finishaction></finishaction>
+  <paused_all>False</paused_all>
+  <cache_size>0B</cache_size>
+  <new_release></new_release>
+  <pause_int>0</pause_int>
+  <mbleft>0.00</mbleft>
+  <diskspace1>142.83</diskspace1>
+  <darwin>False</darwin>
+  <timeleft>0:00:00</timeleft>
+  <mb>0.00</mb>
+  <noofslots>831</noofslots>
+  <eta>unknown</eta>
+  <nzb_quota></nzb_quota>
+  <loadavg></loadavg>
+  <cache_max>0</cache_max>
+  <kbpersec>0.00</kbpersec>
+  <speedlimit></speedlimit>
+  <webdir>C:\Program Files\SABnzbd\interfaces\smpl\templates</webdir>
+  <diskspace2>142.83</diskspace2>
+</history>

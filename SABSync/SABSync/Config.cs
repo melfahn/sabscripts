@@ -115,7 +115,7 @@ namespace SABSync
             string username = GetSetting("username");
             string password = GetSetting("password");
             return string.Format(
-                "http://{0}/api?$Action&priority={1}&apikey={2}&ma_username={3}&ma_password={4}",
+                "http://{0}/sabnzbd/api?$Action&priority={1}&apikey={2}&ma_username={3}&ma_password={4}",
                 sabnzbdInfo, priority, apiKey, username, password).Replace("$Action", "{0}");
         }
 

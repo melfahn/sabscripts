@@ -1,6 +1,10 @@
-﻿using System;
+﻿// TODO: need to change Log statements that were originally meant to be in Summary report
+
+using System;
+using System.Linq;
 using System.Net;
 using System.Xml;
+using System.Xml.Linq;
 
 namespace SABSync
 {
@@ -8,19 +12,50 @@ namespace SABSync
     {
         string AddByUrl(NzbInfo nzb);
         bool IsInQueue(Episode episode);
-        //bool IsInHistory(string rssTitle, string rssTitleFix);
+        bool IsInHistory(Episode episode);
+    }
+
+    public interface ISabRequest
+    {
+        XDocument GetHistory();
+    }
+
+    public class SabRequest : ISabRequest
+    {
+        public SabRequest()
+        {
+            Config = new Config();
+        }
+
+        private Config Config { get; set; }
+
+        #region ISabRequest Members
+
+        public XDocument GetHistory()
+        {
+            string uri = string.Format(Config.SabRequest, "mode=history&output=xml&start=0&limit=20");
+            return XDocument.Load(uri);
+        }
+
+        #endregion
     }
 
     public class SabService : ISabService
     {
         private static readonly Logger Logger = new Logger();
 
-        public SabService()
+        public SabService() : this(new Config(), new SabRequest())
         {
-            Config = new Config();
+        }
+
+        public SabService(Config config, ISabRequest sabRequest)
+        {
+            Config = config;
+            SabRequest = sabRequest;
         }
 
         private Config Config { get; set; }
+        private ISabRequest SabRequest { get; set; }
 
         #region ISabService Members
 
@@ -39,11 +74,6 @@ namespace SABSync
 
             return SendRequest(request);
         }
-
-        #endregion
-
-        // TODO: refactor
-        #region 
 
         public bool IsInQueue(Episode episode)
         {
@@ -64,7 +94,8 @@ namespace SABSync
                 XmlNodeList error = queueRssDoc.GetElementsByTagName(@"error");
                 if (error.Count != 0)
                 {
-                    Logger.Log("Sab Queue Error: {0}", true, error[0].InnerText);
+                    //Logger.Log("Sab Queue Error: {0}", true, error[0].InnerText);
+                    Logger.Log("Sab Queue Error: {0}", error[0].InnerText);
                 }
 
                 else if (queue.Count != 0)
@@ -88,7 +119,8 @@ namespace SABSync
                             fileName.ToLower() == CleanString(rssTitleFix).ToLower() ||
                                 fileName.ToLower().Contains(nzbId))
                         {
-                            Logger.Log("Episode in queue - '{0}'", true, rssTitle);
+                            //Logger.Log("Episode in queue - '{0}'", true, rssTitle);
+                            Logger.Log("Episode in queue - '{0}'", rssTitle);
                             return true;
                         }
                     }
@@ -96,70 +128,52 @@ namespace SABSync
             }
             catch (Exception ex)
             {
-                Logger.Log("An Error has occurred while checking the queue. {0}", true, ex);
+                //Logger.Log("An Error has occurred while checking the queue. {0}", true, ex);
+                Logger.Log("An Error has occurred while checking the queue. {0}", ex);
             }
 
             return false;
         }
 
-        // TODO: fix this?
+        public bool IsInHistory(Episode episode)
+        {
+            Logger.Log("Checking History for: [{0}]", episode.Title);
+            try
+            {
+                XDocument xml = SabRequest.GetHistory();
+                string error = GetError(xml);
+                if (error != null)
+                {
+                    //Logger.Log("Sab History Error: {0}", true, error);
+                    Logger.Log("Sab History Error: {0}", error);
+                    return false;
+                }
 
-        //public bool IsInHistory(string rssTitle, string rssTitleFix)
-        //{
-        //    //slot other than container for nzb is an issue (slot for each post download step)
-        //    try
-        //    {
-        //        Logger.Log("Checking History for: [{0}] or [{1}]", rssTitle, rssTitleFix);
-
-        //        string historyRssUrl = String.Format(Config.SabRequest, "mode=history&output=xml&start=1&limit=20");
-
-        //        var historyRssReader = new XmlTextReader(historyRssUrl);
-        //        var historyRssDoc = new XmlDocument();
-        //        historyRssDoc.Load(historyRssReader);
-
-        //        XmlNodeList history = historyRssDoc.GetElementsByTagName(@"history");
-        //        XmlNodeList error = historyRssDoc.GetElementsByTagName(@"error");
-        //        if (error.Count != 0)
-        //        {
-        //            Logger.Log("Sab History Error: {0}", true, error[0].InnerText);
-        //        }
-
-        //        else if (history.Count != 0)
-        //        {
-        //            XmlNodeList slot = ((XmlElement)history[0]).GetElementsByTagName("slot");
-
-        //            foreach (object s in slot)
-        //            {
-        //                var queueElement = (XmlElement)s;
-
-        //                //Queue is empty
-        //                if (String.IsNullOrEmpty(queueElement.InnerText))
-        //                    return false;
-
-        //                string name = queueElement.GetElementsByTagName("name")[0].InnerText.ToLower();
-        //                string nzbName = queueElement.GetElementsByTagName("nzb_name")[0].InnerText.ToLower().Replace(".nzb", "").Replace('.', ' ').Replace('-', ' ');
-
-        //                if (Config.VerboseLogging)
-        //                    Logger.Log("Checking History Item for match: " + name);
-
-        //                if (name.ToLower() == CleanString(rssTitle).ToLower() ||
-        //                    nzbName.ToLower() == CleanString(rssTitleFix).ToLower())
-        //                {
-        //                    Logger.Log("Episode in history - '{0}'", true, rssTitle);
-        //                    return true;
-        //                }
-        //            }
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Logger.Log("An Error has occurred while checking the history. {0}", true, ex);
-        //    }
-
-        //    return false;
-        //}
+                bool found = xml.Elements("history").Elements("slots").Elements("slot")
+                    .Select(name => (string) name.Element("name"))
+                    .Any(name => name.StartsWith(episode.Title, StringComparison.InvariantCultureIgnoreCase));
+                if (found)
+                {
+                    //Logger.Log("Episode in history - '{0}'", true, episode.Title);
+                    Logger.Log("Episode in history - '{0}'", episode.Title);
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                //Logger.Log("An Error has occurred while checking the history. {0}", true, ex);
+                Logger.Log("An Error has occurred while checking the history. {0}", ex);
+            }
+            return false;
+        }
 
         #endregion
+
+        private static string GetError(XDocument xml)
+        {
+            return (from element in xml.Elements("result")
+                    select (string) element.Element("error")).FirstOrDefault();
+        }
 
         private static string SendRequest(string request)
         {
@@ -167,7 +181,6 @@ namespace SABSync
 
             var webClient = new WebClient();
             string response = webClient.DownloadString(request).Replace("\n", string.Empty);
-
             Logger.Log("Queue Response: [{0}]", response);
             return response;
         }

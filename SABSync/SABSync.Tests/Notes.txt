@@ -47,3 +47,30 @@ http://thetvdb.com/api/GetSeries.php?seriesname=Fringe
 http://thetvdb.com/api/5D2D188E86E07F4F/series/82066/default/2/19
 
 <?xml version="1.0" encoding="UTF-8"?><Data><Episode><id>1342441</id><seasonid>79101</seasonid><EpisodeNumber>19</EpisodeNumber><EpisodeName>The Man from the Other Side</EpisodeName><FirstAired>2010-04-22</FirstAired><GuestStars></GuestStars><Director></Director><Writer>J.J. Abrams|Alex Kurtzman|Roberto Orci</Writer><Overview>When two teenagers on a date turn up "dead" at an abandoned warehouse with the three puncture wounds to the soft palate — a trademark of the shape-shifters — the Fringe team investigates the evidence as well as the motives of mastermind Newton. Upon discovering a shape-shifting embryo, Walter returns to the lab to conduct further analysis, and Olivia and Peter head to Massive Dynamic for answers. Meanwhile, Peter reveals a family secret to Olivia as Walter struggles to recall what Newton knows about "building a door".</Overview><ProductionCode>FR-218</ProductionCode><lastupdated>1271433294</lastupdated><flagged>0</flagged><DVD_discid></DVD_discid><DVD_season></DVD_season><DVD_episodenumber></DVD_episodenumber><DVD_chapter></DVD_chapter><absolute_number></absolute_number><filename>episodes/82066/1342441.jpg</filename><seriesid>82066</seriesid><mirrorupdate>2010-04-16 08:54:54</mirrorupdate><IMDB_ID></IMDB_ID><EpImgFlag>2</EpImgFlag><Rating>8.3</Rating><SeasonNumber>2</SeasonNumber><Language>en</Language></Episode></Data>
+
+Regexs from sab source:
+
+//series_match = [ (r'( [sS]|[\d]+)x(\d+)', # 1x01
+//                      [ r'^[-\.]+([sS]|[\d])+x(\d+)',
+//                        r'^[-\.](\d+)'
+//                      ] ),
+
+//                 (r'[Ss](\d+)[\.\-]?[Ee](\d+)',  # S01E01
+//                      [ r'^[-\.]+[Ss](\d+)[\.\-]?[Ee](\d+)',
+//                        r'^[-\.](\d+)'
+//                      ] ),
+//                 (r'[ -_\.](\d)(\d{2,2})[ -_\.]', # .101. / _101_ / etc.
+//                      [
+//                      ] ),
+//                 (r'[ -_\.](\d)(\d{2,2})$', # .101 at end of title
+//                      [
+//                      ] )
+//               ]
+
+//date_match = [r'(\d{4})\W(\d{1,2})\W(\d{1,2})', #2008-10-16
+//              r'(\d{1,2})\W(\d{1,2})\W(\d{4})'] #10.16.2008
+
+//year_match = r'[\W]([1|2]\d{3})([^\w]|$)' # Something '(YYYY)' or '.YYYY.' or ' YYYY '
+
+//sample_match = r'((^|[\W_])sample\d*[\W_])|(-s\.)' # something-sample.avi something-s.avi
+

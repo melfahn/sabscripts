@@ -18,19 +18,19 @@ namespace SABSync
 
         public void GetEpisodeName(Episode episode)
         {
-            if (!string.IsNullOrWhiteSpace(episode.Name))
+            if (!string.IsNullOrWhiteSpace(episode.EpisodeName))
                 return;
 
             bool isSameEpisode = _last != null && episode.ShowName == _last.ShowName &&
                 (episode.IsDaily
-                    ? episode.FirstAired == _last.FirstAired
+                    ? episode.AirDate == _last.AirDate
                     : episode.SeasonNumber == _last.SeasonNumber &&
                         episode.EpisodeNumber == _last.EpisodeNumber &&
                             episode.EpisodeNumber == _last.EpisodeNumber2);
             if (isSameEpisode)
             {
-                episode.Name = _last.Name;
-                episode.Name2 = _last.Name2;
+                episode.EpisodeName = _last.EpisodeName;
+                episode.EpisodeName2 = _last.EpisodeName2;
                 return;
             }
 
@@ -38,12 +38,12 @@ namespace SABSync
             if (seriesId == null)
                 return;
 
-            episode.Name = episode.IsDaily
-                ? GetEpisodeName(seriesId, episode.FirstAired)
+            episode.EpisodeName = episode.IsDaily
+                ? GetEpisodeName(seriesId, episode.AirDate)
                 : GetEpisodeName(seriesId, episode.SeasonNumber, episode.EpisodeNumber);
 
             if (episode.EpisodeNumber2 != 0)
-                episode.Name2 = GetEpisodeName(seriesId, episode.SeasonNumber, episode.EpisodeNumber2);
+                episode.EpisodeName2 = GetEpisodeName(seriesId, episode.SeasonNumber, episode.EpisodeNumber2);
 
             _last = episode;
         }

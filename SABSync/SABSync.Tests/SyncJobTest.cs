@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System.Xml.Linq;
+using NUnit.Framework;
 
 namespace SABSync.Tests
 {
@@ -16,12 +17,13 @@ namespace SABSync.Tests
             Expect(job.MyFeedsCount, Is.EqualTo(2), "MyFeedsCount");
             Expect(job.MyShowsCount, Is.EqualTo(5), "MyShowsCount");
             Expect(job.RejectPasswordedCount, Is.EqualTo(2), "RejectPasswordedCount");
-            Expect(job.MyShowsInFeedCount, Is.EqualTo(8), "MyShowsInFeedCount");
+            Expect(job.MyShowsInFeedCount, Is.EqualTo(9), "MyShowsInFeedCount");
             Expect(job.RejectDownloadQualityCount, Is.EqualTo(1), "RejectDownloadQualityCount");
             Expect(job.RejectIgnoredSeasonCount, Is.EqualTo(1), "RejectIgnoredSeasonCount");
-            Expect(job.RejectInNzbArchive, Is.EqualTo(1), "RejectInNzbArchive");
+            Expect(job.RejectArchivedNzbCount, Is.EqualTo(1), "RejectArchivedNzbCount");
             Expect(job.RejectOnDiskCount, Is.EqualTo(1), "RejectOnDiskCount");
             Expect(job.RejectShowQualityCount, Is.EqualTo(1), "RejectShowQualityCount");
+            Expect(job.RejectSabHistoryCount, Is.EqualTo(1), "RejectSabHistoryCount");
         }
     }
 
@@ -31,7 +33,7 @@ namespace SABSync.Tests
 
         public void GetEpisodeName(Episode episode)
         {
-            episode.Name = "Episode Name";
+            episode.EpisodeName = "Episode Name";
         }
 
         #endregion
@@ -39,6 +41,14 @@ namespace SABSync.Tests
 
     public class MockSabService : ISabService
     {
+        public MockSabService()
+        {
+            var sabRequest = new MockSabRequest { InputXml = XDocument.Load("SabHistory.xml") };
+            Service = new SabService(new Config(), sabRequest);
+        }
+
+        public SabService Service { get; set; }
+
         #region ISabService Members
 
         public string AddByUrl(NzbInfo nzb)
@@ -49,6 +59,11 @@ namespace SABSync.Tests
         public bool IsInQueue(Episode episode)
         {
             return false;
+        }
+
+        public bool IsInHistory(Episode episode)
+        {
+            return Service.IsInHistory(episode);
         }
 
         #endregion

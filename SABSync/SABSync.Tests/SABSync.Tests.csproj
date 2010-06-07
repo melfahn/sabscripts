@@ -114,6 +114,7 @@
     <Compile Include="NzbInfoTest.cs" />
     <Compile Include="NzbSiteTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SabServiceTest.cs" />
     <Compile Include="SyncJobTest.cs" />
     <Compile Include="TvDbServiceTest.cs" />
   </ItemGroup>
@@ -131,6 +132,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="RSS.config.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SabHistory.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="TV\The Mentalist\2x19 - Blood Money.avi" />

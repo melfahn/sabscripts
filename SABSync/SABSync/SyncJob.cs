@@ -22,11 +22,13 @@ namespace SABSync
         public int MyFeedsCount;
         public int MyShowsCount;
         public int MyShowsInFeedCount;
+        public int RejectArchivedNzbCount;
         public int RejectDownloadQualityCount;
         public int RejectIgnoredSeasonCount;
-        public int RejectInNzbArchive;
         public int RejectOnDiskCount;
         public int RejectPasswordedCount;
+        public int RejectSabHistoryCount;
+        public int RejectSabQueuedCount;
         public int RejectShowQualityCount;
 
         public SyncJob() : this(new Config(), new SabService(), new TvDbService())
@@ -166,8 +168,8 @@ namespace SABSync
             if (Config.VerboseLogging)
                 Log("Building string for Episode Dir");
 
-            string path = episode.IsDaily 
-                ? GetPathForDaily(episode, tvDir) 
+            string path = episode.IsDaily
+                ? GetPathForDaily(episode, tvDir)
                 : GetPathForSeasonEpisode(episode, tvDir);
 
             if (Config.VerboseLogging)
@@ -207,11 +209,11 @@ namespace SABSync
             string tReplace = showName;
             string dotTReplace = showName.Replace(' ', '.');
             string underTReplace = showName.Replace(' ', '_');
-            string yearReplace = Convert.ToString(episode.FirstAired.Year);
-            string zeroMReplace = String.Format("{0:00}", episode.FirstAired.Month);
-            string mReplace = Convert.ToString(episode.FirstAired.Month);
-            string zeroDReplace = String.Format("{0:00}", episode.FirstAired.Day);
-            string dReplace = Convert.ToString(episode.FirstAired.Day);
+            string yearReplace = Convert.ToString(episode.AirDate.Year);
+            string zeroMReplace = String.Format("{0:00}", episode.AirDate.Month);
+            string mReplace = Convert.ToString(episode.AirDate.Month);
+            string zeroDReplace = String.Format("{0:00}", episode.AirDate.Day);
+            string dReplace = Convert.ToString(episode.AirDate.Day);
 
             string path = Path.GetDirectoryName(tvDir + Path.DirectorySeparatorChar.ToString() + Config.TvDailyTemplate);
 
@@ -274,11 +276,11 @@ namespace SABSync
         {
             string fileMask = Path.GetFileName(tvDir + Path.DirectorySeparatorChar.ToString() + Config.TvDailyTemplate);
 
-            string yearReplace = Convert.ToString(episode.FirstAired.Year);
-            string zeroMReplace = String.Format("{0:00}", episode.FirstAired.Month);
-            string mReplace = Convert.ToString(episode.FirstAired.Month);
-            string zeroDReplace = String.Format("{0:00}", episode.FirstAired.Day);
-            string dReplace = Convert.ToString(episode.FirstAired.Day);
+            string yearReplace = Convert.ToString(episode.AirDate.Year);
+            string zeroMReplace = String.Format("{0:00}", episode.AirDate.Month);
+            string mReplace = Convert.ToString(episode.AirDate.Month);
+            string zeroDReplace = String.Format("{0:00}", episode.AirDate.Day);
+            string dReplace = Convert.ToString(episode.AirDate.Day);
 
             fileMask = fileMask.Replace(".%ext", "*");
             fileMask = fileMask.Replace("%desc", "*");
@@ -317,15 +319,12 @@ namespace SABSync
 
         private bool IsShowWanted(string showName)
         {
-            foreach (string di in Config.MyShows)
+            if (Config.MyShows
+                .Any(myShow => myShow.Equals(CleanString(showName), StringComparison.InvariantCultureIgnoreCase)))
             {
-                if (string.Equals(di, CleanString(showName),
-                    StringComparison.InvariantCultureIgnoreCase))
-                {
-                    MyShowsInFeedCount++;
-                    Log("'{0}' is being watched.", showName);
-                    return true;
-                }
+                MyShowsInFeedCount++;
+                Log("'{0}' is being watched.", showName);
+                return true;
             }
             Log("'{0}' is not being watched.", showName);
             return false;
@@ -379,7 +378,7 @@ namespace SABSync
                 ShowName = ParseShowName(item, pattern),
                 SeasonNumber = int.Parse(match.Groups["Season"].Value),
                 EpisodeNumber = int.Parse(match.Groups["Episode"].Value),
-                Name = episodeName,
+                EpisodeName = episodeName,
             };
         }
 
@@ -392,7 +391,7 @@ namespace SABSync
             {
                 FeedItem = item,
                 ShowName = ParseShowName(item, PatternDaily),
-                FirstAired = DateTime.Parse(string.Format("{0}-{1}-{2}",
+                AirDate = DateTime.Parse(string.Format("{0}-{1}-{2}",
                     match.Groups["Year"].Value,
                     match.Groups["Month"].Value,
                     match.Groups["Day"].Value)),
@@ -416,17 +415,25 @@ namespace SABSync
             TvDb.GetEpisodeName(episode);
             GetTitleFix(episode);
 
+            if (Queued.Contains(episode.FeedItem.TitleFix + ": ok"))
+                return false;
+
             if (Sab.IsInQueue(episode))
+            {
+                RejectSabQueuedCount++;
                 return false;
-
-            if (InNzbArchive(episode.FeedItem))
-                return false;
-
-            if (IsQueued(episode.FeedItem.TitleFix))
+            }
+            if (IsArchivedNzb(episode.FeedItem))
                 return false;
 
             if (IsOnDisk(episode))
                 return false;
+
+            if (Sab.IsInHistory(episode))
+            {
+                RejectSabHistoryCount++;
+                return false;
+            }
 
             return true;
         }
@@ -520,7 +527,7 @@ namespace SABSync
 
             if (!Config.IgnoreSeasons.Contains(episode.ShowName))
                 return false;
-            
+
             string[] showsSeasonIgnore = Config.IgnoreSeasons.Trim(';', ' ').Split(';');
             foreach (string showSeasonIgnore in showsSeasonIgnore)
             {
@@ -531,10 +538,10 @@ namespace SABSync
                 string showNameIgnore = showNameIgnoreSplit[0];
                 int seasonIgnore = Convert.ToInt32(showNameIgnoreSplit[1]);
 
-                if (showNameIgnore != episode.ShowName) 
+                if (showNameIgnore != episode.ShowName)
                     continue;
 
-                if (episode.SeasonNumber > seasonIgnore) 
+                if (episode.SeasonNumber > seasonIgnore)
                     continue;
 
                 RejectIgnoredSeasonCount++;
@@ -582,18 +589,7 @@ namespace SABSync
             return false;
         }
 
-        private bool IsQueued(string rssTitleFix)
-        {
-            //Checks Queued List for "Fixed" name, resolves issue when Item is added, 
-            //but not properly renamed and it is found at another source.
-
-            if (Queued.Contains(rssTitleFix + ": ok"))
-                return true;
-
-            return false;
-        }
-
-        private bool InNzbArchive(FeedItem feedItem)
+        private bool IsArchivedNzb(FeedItem feedItem)
         {
             string rssTitle = feedItem.Title;
             string rssTitleFix = feedItem.TitleFix;
@@ -621,7 +617,7 @@ namespace SABSync
 
             if (inNzbArchive)
             {
-                RejectInNzbArchive++;
+                RejectArchivedNzbCount++;
                 Log("Episode in archive: '{0}'", true, nzbFileName + ".nzb.gz");
                 return true;
             }
@@ -667,12 +663,14 @@ namespace SABSync
             string titleFix;
 
             if (episode.IsDaily)
-                titleFix = string.Format("{0} - {1}", episode.FirstAired.ToString("yyyy-MM-dd"), episode.Name);
+                titleFix = string.Format("{0} - {1}", episode.AirDate.ToString("yyyy-MM-dd"), episode.EpisodeName);
             else if (episode.IsMulti)
-                titleFix = string.Format("{0}x{1:D2}-{0:D2}x{2} - {3} & {4}",
-                    episode.SeasonNumber, episode.EpisodeNumber, episode.EpisodeNumber2, episode.Name, episode.Name2);
+                titleFix = string.Format("{0}x{1:D2}-{0}x{2:D2} - {3} & {4}",
+                    episode.SeasonNumber, episode.EpisodeNumber, episode.EpisodeNumber2,
+                    episode.EpisodeName, episode.EpisodeName2);
             else
-                titleFix = string.Format("{0}x{1:D2} - {2}", episode.SeasonNumber, episode.EpisodeNumber, episode.Name);
+                titleFix = string.Format("{0}x{1:D2} - {2}",
+                    episode.SeasonNumber, episode.EpisodeNumber, episode.EpisodeName);
 
             episode.FeedItem.TitleFix = string.Format("{0} - {1}", episode.ShowName, titleFix).TrimEnd(' ', '-');
 
