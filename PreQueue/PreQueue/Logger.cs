@@ -7,9 +7,7 @@ namespace PreQueue
 {
     public class Logger
     {
-        private const string LogFolder = "log";
         private readonly string _logPath;
-        private readonly bool _loggingEnabled;
         private readonly int _maxLogDays;
 
         public Logger()
@@ -46,7 +44,6 @@ namespace PreQueue
 
         public void DeleteLogs()
         {
-            if (!_loggingEnabled) return;
             if (_maxLogDays <= 0) return;
 
             foreach (string fileName in Directory.GetFiles(_logPath, "*.txt"))

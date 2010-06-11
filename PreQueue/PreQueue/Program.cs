@@ -13,6 +13,9 @@ namespace PreQueue
 
         static void Main(string[] args)
         {
+            //Set Current Working Directory to Current Executing Assembly's Directory
+            Environment.CurrentDirectory = AppDomain.CurrentDomain.BaseDirectory;            
+
             if (args.Length != 11)
             {
                 Logger.Log("Invalid Arguments - Quitting");
@@ -28,7 +31,6 @@ namespace PreQueue
                     {
                         Logger.Log(a);
                     }
-
 
                     //Parameters from SABnzbd
                     //1 : Name of the NZB (no path, no ".nzb")
@@ -130,7 +132,7 @@ namespace PreQueue
                         }
 
                         category = ProcessConsole.GetNzbName(nzbNameSab);
-                        if (category != "")
+                        if (category != null)
                         {
                             SendToSab(nzbName, postProc, category, script, prioritySab, null);
                             return;

@@ -19,9 +19,24 @@ namespace PreQueue
             string showName = ShowAlias(showNameSab);
             int seasonNumber = seasonNumberSab;
             int episodeNumber = episodeNumberSab;
-            string episodeName = episodeNameSab;
+            string episodeName = null;
+            string nzbName = null;
 
-            return String.Format("{0} - {1}x{2:D2} - {3}", showName, seasonNumber, episodeNumber, episodeName);
+            if (!FilterEpisode(episodeNameSab))
+                episodeName = episodeNameSab;
+
+            else
+                episodeName = TvDb.CheckTvDb(showName, seasonNumber, episodeNumber);
+
+            episodeName = CleanString(episodeName);
+
+            if (episodeName != null)
+                nzbName = String.Format("{0} - {1}x{2:D2} - {3}", showName, seasonNumber, episodeNumber, episodeName);
+
+            else
+                nzbName = String.Format("{0} - {1}x{2:D2}", showName, seasonNumber, episodeNumber);
+
+            return nzbName;
         }
 
         internal static string GetNzbName(string showNameSab, int seasonNumberSab, int episodeNumberSab)
@@ -33,6 +48,8 @@ namespace PreQueue
             int episodeNumber = episodeNumberSab;
             string episodeName = TvDb.CheckTvDb(showName, seasonNumber, episodeNumber);
             string nzbName = null;
+
+            episodeName = CleanString(episodeName);
 
             if (episodeName != null)
                 nzbName = String.Format("{0} - {1}x{2:D2} - {3}", showName, seasonNumber, episodeNumber, episodeName);
@@ -157,5 +174,36 @@ namespace PreQueue
 
             return showName;
         }
+
+        private static bool FilterEpisode(string episodeName)
+        {
+            string[] badStrings = {
+                                    "dvdrip", "bdrip", "brrip", "bluray", "bdscr", "dvdscr","xvid",
+                                    "divx", "hdtv", "pdtv", "hdrip", "hdtvrip", "r5", "telesync", "telecine",
+                                    "x264", "h264", "720p", "1080p", "1080i", "1280x720", "480p", "dts", "aac", "ac3"
+                                    , "neroaac", "mp3", "6channels", "mkv", "sample"
+                                };
+
+            foreach (var bs in badStrings)
+            {
+                if (episodeName.ToLower().Contains(bs.ToLower()))
+                    return true;
+            }
+            return false;
+        }
+
+        private static string CleanString(string name)
+        {
+            string result = name;
+            string[] badCharacters = { "\\", "/", "<", ">", "?", "*", ":", "|", "\"" };
+            string[] goodCharacters = { "+", "+", "{", "}", "!", "@", "-", "#", "`" };
+
+            for (int i = 0; i < badCharacters.Length; i++)
+                result = result.Replace(badCharacters[i], goodCharacters[i]);
+
+            return result.Trim();
+        }
+
+
     }
 }

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <StartArguments>"United.States.of.Tara.S02E09.hdtv.iTouch-MW-XBLA" "3" "consoles" "TVMove.exe" "-100" "10000000" "alt.binaries.ipod.videos.tvshows" "United States of Tara" "2" "9" ""</StartArguments>
+    <StartArguments>"Test 2010 this is junk" "3" "" "TVMove.exe" "-100" "10000000" "alt.binaries.ipod.videos.tvshows" "" "" "" ""</StartArguments>
     <StartAction>Project</StartAction>
   </PropertyGroup>
 </Project>
