@@ -7,7 +7,7 @@ namespace SABSyncGUI
 {
     internal static class Settings
     {
-        private static readonly Configuration Config = ConfigurationManager.OpenExeConfiguration(@".\SABSync.exe");
+        private static readonly Configuration Config = ConfigurationManager.OpenExeConfiguration(@"SABSync.exe");
 
         internal static string TvRootPath
         {
