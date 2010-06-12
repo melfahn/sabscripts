@@ -285,6 +285,7 @@ namespace XBMC
             }
             catch(Exception exc)
             {
+                Console.WriteLine(exc);
                 return false;
             }
         }

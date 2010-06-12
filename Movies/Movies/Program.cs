@@ -87,98 +87,14 @@ namespace Movies
             _deleteFolder = Convert.ToBoolean(ConfigurationManager.AppSettings["deleteFolder"]);
         }
 
-        private static string UpdateXbmc()
-        {
-            string movieDir = ConfigurationManager.AppSettings["movieDir"];
-            string xbmcMoviePath = ConfigurationManager.AppSettings["xbmcMoviePath"];
-            string xbmcInfo = ConfigurationManager.AppSettings["xbmcInfo"];
-            string xbmcUsername = ConfigurationManager.AppSettings["xbmcUsername"];
-            string xbmcPassword = ConfigurationManager.AppSettings["xbmcPassword"];
-            string xbmcPath = null;
-
-            if (movieDir.ToLower() != xbmcMoviePath.ToLower())
-            {
-                xbmcPath = movieDir.Replace(movieDir, xbmcMoviePath);
-                xbmcPath = xbmcPath.Replace('\\', '/');
-            }
-
-            else
-            {
-                xbmcPath = movieDir;
-            }
-
-            try
-            {
-                string xbmcUrl = "http://" + xbmcInfo + "/xbmcCmds/xbmcHttp?command=ExecBuiltIn&parameter=XBMC.updatelibrary(video)";
-
-                HttpWebRequest xbmcRequest = (HttpWebRequest)WebRequest.Create(xbmcUrl);
-                xbmcRequest.Timeout = 10000;
-                xbmcRequest.Credentials = new NetworkCredential(xbmcUsername, xbmcPassword);
-                xbmcRequest.PreAuthenticate = true;
-
-                HttpWebResponse xbmcRepsonse = (HttpWebResponse)xbmcRequest.GetResponse();
-                xbmcRepsonse.Close();
-            }
-            catch
-            {
-                string errorMsg = "An error occured connecting to XBMC";
-                return errorMsg;
-            }
-
-            string xbmcUpdating = "XBMC is Updating";
-            return xbmcUpdating;
-        }
-
-        private static string UpdateXbmc(string moviePath)
-        {
-            string downloadMoviePath = moviePath;
-            string xbmcHdMoviePath = ConfigurationManager.AppSettings["xbmcHdMoviePath"];
-            string xbmcInfo = ConfigurationManager.AppSettings["xbmcInfo"];
-            string xbmcUsername = ConfigurationManager.AppSettings["xbmcUsername"];
-            string xbmcPassword = ConfigurationManager.AppSettings["xbmcPassword"];
-            string xbmcPath = null;
-
-            if (downloadMoviePath.ToLower() != xbmcHdMoviePath.ToLower())
-            {
-                xbmcPath = moviePath.Replace(downloadMoviePath, xbmcHdMoviePath);
-                xbmcPath = xbmcPath.Replace('\\', '/');
-            }
-
-            else
-            {
-                xbmcPath = moviePath;
-            }
-
-            try
-            {
-                string xbmcUrl = "http://" + xbmcInfo + "/xbmcCmds/xbmcHttp?command=ExecBuiltIn&parameter=XBMC.updatelibrary(video," + xbmcPath + ")";
-
-                HttpWebRequest xbmcRequest = (HttpWebRequest)WebRequest.Create(xbmcUrl);
-                xbmcRequest.Timeout = 10000;
-                xbmcRequest.Credentials = new NetworkCredential(xbmcUsername, xbmcPassword);
-                xbmcRequest.PreAuthenticate = true;
-
-                HttpWebResponse xbmcRepsonse = (HttpWebResponse)xbmcRequest.GetResponse();
-                xbmcRepsonse.Close();
-            }
-            catch
-            {
-                string errorMsg = "An error occured connecting to XBMC";
-                return errorMsg;
-            }
-
-            string xbmcUpdating = "XBMC is Updating";
-            return xbmcUpdating;
-        }
-
         private static string UpdateXbmc(string moviePath, string movieName, string category)
         {
             string xbmcUpdating = null;
             string xbmcPath = null;
+            string messageHeader = "Movie Downloaded";
 
             if (category == "standard")
             {
-
                 if (_movieDir.ToString().ToLower() != _xbmcMoviePath.ToLower())
                 {
                     xbmcPath = _movieDir.ToString().Replace(_movieDir.ToString(), _xbmcMoviePath);
@@ -195,6 +111,7 @@ namespace Movies
 
             else if (category == "highdef")
             {
+                messageHeader = "HD Movie Downloaded";
 
                 if (_hdMovieDir.ToString().ToLower() != _xbmcHdMoviePath.ToLower())
                 {
@@ -212,7 +129,7 @@ namespace Movies
 
             else
             {
-                Console.WriteLine("Format is unknown... Code Fail");
+                Console.WriteLine("Format is unknown...");
             }
 
             if (!XBMC.EventClient.Current.Connected)
@@ -224,7 +141,7 @@ namespace Movies
 
                 XBMC.EventClient.Current.SendAction(xbmcLibraryUpdate, "");
                 if (_notifyXbmc)
-                    XBMC.EventClient.Current.SendNotification("Movie Downloaded", movieName, XBMC.IconType.ICON_PNG, "sabnzbd");
+                    XBMC.EventClient.Current.SendNotification(messageHeader, movieName, XBMC.IconType.ICON_PNG, "sabnzbd");
                 if (_cleanLibrary)
                     XBMC.EventClient.Current.SendAction("CleanLibrary(video)", "");
                 xbmcUpdating = "XBMC is Updating";
@@ -272,9 +189,17 @@ namespace Movies
             }
         }
 
-        private static string ProcessAvi(string moviePath, string movieName)
+        private static void ProcessAvi(string moviePath, string movieName)
         {
-            string movieFilename = _movieDir + "\\" + movieName + ".avi"; //Create movieFilename from movieDir + movieName
+            string movieFilename;
+
+            if (_movieDir.ToString().EndsWith(Path.DirectorySeparatorChar.ToString()))
+                movieFilename = _movieDir + movieName + ".avi"; //Create movieFilename from movieDir + movieName
+
+            else
+                movieFilename = _movieDir + Path.DirectorySeparatorChar.ToString() + movieName + ".avi"; //Create movieFilename from movieDir + movieName
+
+            
 
             string[] aviFiles = Directory.GetFiles(moviePath, "*.avi", SearchOption.AllDirectories);
             //Search moviePath for AVI Files, including sub-folders
@@ -296,8 +221,8 @@ namespace Movies
 
                     else
                     {
-                        string aviMovieDir = _movieDir + "\\" + movieName;
-                        string aviMovieDirFilename = aviMovieDir + "\\" + movieName + ".avi";
+                        string aviMovieDir = _movieDir + Path.DirectorySeparatorChar.ToString() + movieName;
+                        string aviMovieDirFilename = aviMovieDir + Path.DirectorySeparatorChar.ToString() + movieName + ".avi";
                         Directory.CreateDirectory(aviMovieDir);
                         aviFileInfo.MoveTo(aviMovieDirFilename);
                         Directory.Delete(moviePath, true); //Delete old directory + all files
@@ -308,7 +233,7 @@ namespace Movies
                         string xbmcUpdate = UpdateXbmc(_movieDir.ToString(), movieName, "standard");
                         //string xbmcUpdate = UpdateXbmc();
                     }
-                    return null; //Exit
+                    return; //Exit
                 }
             }
 
@@ -355,15 +280,21 @@ namespace Movies
                         string xbmcUpdate = UpdateXbmc(_movieDir.ToString(), movieName, "standard");
                         //string xbmcUpdate = UpdateXbmc();
                     }
-                    return null; //Exit
+                    return; //Exit
                 }
             }
-            return null;
+            return;
         }
 
-        private static string ProcessMkv(string moviePath, string movieName)
+        private static void ProcessMkv(string moviePath, string movieName)
         {
-            string movieFilename = _hdMovieDir + "\\" + movieName + ".mkv"; //Create movieFilename from movieDir + movieName
+            string movieFilename;
+
+            if (_hdMovieDir.ToString().EndsWith(Path.DirectorySeparatorChar.ToString()))
+                movieFilename = _hdMovieDir + movieName + ".mkv"; //Create movieFilename from movieDir + movieName
+
+            else
+                movieFilename = _hdMovieDir + Path.DirectorySeparatorChar.ToString() + movieName + ".mkv"; //Create movieFilename from movieDir + movieName
 
             string[] mkvFiles = Directory.GetFiles(moviePath, "*.mkv", SearchOption.AllDirectories);
                 //Search moviePath for MKV Files, including sub-folders
@@ -385,28 +316,33 @@ namespace Movies
 
                     else
                     {
-                        string mkvMovieDir = _hdMovieDir + "\\" + movieName;
-                        string mkvMovieDirFilename = mkvMovieDir + "\\" + movieName + ".mkv";
+                        string mkvMovieDir = _hdMovieDir + Path.DirectorySeparatorChar.ToString() + movieName;
+                        string mkvMovieDirFilename = mkvMovieDir + Path.DirectorySeparatorChar.ToString() + movieName + ".mkv";
                         Directory.CreateDirectory(mkvMovieDir);
                         mkvFileInfo.MoveTo(mkvMovieDirFilename);
                         Directory.Delete(moviePath, true); //Delete old directory + all files
                         //}
-
-                        if (_updateXbmc)
-                        {
-                            string xbmcUpdate = UpdateXbmc(_hdMovieDir.ToString(), movieName, "highdef");
-                        }
-                        return null; //Exit
                     }
+                    if (_updateXbmc)
+                    {
+                        string xbmcUpdate = UpdateXbmc(_hdMovieDir.ToString(), movieName, "highdef");
+                    }
+                    return; //Exit
                 }
             }
 
-            return null;
+            return;
         }
 
-        private static string ProcessWmv(string moviePath, string movieName)
+        private static void ProcessWmv(string moviePath, string movieName)
         {
-            string movieFilename = _hdMovieDir + "\\" + movieName + ".wmv"; //Create movieFilename from movieDir + movieName
+            string movieFilename;
+
+            if (_hdMovieDir.ToString().EndsWith(Path.DirectorySeparatorChar.ToString()))
+                movieFilename = _hdMovieDir + movieName + ".wmv"; //Create movieFilename from movieDir + movieName
+
+            else
+                movieFilename = _hdMovieDir + Path.DirectorySeparatorChar.ToString() + movieName + ".wmv"; //Create movieFilename from movieDir + movieName
 
             string[] wmvFiles = Directory.GetFiles(moviePath, "*.wmv", SearchOption.AllDirectories);
             //Search moviePath for WMV Files, including sub-folders
@@ -428,13 +364,12 @@ namespace Movies
 
                     else
                     {
-                        string wmvMovieDir = _hdMovieDir + "\\" + movieName;
-                        string wmvMovieDirFilename = wmvMovieDir + "\\" + movieName + ".wmv";
+                        string wmvMovieDir = _hdMovieDir + Path.DirectorySeparatorChar.ToString() + movieName;
+                        string wmvMovieDirFilename = wmvMovieDir + Path.DirectorySeparatorChar.ToString() + movieName + ".wmv";
                         Directory.CreateDirectory(wmvMovieDir);
                         wmvFileInfo.MoveTo(wmvMovieDirFilename);
                         Directory.Delete(moviePath, true);
                     }
-
 
                     if (_updateXbmc)
                     {
@@ -443,12 +378,18 @@ namespace Movies
                 }
             }
 
-            return null;
+            return;
         }
 
-        private static string ProcessMp4(string moviePath, string movieName)
+        private static void ProcessMp4(string moviePath, string movieName)
         {
-            string movieFilename = _ipodMovieDir + "\\" + movieName + ".mp4"; //Create movieFilename from movieDir + movieName
+            string movieFilename;
+
+            if (_ipodMovieDir.ToString().EndsWith(Path.DirectorySeparatorChar.ToString()))
+                movieFilename = _ipodMovieDir + movieName + ".mp4"; //Create movieFilename from movieDir + movieName
+
+            else
+                movieFilename = _ipodMovieDir + Path.DirectorySeparatorChar.ToString() + movieName + ".mp4"; //Create movieFilename from movieDir + movieName
 
             string[] mp4Files = Directory.GetFiles(moviePath, "*.mp4", SearchOption.AllDirectories);
                 //Search moviePath for MP4 Files, including sub-folders
@@ -470,20 +411,20 @@ namespace Movies
 
                     else
                     {
-                        movieFilename = moviePath + "\\" + movieName + ".mp4";
+                        movieFilename = moviePath + Path.DirectorySeparatorChar.ToString() + movieName + ".mp4";
                         File.Move(mp4File, movieFilename);
 
-                        string mp4MovieDir = _ipodMovieDir + "\\" + movieName;
-                        string mp4MovieDirFilename = mp4MovieDir + "\\" + movieName + ".mp4";
+                        string mp4MovieDir = _ipodMovieDir + Path.DirectorySeparatorChar.ToString() + movieName;
+                        string mp4MovieDirFilename = mp4MovieDir + Path.DirectorySeparatorChar.ToString() + movieName + ".mp4";
                         Directory.CreateDirectory(mp4MovieDir);
                         mp4FileInfo.MoveTo(mp4MovieDirFilename);
                         Directory.Delete(moviePath, true);
                     }
-                    return null; //Exit
+                    return; //Exit
                 }
             }
 
-            return null;
+            return;
         }
 
         private static void Log(string message)
