@@ -9,19 +9,31 @@ namespace SABSync.Tests
     [TestFixture]
     internal class FeedTest : AssertionHelper
     {
+        private static IEnumerable<XElement> GetRssItems(string uri)
+        {
+            XElement rss = XElement.Load(uri);
+
+            if (rss.Name != "rss")
+                throw new Exception("Invalid RSS feed: no <rss> element found.");
+            XElement channel = rss.Element("channel");
+
+            if (channel == null)
+                throw new Exception("Invalid RSS feed: no <channel> element found.");
+
+            return channel.Elements("item");
+        }
+
         [Test]
         public void Test1()
         {
-            XElement rssFeed = XElement.Load(@"nzbs-rss.xml");
-
-            IEnumerable<string> items =
-                from item in rssFeed.Elements("channel").Elements("item")
+            IEnumerable<string> titles =
+                from item in GetRssItems(@"nzbs-rss.xml")
                 select (string) item.Element("title");
 
-            Console.WriteLine(items.Count());
-            foreach (string o in items)
+            Console.WriteLine(titles.Count());
+            foreach (string title in titles)
             {
-                Console.WriteLine(o);
+                Console.WriteLine(title);
             }
         }
     }
