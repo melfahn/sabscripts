@@ -9,6 +9,8 @@ namespace Movies
 {
     class Program
     {
+        private static string PATH_SEP = Path.DirectorySeparatorChar.ToString();
+
         private static DirectoryInfo _logDir;
         private static string _logFile;
         private static DirectoryInfo _movieDir;
@@ -23,6 +25,7 @@ namespace Movies
         private static bool _cleanLibrary;
         private static bool _xbmcOsWindows;
         private static bool _deleteFolder;
+        private static bool _imdb;
         private static string _mencoderOptions = "-forceidx -ovc copy -oac copy -o"; //Options for mencoder (static)
 
         static void Main(string[] args)
@@ -30,11 +33,46 @@ namespace Movies
             LoadConfig();
 
             string moviePath = args[0]; //Get moviePath from first CMD Line argument
-            string movieNameSab = args[2]; //Get movieName from third CMD Line argument
+            
+            if (moviePath.EndsWith(PATH_SEP))
+            {
+                moviePath = moviePath.Substring(0, moviePath.Length - 2);
+            }
+
+            // if passed with just one arg (not just sabnzbd passing), make movienamesab last directory entry
+            string movieNameSab = (args.Length == 1) ? LastEntry(moviePath,PATH_SEP) : args[2]; //Get movieName from third CMD Line argument
 
             string movieName = GetMovieName(movieNameSab);
+            
+
+
+            // try to append imdb id to end of filename if found in nfo
+            if (_imdb)
+            {
+                try{
+                    var f = Directory.GetFiles(moviePath, "*.nfo");
+                    var r = new StreamReader(f[0]);
+                    string txt = r.ReadToEnd();
+                    r.Close();
+                    r = null;
+                    f = null;
+
+                    Match m = null;
+                    if ((m = Regex.Match(txt.Replace('\n', ' '), @"(tt|title\?)(\d{7})", (RegexOptions.IgnoreCase))).Success)
+                    {
+                        movieName += String.Format(" [tt{0}]", m.Groups[2].Captures[0].Value);
+                    }
+                
+                } catch (Exception)
+                {
+                    // do nothing!!
+                }
+            }
+
+            // also deletes sfv ssr nzb etc, anything under 140MB
             DeleteSamples(moviePath);
 
+            
             // moviePathInfo = new DirectoryInfo(moviePath);
 
             if (Directory.GetFiles(moviePath, "*.avi", SearchOption.AllDirectories).Length > 0)
@@ -62,11 +100,17 @@ namespace Movies
             }
         }
 
+        private static string LastEntry(string text, string sep)
+        {
+            string[] tmp = text.Split(sep.ToCharArray());
+            return tmp[tmp.Length-1];
+        }
+
         private static void LoadConfig()
         {
             _logDir = new DirectoryInfo(ConfigurationManager.AppSettings["logDir"]); //Get logDir from app.config
             _logFile = _logDir + @"\Movies.txt"; // Log File 
-
+            
             _movieDir = new DirectoryInfo(ConfigurationManager.AppSettings["movieDir"]);
             _hdMovieDir = new DirectoryInfo(ConfigurationManager.AppSettings["HdMovieDir"]);
             _ipodMovieDir = new DirectoryInfo(ConfigurationManager.AppSettings["ipodMovieDir"]);
@@ -85,6 +129,7 @@ namespace Movies
             _xbmcOsWindows = Convert.ToBoolean(ConfigurationManager.AppSettings["xbmcOsWindows"]);
 
             _deleteFolder = Convert.ToBoolean(ConfigurationManager.AppSettings["deleteFolder"]);
+            _imdb = Convert.ToBoolean(ConfigurationManager.AppSettings["imdb"]);
         }
 
         private static string UpdateXbmc(string moviePath, string movieName, string category)
@@ -193,11 +238,11 @@ namespace Movies
         {
             string movieFilename;
 
-            if (_movieDir.ToString().EndsWith(Path.DirectorySeparatorChar.ToString()))
+            if (_movieDir.ToString().EndsWith(PATH_SEP.ToString()))
                 movieFilename = _movieDir + movieName + ".avi"; //Create movieFilename from movieDir + movieName
 
             else
-                movieFilename = _movieDir + Path.DirectorySeparatorChar.ToString() + movieName + ".avi"; //Create movieFilename from movieDir + movieName
+                movieFilename = _movieDir + PATH_SEP.ToString() + movieName + ".avi"; //Create movieFilename from movieDir + movieName
 
             
 
@@ -221,8 +266,8 @@ namespace Movies
 
                     else
                     {
-                        string aviMovieDir = _movieDir + Path.DirectorySeparatorChar.ToString() + movieName;
-                        string aviMovieDirFilename = aviMovieDir + Path.DirectorySeparatorChar.ToString() + movieName + ".avi";
+                        string aviMovieDir = _movieDir + PATH_SEP.ToString() + movieName;
+                        string aviMovieDirFilename = aviMovieDir + PATH_SEP.ToString() + movieName + ".avi";
                         Directory.CreateDirectory(aviMovieDir);
                         aviFileInfo.MoveTo(aviMovieDirFilename);
                         Directory.Delete(moviePath, true); //Delete old directory + all files
@@ -290,11 +335,11 @@ namespace Movies
         {
             string movieFilename;
 
-            if (_hdMovieDir.ToString().EndsWith(Path.DirectorySeparatorChar.ToString()))
+            if (_hdMovieDir.ToString().EndsWith(PATH_SEP.ToString()))
                 movieFilename = _hdMovieDir + movieName + ".mkv"; //Create movieFilename from movieDir + movieName
 
             else
-                movieFilename = _hdMovieDir + Path.DirectorySeparatorChar.ToString() + movieName + ".mkv"; //Create movieFilename from movieDir + movieName
+                movieFilename = _hdMovieDir + PATH_SEP.ToString() + movieName + ".mkv"; //Create movieFilename from movieDir + movieName
 
             string[] mkvFiles = Directory.GetFiles(moviePath, "*.mkv", SearchOption.AllDirectories);
                 //Search moviePath for MKV Files, including sub-folders
@@ -316,8 +361,8 @@ namespace Movies
 
                     else
                     {
-                        string mkvMovieDir = _hdMovieDir + Path.DirectorySeparatorChar.ToString() + movieName;
-                        string mkvMovieDirFilename = mkvMovieDir + Path.DirectorySeparatorChar.ToString() + movieName + ".mkv";
+                        string mkvMovieDir = _hdMovieDir + PATH_SEP.ToString() + movieName;
+                        string mkvMovieDirFilename = mkvMovieDir + PATH_SEP.ToString() + movieName + ".mkv";
                         Directory.CreateDirectory(mkvMovieDir);
                         mkvFileInfo.MoveTo(mkvMovieDirFilename);
                         Directory.Delete(moviePath, true); //Delete old directory + all files
@@ -338,11 +383,11 @@ namespace Movies
         {
             string movieFilename;
 
-            if (_hdMovieDir.ToString().EndsWith(Path.DirectorySeparatorChar.ToString()))
+            if (_hdMovieDir.ToString().EndsWith(PATH_SEP.ToString()))
                 movieFilename = _hdMovieDir + movieName + ".wmv"; //Create movieFilename from movieDir + movieName
 
             else
-                movieFilename = _hdMovieDir + Path.DirectorySeparatorChar.ToString() + movieName + ".wmv"; //Create movieFilename from movieDir + movieName
+                movieFilename = _hdMovieDir + PATH_SEP.ToString() + movieName + ".wmv"; //Create movieFilename from movieDir + movieName
 
             string[] wmvFiles = Directory.GetFiles(moviePath, "*.wmv", SearchOption.AllDirectories);
             //Search moviePath for WMV Files, including sub-folders
@@ -364,8 +409,8 @@ namespace Movies
 
                     else
                     {
-                        string wmvMovieDir = _hdMovieDir + Path.DirectorySeparatorChar.ToString() + movieName;
-                        string wmvMovieDirFilename = wmvMovieDir + Path.DirectorySeparatorChar.ToString() + movieName + ".wmv";
+                        string wmvMovieDir = _hdMovieDir + PATH_SEP.ToString() + movieName;
+                        string wmvMovieDirFilename = wmvMovieDir + PATH_SEP.ToString() + movieName + ".wmv";
                         Directory.CreateDirectory(wmvMovieDir);
                         wmvFileInfo.MoveTo(wmvMovieDirFilename);
                         Directory.Delete(moviePath, true);
@@ -385,11 +430,11 @@ namespace Movies
         {
             string movieFilename;
 
-            if (_ipodMovieDir.ToString().EndsWith(Path.DirectorySeparatorChar.ToString()))
+            if (_ipodMovieDir.ToString().EndsWith(PATH_SEP.ToString()))
                 movieFilename = _ipodMovieDir + movieName + ".mp4"; //Create movieFilename from movieDir + movieName
 
             else
-                movieFilename = _ipodMovieDir + Path.DirectorySeparatorChar.ToString() + movieName + ".mp4"; //Create movieFilename from movieDir + movieName
+                movieFilename = _ipodMovieDir + PATH_SEP.ToString() + movieName + ".mp4"; //Create movieFilename from movieDir + movieName
 
             string[] mp4Files = Directory.GetFiles(moviePath, "*.mp4", SearchOption.AllDirectories);
                 //Search moviePath for MP4 Files, including sub-folders
@@ -411,11 +456,11 @@ namespace Movies
 
                     else
                     {
-                        movieFilename = moviePath + Path.DirectorySeparatorChar.ToString() + movieName + ".mp4";
+                        movieFilename = moviePath + PATH_SEP.ToString() + movieName + ".mp4";
                         File.Move(mp4File, movieFilename);
 
-                        string mp4MovieDir = _ipodMovieDir + Path.DirectorySeparatorChar.ToString() + movieName;
-                        string mp4MovieDirFilename = mp4MovieDir + Path.DirectorySeparatorChar.ToString() + movieName + ".mp4";
+                        string mp4MovieDir = _ipodMovieDir + PATH_SEP.ToString() + movieName;
+                        string mp4MovieDirFilename = mp4MovieDir + PATH_SEP.ToString() + movieName + ".mp4";
                         Directory.CreateDirectory(mp4MovieDir);
                         mp4FileInfo.MoveTo(mp4MovieDirFilename);
                         Directory.Delete(moviePath, true);
