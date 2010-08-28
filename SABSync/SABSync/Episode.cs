@@ -30,6 +30,7 @@ namespace SABSync
         public int EpisodeNumber2 { get; set; }
         public DateTime AirDate { get; set; }
         public string Release { get; set; }
+        public int Quality { get; set; }
 
         public bool IsProper
         {

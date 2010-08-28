@@ -7,8 +7,43 @@
     </boolean>
   </SettingsComponent>
   <RecentFiles>
-    <RecentFiles />
-    <RecentEdits />
+    <RecentFiles>
+      <File id="D83EAFF0-C310-4DEE-8271-F54C1ECDE253/d:Properties/f:AssemblyInfo.cs" caret="1437" fromTop="25" />
+      <File id="D83EAFF0-C310-4DEE-8271-F54C1ECDE253/f:Program.cs" caret="1751" fromTop="19" />
+      <File id="D83EAFF0-C310-4DEE-8271-F54C1ECDE253/f:App.config" caret="175" fromTop="3" />
+    </RecentFiles>
+    <RecentEdits>
+      <File id="D83EAFF0-C310-4DEE-8271-F54C1ECDE253/f:Program.cs" caret="5814" fromTop="26" />
+      <File id="D83EAFF0-C310-4DEE-8271-F54C1ECDE253/f:Program.cs" caret="5669" fromTop="20" />
+      <File id="D83EAFF0-C310-4DEE-8271-F54C1ECDE253/f:Program.cs" caret="371" fromTop="0" />
+      <File id="D83EAFF0-C310-4DEE-8271-F54C1ECDE253/f:Program.cs" caret="1134" fromTop="13" />
+      <File id="D83EAFF0-C310-4DEE-8271-F54C1ECDE253/f:Program.cs" caret="5154" fromTop="22" />
+      <File id="D83EAFF0-C310-4DEE-8271-F54C1ECDE253/f:Program.cs" caret="5332" fromTop="26" />
+      <File id="D83EAFF0-C310-4DEE-8271-F54C1ECDE253/f:Program.cs" caret="171" fromTop="1" />
+      <File id="D83EAFF0-C310-4DEE-8271-F54C1ECDE253/f:Program.cs" caret="850" fromTop="9" />
+      <File id="D83EAFF0-C310-4DEE-8271-F54C1ECDE253/f:Program.cs" caret="2921" fromTop="24" />
+      <File id="D83EAFF0-C310-4DEE-8271-F54C1ECDE253/f:Program.cs" caret="2759" fromTop="10" />
+      <File id="D83EAFF0-C310-4DEE-8271-F54C1ECDE253/f:Program.cs" caret="2580" fromTop="13" />
+      <File id="D83EAFF0-C310-4DEE-8271-F54C1ECDE253/f:Program.cs" caret="3808" fromTop="20" />
+      <File id="D83EAFF0-C310-4DEE-8271-F54C1ECDE253/f:Program.cs" caret="3253" fromTop="6" />
+      <File id="D83EAFF0-C310-4DEE-8271-F54C1ECDE253/f:App.config" caret="133" fromTop="3" />
+      <File id="D83EAFF0-C310-4DEE-8271-F54C1ECDE253/f:App.config" caret="1299" fromTop="18" />
+      <File id="D83EAFF0-C310-4DEE-8271-F54C1ECDE253/f:App.config" caret="1259" fromTop="15" />
+      <File id="D83EAFF0-C310-4DEE-8271-F54C1ECDE253/f:App.config" caret="837" fromTop="10" />
+      <File id="D83EAFF0-C310-4DEE-8271-F54C1ECDE253/f:Program.cs" caret="751" fromTop="0" />
+      <File id="D83EAFF0-C310-4DEE-8271-F54C1ECDE253/f:Program.cs" caret="2331" fromTop="8" />
+      <File id="D83EAFF0-C310-4DEE-8271-F54C1ECDE253/f:Program.cs" caret="5082" fromTop="22" />
+      <File id="D83EAFF0-C310-4DEE-8271-F54C1ECDE253/f:Program.cs" caret="5029" fromTop="26" />
+      <File id="D83EAFF0-C310-4DEE-8271-F54C1ECDE253/f:Program.cs" caret="4266" fromTop="4" />
+      <File id="D83EAFF0-C310-4DEE-8271-F54C1ECDE253/f:Program.cs" caret="5046" fromTop="20" />
+      <File id="D83EAFF0-C310-4DEE-8271-F54C1ECDE253/f:Program.cs" caret="3111" fromTop="5" />
+      <File id="D83EAFF0-C310-4DEE-8271-F54C1ECDE253/f:Program.cs" caret="4895" fromTop="5" />
+      <File id="D83EAFF0-C310-4DEE-8271-F54C1ECDE253/f:Program.cs" caret="4044" fromTop="22" />
+      <File id="D83EAFF0-C310-4DEE-8271-F54C1ECDE253/f:Program.cs" caret="3759" fromTop="15" />
+      <File id="D83EAFF0-C310-4DEE-8271-F54C1ECDE253/d:Properties/f:AssemblyInfo.cs" caret="1437" fromTop="25" />
+      <File id="D83EAFF0-C310-4DEE-8271-F54C1ECDE253/f:Program.cs" caret="1751" fromTop="19" />
+      <File id="D83EAFF0-C310-4DEE-8271-F54C1ECDE253/f:App.config" caret="175" fromTop="3" />
+    </RecentEdits>
   </RecentFiles>
   <NAntValidationSettings>
     <NAntPath value="" />
@@ -20,4 +55,95 @@
     <NUnitInstallDir>C:\Program Files (x86)\NUnit 2.5.5\bin\net-2.0\</NUnitInstallDir>
     <UseAddins>Never</UseAddins>
   </UnitTestRunnerNUnit>
+  <CompletionStatisticsManager>
+    <ItemStatistics item="Default">
+      <Item value="static" priority="10" />
+      <Item value="void" priority="3" />
+      <Item value="string" priority="9" />
+      <Item value="private" priority="5" />
+      <Item value="bool" priority="2" />
+      <Item value="DirectoryInfo`0" priority="0" />
+      <Item value="Environment`0" priority="1" />
+      <Item value="Path`0" priority="1" />
+      <Item value="_torrentDir" priority="2" />
+      <Item value="new" priority="3" />
+      <Item value="DirectoryInfo" priority="0" />
+      <Item value="Configuration`0" priority="0" />
+      <Item value="using" priority="0" />
+      <Item value="MonoTorrent" priority="1" />
+      <Item value="Common" priority="0" />
+      <Item value="TorrentCreator`0" priority="1" />
+      <Item value="TorrentCreator" priority="1" />
+      <Item value="tc" priority="9" />
+      <Item value="LoadConfig`0" priority="0" />
+      <Item value="List" priority="0" />
+      <Item value="_torrentTrackers" priority="2" />
+      <Item value="List&lt;string&gt;" priority="0" />
+      <Item value="foreach" priority="0" />
+      <Item value="var" priority="0" />
+      <Item value="ConfigurationManager`0" priority="0" />
+      <Item value="path" priority="1" />
+      <Item value="TorrentCreatorEventArgs`0" priority="0" />
+      <Item value="Console`0" priority="0" />
+      <Item value="torrentFile" priority="7" />
+      <Item value="CreateTorrent`0" priority="0" />
+      <Item value="downloadPath" priority="1" />
+      <Item value="downloadName" priority="3" />
+      <Item value="String`0" priority="1" />
+      <Item value="_torrentPrivate" priority="0" />
+      <Item value="true" priority="0" />
+      <Item value="FileInfo`0" priority="0" />
+      <Item value="_uTorrentExe" priority="2" />
+      <Item value="Torrent`0" priority="0" />
+      <Item value="if" priority="1" />
+      <Item value="File`0" priority="0" />
+      <Item value="Log`0" priority="3" />
+      <Item value="else" priority="0" />
+      <Item value="torrentName" priority="1" />
+      <Item value="commandArgs" priority="0" />
+      <Item value="SendToUTorrent`0" priority="0" />
+      <Item value="_addToUTorrent" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@System.IO.Path">
+      <Item value="DirectorySeparatorChar" priority="1" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:System.Char">
+      <Item value="ToString`0" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@System.Configuration.ConfigurationManager">
+      <Item value="AppSettings" priority="1" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:MonoTorrent.Common.TorrentCreator">
+      <Item value="Announces" priority="1" />
+      <Item value="Comment" priority="0" />
+      <Item value="CreatedBy" priority="0" />
+      <Item value="Publisher" priority="0" />
+      <Item value="Path" priority="0" />
+      <Item value="Hashed" priority="0" />
+      <Item value="Create`0" priority="0" />
+      <Item value="Private" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:System.String">
+      <Item value="Split`0" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:System.Collections.Generic.List`1">
+      <Item value="Add`0" priority="1" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@System.Console">
+      <Item value="WriteLine`0" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:MonoTorrent.Common.TorrentCreatorEventArgs">
+      <Item value="FileCompletion" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:System.IO.DirectoryInfo">
+      <Item value="ToString`0" priority="1" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@System.String">
+      <Item value="Format`0" priority="1" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:System.IO.FileInfo">
+      <Item value="Exists" priority="0" />
+      <Item value="ToString`0" priority="0" />
+    </ItemStatistics>
+  </CompletionStatisticsManager>
 </Configuration>

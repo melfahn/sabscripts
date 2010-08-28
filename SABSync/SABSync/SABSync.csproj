@@ -123,6 +123,17 @@
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Data.SQLite, Version=1.0.66.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>References\System.Data.SQLite.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.SQLite.Linq, Version=2.0.38.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>References\System.Data.SQLite.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -140,8 +151,14 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SabService.cs" />
+    <Compile Include="SABSync.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SABSync.edmx</DependentUpon>
+    </Compile>
     <Compile Include="ShowAlias.cs" />
     <Compile Include="ShowQuality.cs" />
+    <Compile Include="SQLite.cs" />
     <Compile Include="SyncJob.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="TvDbService.cs" />
@@ -150,20 +167,30 @@
   <ItemGroup>
     <Content Include="References\RSS.NET.dll" />
     <Content Include="References\RSS.NET.XML" />
+    <Content Include="References\System.Data.SQLite.dll" />
+    <Content Include="References\System.Data.SQLite.Linq.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="References\System.Data.SQLite.XML" />
     <Content Include="SABSync.ico" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Alias.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="RSS.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
     </None>
     <None Include="Quality.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <EntityDeploy Include="SABSync.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>SABSync.Designer.cs</LastGenOutput>
+    </EntityDeploy>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">

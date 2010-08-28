@@ -17,6 +17,7 @@ namespace SABSync
         private const string PatternDaily = @"(?<Year>\d{4}).{1}(?<Month>\d{2}).{1}(?<Day>\d{2})";
 
         private static readonly Logger Logger = new Logger();
+        SQLite _sql = new SQLite(); //Create new Instance of SQLite
         public int AcceptCount;
         public int FeedItemCount;
         public int MyFeedsCount;
@@ -30,6 +31,8 @@ namespace SABSync
         public int RejectSabHistoryCount;
         public int RejectSabQueuedCount;
         public int RejectShowQualityCount;
+
+        public Dictionary<int, string> QualityTable = new Dictionary<int, string>(); //Used to store the quality table
 
         public SyncJob() : this(new Config(), new SabService(), new TvDbService())
         {
@@ -52,9 +55,18 @@ namespace SABSync
 
         public void Start()
         {
+            //Add records to QualityTable
+            QualityTable.Add(1, "xvid");
+            QualityTable.Add(2, "720p");
+
             Log("Watching {0} shows", Config.MyShows.Count);
             Log("IgnoreSeasons: {0}", Config.IgnoreSeasons);
 
+            if (!File.Exists("SABSync.db"))
+            {
+                Log("Setting up SABSync Database for the first time");
+                _sql.SetupDatabase();
+            }
             foreach (FeedInfo feedInfo in Config.Feeds)
             {
                 MyFeedsCount++;
@@ -131,6 +143,32 @@ namespace SABSync
 
                 nzb.Title = episode.FeedItem.TitleFix;
                 string queueResponse = Sab.AddByUrl(nzb);
+
+                //'showname', showid, season, episode, 'episodename', 'feedtitle', quality, 'source', 'date' (0-8)
+                //string insertIntoHistory = String.Format("INSERT INTO history VALUES(null, '{0}', {1}, {2}, {3}, '{4}', '{5}', {6}, {7}, '{8}', '{9}')", episode.ShowName, 0, episode.SeasonNumber, episode.EpisodeNumber, episode.EpisodeName, episode.FeedItem.Title, episode.Quality, Convert.ToInt32(episode.IsProper), nzb.Site.Name, DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff"));
+                //_sql.ExecuteNonQuery(insertIntoHistory); //Perform the insert
+
+                //Add to History Database
+                using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
+                {
+                    history newItem = new history
+                                          {
+                                              id = new long(),
+                                              showname = episode.ShowName,
+                                              showid = 0,
+                                              season = episode.SeasonNumber,
+                                              episode = episode.EpisodeNumber,
+                                              episodename = episode.EpisodeName,
+                                              feedtitle = episode.FeedItem.Title,
+                                              quality = episode.Quality,
+                                              proper = Convert.ToInt32(episode.IsProper),
+                                              provider = nzb.Site.Name,
+                                              date = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff")
+                                          };
+                    
+                    sabSyncEntities.AddTohistory(newItem);
+                    sabSyncEntities.SaveChanges();
+                }
 
                 // TODO: check if Queued.Add need unfixed Title (was previously)
                 AcceptCount++;
@@ -415,6 +453,9 @@ namespace SABSync
             TvDb.GetEpisodeName(episode);
             GetTitleFix(episode);
 
+            if (IsInLocalHistory(episode))
+                return false;
+
             if (Queued.Contains(episode.FeedItem.TitleFix + ": ok"))
                 return false;
 
@@ -559,14 +600,28 @@ namespace SABSync
             {
                 if (episode.ShowName.ToLower() != q.Name.ToLower()) continue;
 
-                string quality = q.Quality.ToLower();
-                bool titleContainsQuality = title.Contains(quality);
-                bool descriptionContainsQuality = description.Contains(quality);
-                if (titleContainsQuality || descriptionContainsQuality)
+                string quality;
+
+                foreach (var qsplit in q.Quality.ToLower().Split(':'))
                 {
-                    Log("Quality -{0}- is wanted for: {1}.", q.Quality, episode.ShowName);
-                    return true;
+                    quality = qsplit;
+
+                    bool titleContainsQuality = title.Contains(quality);
+                    bool descriptionContainsQuality = description.Contains(quality);
+                    if (titleContainsQuality || descriptionContainsQuality)
+                    {
+                        //Get the Quality number for this episode
+                        foreach (var t in QualityTable)
+                        {
+                            if (t.Value == quality)
+                                episode.Quality = t.Key;
+                        }
+
+                        Log("Quality -{0}- is wanted for: {1}.", q.Quality, episode.ShowName);
+                        return true;
+                    }
                 }
+                
                 RejectShowQualityCount++;
                 Log("Quality is not wanted");
                 return false;
@@ -579,6 +634,13 @@ namespace SABSync
                 bool descriptionHasQuality = description.Contains(quality);
                 if (titleHasQuality || descriptionHasQuality)
                 {
+                    //Get the Quality number for this episode
+                    foreach (var t in QualityTable)
+                    {
+                        if (t.Value == quality)
+                            episode.Quality = t.Key;
+                    }
+
                     Log("Quality is wanted - Default");
                     return true;
                 }
@@ -587,7 +649,7 @@ namespace SABSync
             Log("Quality is not wanted");
             return false;
         }
-
+            
         private bool IsArchivedNzb(FeedItem feedItem)
         {
             string rssTitle = feedItem.Title;
@@ -622,6 +684,58 @@ namespace SABSync
             }
 
             return false;
+        }
+
+        private bool IsInLocalHistory(Episode episode)
+        {
+            Logger.Log("Checking SABSync.db for: [{0}]", episode.FeedItem.TitleFix);
+            using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
+            {
+                var ep = (from e in sabSyncEntities.history
+                                where
+                                    e.showname.Equals(episode.ShowName) & e.season.Value.Equals(episode.SeasonNumber) &
+                                    e.episode.Value.Equals(episode.EpisodeNumber)
+                                select new
+                                {
+                                    e.proper,
+                                    e.quality
+                                }); //Grab all matches containing matching show name, season number and episode number
+
+                if (ep.Count() > 0)
+                {
+                    if (ep.Count(y => y.quality > episode.Quality) == ep.Count()) //If they are equal then higher quality episode has not yet been downloaded
+                    {
+                        Logger.Log("Episode is better quality than previously downloaded, deleting previous version");
+
+                        foreach (DirectoryInfo tvDir in Config.TvRootFolders)
+                        {
+                            string dir = GetEpisodeDir(episode, tvDir);
+                            string fileMask = GetEpisodeFileMask(episode, tvDir);
+
+                            DeleteForUpgrade(dir, fileMask);
+                        }
+
+                        return false;
+                    }
+
+                    //Check if Both are Propers
+                    if (episode.IsProper)
+                    {
+                        if(ep.Any(p => Convert.ToBoolean(p.proper.Value) && episode.Quality == p.quality))
+                        {
+                            Logger.Log("Found in Local History");
+                            return true;
+                        }
+
+                        return false; //Episode in History is not a proper, episode is better than on previosuly downloaded
+                    }
+
+                    //Episode to be downloaded is not a proper and episode was found in local history
+                    Logger.Log("Found in Local History");
+                    return true;
+                }
+            }
+            return false; //Not found, return false
         }
 
         private static string ReplaceSeparatorChars(string s)
@@ -694,6 +808,29 @@ namespace SABSync
                     foreach (string m in matchingFiles)
                     {
                         Log("Deleting Episode on Disk for PROPER: " + m, true);
+                        File.Delete(m);
+                    }
+                }
+            }
+        }
+
+        private void DeleteForUpgrade(string dir, string fileMask)
+        {
+            //Delete old download to make room for better quality download
+
+            if (!Directory.Exists(dir))
+                return;
+
+            foreach (string ext in Config.VideoExt)
+            {
+                string[] matchingFiles = Directory.GetFiles(dir, fileMask + ext);
+
+                if (matchingFiles.Length != 0)
+                {
+                    //Delete Matching File(s)
+                    foreach (string m in matchingFiles)
+                    {
+                        Log("Deleting Episode on Disk for better qualit: " + m, true);
                         File.Delete(m);
                     }
                 }

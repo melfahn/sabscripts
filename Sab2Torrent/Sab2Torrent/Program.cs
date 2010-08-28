@@ -41,7 +41,9 @@ namespace Sab2Torrent
                                                downloadName);
 
             CreateTorrent(downloadPath, torrentFile, downloadName);
-            SendToUTorrent(downloadPath, torrentFile, downloadName);
+
+            if (_addToUTorrent) //Only send to uTorrent if set in the config
+                SendToUTorrent(downloadPath, torrentFile, downloadName);
         }
 
         static void LoadConfig()
