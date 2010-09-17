@@ -4,6 +4,8 @@ using System.Collections.Specialized;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Xml.Linq;
 
 namespace SABSync
 {
@@ -20,34 +22,26 @@ namespace SABSync
         private IList<DirectoryInfo> _tvRootFolders;
         private string _tvTemplate;
 
-        public Config() : this(ConfigurationManager.AppSettings)
-        {
-        }
+        private string configFile = @"Settings.xml"; //Used to load/save the config file
 
-        public Config(NameValueCollection settings)
+        public Config()
         {
-            Settings = settings;
-
-            DownloadPropers = Convert.ToBoolean(Settings["downloadPropers"] ?? "false");
-            DownloadQualities = (Settings["downloadQuality"] ?? string.Empty).Trim(';', ' ').Split(';');
-            IgnoreSeasons = Settings["ignoreSeasons"] ?? string.Empty;
-            SabReplaceChars = Convert.ToBoolean(Settings["sabReplaceChars"] ?? "false");
-            VerboseLogging = Convert.ToBoolean(Settings["verboseLogging"] ?? "false");
-            HtmlLogging = Convert.ToBoolean(Settings["htmlLogging"] ?? "false");
-            VideoExt = (Settings["videoExt"] ?? string.Empty).Trim(';', ' ').Split(';');
+            LoadConfig();
         }
 
         public bool DownloadPropers { get; set; }
 
+        public bool SyncOnStart { get; set; }
+
         public string[] DownloadQualities { get; set; }
+
+        public int Interval { get; set; }
 
         public IList<FeedInfo> Feeds
         {
             get { return _feeds ?? (_feeds = GetFeeds()); }
             set { _feeds = value; }
         }
-
-        public string IgnoreSeasons { get; set; }
 
         public IList<string> MyShows
         {
@@ -75,12 +69,6 @@ namespace SABSync
             set { _showAliases = value; }
         }
 
-        public IList<ShowQuality> ShowQualities
-        {
-            get { return _showQualities ?? (_showQualities = GetShowQualities()); }
-            set { _showQualities = value; }
-        }
-
         public string TvDailyTemplate
         {
             get { return _tvDailyTemplate ?? (_tvDailyTemplate = GetTvDailyTemplate()); }
@@ -100,8 +88,6 @@ namespace SABSync
         }
 
         public bool VerboseLogging { get; set; }
-
-        public bool HtmlLogging { get; set; }
 
         public string[] VideoExt { get; set; }
 
@@ -190,36 +176,42 @@ namespace SABSync
 
         private IList<FeedInfo> GetFeeds()
         {
-            FileInfo configFile = GetConfigFile("rss");
-            if (VerboseLogging)
-                Logger.Log("DEBUG: Loading RSS feed list from: {0}", configFile.Name);
+            //Load from DB
+            using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
+            {
+                IList<FeedInfo> fi = new List<FeedInfo>();
 
-            return (from pair in GetPipeDelimitedPairs(configFile)
-                    let name = pair.Value == null ? null : pair.Key
-                    let url = pair.Value ?? pair.Key
-                    select new FeedInfo(name, url)).ToList();
+                foreach (var feed in from f in sabSyncEntities.providers select new { f.name, f.url })
+                    fi.Add(new FeedInfo(feed.name, feed.url));
+
+                return fi;
+            }
         }
 
         private IList<ShowAlias> GetShowAliases()
         {
-            FileInfo configFile = GetConfigFile("alias");
-            return (from pair in GetPipeDelimitedPairs(configFile)
-                    select new ShowAlias {BadName = pair.Key, Alias = pair.Value}).ToList();
-        }
+            //Get from DB
+            IList<ShowAlias> aliasList = new List<ShowAlias>();
+            using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
+            {
 
-        private IList<ShowQuality> GetShowQualities()
-        {
-            return (from pair in GetPipeDelimitedPairs(GetConfigFile("quality"))
-                    select new ShowQuality {Name = pair.Key, Quality = pair.Value}).ToList();
-        }
+                var aliases = from a in sabSyncEntities.shows
+                              where !String.IsNullOrEmpty(a.aliases)
+                              select new {a.show_name, a.aliases};
 
-        private FileInfo GetConfigFile(string key)
-        {
-            string path = GetSetting(key);
-            var file = new FileInfo(path);
-            if (!file.Exists)
-                throw new ApplicationException(string.Format("File not found. {0}", path));
-            return file;
+                foreach (var alias in aliases)
+                {
+                    foreach (var badName in alias.aliases.Split(';'))
+                    {
+                        ShowAlias showAlias = new ShowAlias();
+                        showAlias.Alias = alias.show_name;
+                        showAlias.BadName = badName;
+                        aliasList.Add(showAlias);
+                    }
+                }
+            }
+
+            return aliasList;
         }
 
         private string GetSetting(string key)
@@ -230,14 +222,105 @@ namespace SABSync
             return value;
         }
 
-        private static IEnumerable<KeyValuePair<string, string>> GetPipeDelimitedPairs(FileInfo file)
+        private void LoadConfig()
         {
-            return from line in File.ReadAllLines(file.FullName)
-                   where !line.StartsWith(";")
-                   let parts = line.Split('|')
-                   let key = parts[0]
-                   let value = parts.Length > 1 ? parts[1] : null
-                   select new KeyValuePair<string, string>(key, value);
+            //Read the XML file
+            XDocument xDoc = XDocument.Load(configFile);
+
+            //Get the first configuration from the Config file (of one)
+            var config = (from c in xDoc.Descendants("Configuration")
+                          select new
+                          {
+                              TvRoot = c.Element("TvRoot").Value,
+                              TvTemplate = c.Element("TvTemplate").Value,
+                              TvDailyTemplate = c.Element("TvDailyTemplate").Value,
+                              VideoExt = c.Element("VideoExt").Value,
+                              IgnoreSeasons = c.Element("IgnoreSeasons").Value,
+                              NzbDir = c.Element("NzbDir").Value,
+                              SabNzbdInfo = c.Element("SabNzbdInfo").Value,
+                              Username = c.Element("Username").Value,
+                              Password = c.Element("Password").Value,
+                              ApiKey = c.Element("ApiKey").Value,
+                              Priority = c.Element("Priority").Value,
+                              SabReplaceChars = c.Element("SabReplaceChars").Value,
+                              DownloadQuality = c.Element("DownloadQuality").Value,
+                              DownloadPropers = c.Element("DownloadPropers").Value,
+                              Interval = c.Element("Interval").Value,
+                              SyncOnStart = c.Element("SyncOnStart").Value,
+
+                              Rss = c.Element("Rss").Value,
+                              Alias = c.Element("Alias").Value,
+                              Quality = c.Element("Quality").Value,
+                              VerboseLogging = c.Element("VerboseLogging").Value,
+                              DeleteLogs = c.Element("DeleteLogs").Value,
+                          }).First();
+
+            NameValueCollection settings = new NameValueCollection();
+            settings.Add("sabnzbdInfo", config.SabNzbdInfo);
+            settings.Add("priority", config.Priority);
+            settings.Add("apiKey", config.ApiKey);
+            settings.Add("username", config.Username);
+            settings.Add("password", config.Password);
+            settings.Add("tvTemplate", config.TvTemplate);
+            settings.Add("tvDailyTemplate", config.TvDailyTemplate);
+            settings.Add("nzbDir", config.NzbDir);
+            settings.Add("tvRoot", config.TvRoot);
+            settings.Add("rss", config.Rss);
+            settings.Add("alias", config.Alias);
+            settings.Add("quality", config.Quality);
+            settings.Add("ignoreSeasons", config.IgnoreSeasons);
+            settings.Add("downloadQuality", config.DownloadQuality);
+            settings.Add("syncOnStart", config.SyncOnStart);
+
+            Settings = settings;
+
+            DownloadPropers = Convert.ToBoolean(config.DownloadPropers ?? "false");
+            Interval = Convert.ToInt32(config.Interval ?? "15");
+            DownloadQualities = config.DownloadQuality.Trim(';', ' ').Split(';');
+            SabReplaceChars = Convert.ToBoolean(config.SabReplaceChars ?? "false");
+            VerboseLogging = Convert.ToBoolean(config.VerboseLogging ?? "false");
+            VideoExt = (config.VideoExt ?? string.Empty).Trim(';', ' ').Split(';');
+            SyncOnStart = Convert.ToBoolean(config.SyncOnStart ?? "false");
+        }
+
+        public void ReloadConfig()
+        {
+            //Used to Reload the Configuration from an Updated file...
+            LoadConfig();
+        }
+
+        public void SaveValue(string element, string value)
+        {
+            //Save the value to the element
+            try
+            {
+                XDocument xDoc = XDocument.Load(configFile);
+
+                var config = (from c in xDoc.Descendants("Configuration") select c).First();
+                config.Element(element).Value = value;
+                config.Save(configFile);
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(ex.ToString());
+            }
+        }
+
+        public string GetValue(string element)
+        {
+            //Save the value to the element
+            try
+            {
+                XDocument xDoc = XDocument.Load(configFile);
+
+                var config = (from c in xDoc.Descendants("Configuration") select c).First();
+                return config.Element(element).Value;
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(ex.ToString());
+            }
+            return null;
         }
     }
 }

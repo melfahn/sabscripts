@@ -36,6 +36,18 @@ namespace SABSync.Tests
             episode.EpisodeName = "Episode Name";
         }
 
+        public TvDbShowInfo GetShowData(string showName)
+        {
+            showName = "30 Rock";
+
+            return null;
+        }
+
+        public List<SABSync.TvDbEpisodeInfo> GetEpisodeData(string seriesId)
+        {
+            return null;
+        }
+
         #endregion
     }
 

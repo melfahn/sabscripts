@@ -7,7 +7,7 @@ namespace SABSync.Tests
     public class TvDbServiceTest : AssertionHelper
     {
         [Test]
-        [Ignore("Uses live TheTvDb service")]
+        //[Ignore("Uses live TheTvDb service")]
         public void CheckTvDb()
         {
             //http://thetvdb.com/api/GetSeries.php?seriesname=The+Daily+Show

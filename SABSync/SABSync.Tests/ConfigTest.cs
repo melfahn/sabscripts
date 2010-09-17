@@ -12,11 +12,7 @@ namespace SABSync.Tests
 
         public ConfigTest()
         {
-            Config = new Config(new NameValueCollection
-            {
-                {"tvroot", @"..\..\TV;..\..\TV2;"},
-                {"rss", @"rss.config.txt"},
-            });
+            Config = new Config();
         }
 
         [Test]

@@ -82,7 +82,7 @@ namespace SABSync
             string nzbId = episode.FeedItem.NzbId;
             try
             {
-                Logger.Log("Checking Queue for: [{0}] or [{1}]", rssTitle, rssTitleFix);
+                Logger.Log("Checking Queue for  : [{0}] or [{1}]", rssTitle, rssTitleFix);
 
                 string queueRssUrl = String.Format(Config.SabRequest, "mode=queue&output=xml");
 

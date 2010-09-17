@@ -6,7 +6,7 @@
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{FF5EE3B6-913B-47CE-9CEB-11C51B4E1205}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SABSync</RootNamespace>
     <AssemblyName>SABSync</AssemblyName>
@@ -115,6 +115,9 @@
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="RSS.NET, Version=0.86.3627.40828, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -132,8 +135,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>References\System.Data.SQLite.Linq.dll</HintPath>
     </Reference>
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -142,14 +147,36 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.cs" />
+    <Compile Include="ConfigSettingsOld.cs" />
+    <Compile Include="ConfigSettings.cs" />
+    <Compile Include="Database.cs" />
     <Compile Include="Episode.cs" />
     <Compile Include="FeedInfo.cs" />
     <Compile Include="FeedItem.cs" />
+    <Compile Include="frmAbout.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmAbout.Designer.cs">
+      <DependentUpon>frmAbout.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmOptions.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmOptions.Designer.cs">
+      <DependentUpon>frmOptions.cs</DependentUpon>
+    </Compile>
     <Compile Include="Logger.cs" />
     <Compile Include="NzbInfo.cs" />
     <Compile Include="NzbSite.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="frmMain.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="SabService.cs" />
     <Compile Include="SABSync.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -160,9 +187,13 @@
     <Compile Include="ShowQuality.cs" />
     <Compile Include="SQLite.cs" />
     <Compile Include="SyncJob.cs" />
-    <Compile Include="Config.cs" />
+    <Compile Include="ConfigOld.cs" />
+    <Compile Include="TvDbEpisodeInfo.cs" />
+    <Compile Include="TvDbShowInfo.cs" />
     <Compile Include="TvDbService.cs" />
+    <Compile Include="TvDbUpdates.cs" />
     <Compile Include="TvRage.cs" />
+    <Compile Include="Config.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="References\RSS.NET.dll" />
@@ -173,6 +204,9 @@
     </Content>
     <Content Include="References\System.Data.SQLite.XML" />
     <Content Include="SABSync.ico" />
+    <Content Include="Settings.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="Alias.config">
@@ -180,6 +214,13 @@
     </None>
     <None Include="App.config">
       <SubType>Designer</SubType>
+    </None>
+    <None Include="Properties\DataSources\histories.datasource" />
+    <None Include="Properties\DataSources\SABSyncEntities.datasource" />
+    <None Include="Properties\DataSources\shows.datasource" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <None Include="RSS.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -213,6 +254,19 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="frmAbout.resx">
+      <DependentUpon>frmAbout.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmMain.resx">
+      <DependentUpon>frmMain.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmOptions.resx">
+      <DependentUpon>frmOptions.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
