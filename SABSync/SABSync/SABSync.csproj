@@ -158,7 +158,6 @@
       <DependentUpon>AboutBox.cs</DependentUpon>
     </Compile>
     <Compile Include="App.cs" />
-    <Compile Include="ConfigSettingsOld.cs" />
     <Compile Include="ConfigSettings.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="Episode.cs" />
@@ -198,13 +197,11 @@
     <Compile Include="ShowQuality.cs" />
     <Compile Include="SQLite.cs" />
     <Compile Include="SyncJob.cs" />
-    <Compile Include="ConfigOld.cs" />
     <Compile Include="TvDbEpisodeInfo.cs" />
     <Compile Include="TvDbShowInfo.cs" />
     <Compile Include="TvDbService.cs" />
-    <Compile Include="TvDbUpdates.cs" />
-    <Compile Include="TvRage.cs" />
     <Compile Include="Config.cs" />
+    <Compile Include="TvDbUpdates.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="References\ObjectListView.dll" />
@@ -221,9 +218,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Alias.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
@@ -233,12 +227,6 @@
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <None Include="RSS.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Quality.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <EntityDeploy Include="SABSync.edmx">
       <Generator>EntityModelCodeGenerator</Generator>

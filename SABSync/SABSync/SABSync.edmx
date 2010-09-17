@@ -363,7 +363,7 @@
   <Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
     <Connection>
       <DesignerInfoPropertySet>
-        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="CopyToOutputDirectory" />
       </DesignerInfoPropertySet>
     </Connection>
     <Options>
@@ -376,25 +376,24 @@
     <!-- Diagram content (shape and connector positions) -->
     <Diagrams>
       <Diagram Name="SABSync" ZoomLevel="98">
-        <EntityTypeShape EntityType="SABSyncModel.episodes" Width="1.5" PointX="3" PointY="1.875" Height="3.1340950520833335" />
-        <EntityTypeShape EntityType="SABSyncModel.histories" Width="1.5" PointX="5.25" PointY="2" Height="2.9417936197916656" />
+        <EntityTypeShape EntityType="SABSyncModel.episodes" Width="1.5" PointX="3.375" PointY="1.25" Height="3.1340950520833335" />
+        <EntityTypeShape EntityType="SABSyncModel.histories" Width="1.5" PointX="5.875" PointY="2.375" Height="2.9417936197916656" />
         <AssociationConnector Association="SABSyncModel.FK_histories_0" >
-          <ConnectorPoint PointX="4.5" PointY="3.4708968098958328" />
-          <ConnectorPoint PointX="5.25" PointY="3.4708968098958328" />
+          <ConnectorPoint PointX="4.875" PointY="3.3795475260416667" />
+          <ConnectorPoint PointX="5.875" PointY="3.3795475260416667" />
         </AssociationConnector>
-        <EntityTypeShape EntityType="SABSyncModel.info" Width="1.5" PointX="5.375" PointY="5.75" Height="1.4033821614583317" />
-        <EntityTypeShape EntityType="SABSyncModel.shows" Width="1.5" PointX="0.75" PointY="1" Height="4.8648079427083326" />
+        <EntityTypeShape EntityType="SABSyncModel.info" Width="2.625" PointX="4.75" PointY="6" Height="1.4033821614583317" />
+        <EntityTypeShape EntityType="SABSyncModel.shows" Width="1.5" PointX="0.625" PointY="0.5" Height="4.8648079427083326" />
         <AssociationConnector Association="SABSyncModel.FK_episodes_0" >
-          <ConnectorPoint PointX="2.25" PointY="3.4420475260416659" />
-          <ConnectorPoint PointX="3" PointY="3.4420475260416659" />
+          <ConnectorPoint PointX="2.125" PointY="2.8170475260416667" />
+          <ConnectorPoint PointX="3.375" PointY="2.8170475260416667" />
         </AssociationConnector>
-        <AssociationConnector Association="SABSyncModel.FK_histories_1" >
-          <ConnectorPoint PointX="2.25" PointY="5.3795475260416659" />
-          <ConnectorPoint PointX="5.28125" PointY="5.3795475260416659" />
-          <ConnectorPoint PointX="5.28125" PointY="4.9417936197916656" />
+        <AssociationConnector Association="SABSyncModel.FK_histories_1" ManuallyRouted="true" >
+          <ConnectorPoint PointX="2.125" PointY="4.8816943359375" />
+          <ConnectorPoint PointX="5.875" PointY="4.8816943359375" />
         </AssociationConnector>
-        <EntityTypeShape EntityType="SABSyncModel.qualities" Width="1.5" PointX="0.75" PointY="6.75" Height="1.4033821614583317" />
-        <EntityTypeShape EntityType="SABSyncModel.providers" Width="1.5" PointX="7.375" PointY="0.75" Height="1.5956835937499996" />
+        <EntityTypeShape EntityType="SABSyncModel.qualities" Width="2.875" PointX="0.625" PointY="6" Height="1.4033821614583317" />
+        <EntityTypeShape EntityType="SABSyncModel.providers" Width="1.5" PointX="8.125" PointY="0.75" Height="1.5956835937499996" />
       </Diagram>
     </Diagrams>
   </Designer>

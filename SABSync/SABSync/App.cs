@@ -7,7 +7,6 @@ namespace SABSync
     public class App
     {
         private static readonly Assembly Assembly = Assembly.GetExecutingAssembly();
-        private static readonly AssemblyName AssemblyName = Assembly.GetName();
         private static readonly DateTime LastWriteTime = File.GetLastWriteTime(Assembly.Location);
 
         public static string ExecutablePath
@@ -21,12 +20,12 @@ namespace SABSync
 
         public static string Name
         {
-            get { return AssemblyName.Name; }
+            get { return Assembly.GetName().Name; }
         }
 
         public static string Version
         {
-            get { return AssemblyName.Version.ToString(); }
+            get { return Assembly.GetName().Version.ToString(); }
         }
 
         public static DateTime BuildDate
