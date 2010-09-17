@@ -14,7 +14,7 @@ namespace SABSync
         private Logger Logger = new Logger();
         public Dictionary<int, string> QualityTable = new Dictionary<int, string>(); //Used to store the quality table
         private Config Config = new Config();
-        private frmMain frmMain;
+        private FrmMain frmMain;
 
         public Database()
             : this(new TvDbService())
@@ -30,7 +30,7 @@ namespace SABSync
             QualityTable.Add(2, "720p");
         }
 
-        public Database(frmMain form)
+        public Database(FrmMain form)
             : this(new TvDbService())
         {
             frmMain = form;

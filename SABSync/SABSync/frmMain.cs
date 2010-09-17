@@ -13,7 +13,7 @@ using BrightIdeasSoftware;
 
 namespace SABSync
 {
-    public class frmMain : System.Windows.Forms.Form
+    public class FrmMain : System.Windows.Forms.Form
     {
         private NotifyIcon notifyIconTray;
         private System.ComponentModel.IContainer components;
@@ -36,7 +36,6 @@ namespace SABSync
         private ToolStripMenuItem optionsToolStripMenuItem1;
         private DataGridView dataGridViewShows;
         private BindingSource showsBindingSource;
-        private DataGridView dataGridViewHistory;
         private BindingSource sABSyncEntitiesBindingSource1;
         private BindingSource sABSyncEntitiesBindingSource;
         private BindingSource historiesBindingSource;
@@ -75,12 +74,25 @@ namespace SABSync
         private TableLayoutPanel tableLayoutPanelHistory;
         private TableLayoutPanel tableLayoutPanelFeeds;
         private BrightIdeasSoftware.ObjectListView objectListViewFeeds;
-        private OLVColumn id;
-        private OLVColumn name;
-        private OLVColumn url;
+        private OLVColumn feed_id;
+        private OLVColumn feed_name;
+        private OLVColumn feed_url;
+        private TableLayoutPanel tableLayoutPanel1;
+        private Button btnAddFeed;
+        private Button btnDelete;
+        private ObjectListView objectListViewHistory;
+        private OLVColumn history_show_name;
+        private OLVColumn history_season_number;
+        private OLVColumn history_episode_number;
+        private OLVColumn history_episode_name;
+        private OLVColumn history_feed_title;
+        private OLVColumn history_quality;
+        private OLVColumn history_proper;
+        private OLVColumn history_provider;
+        private OLVColumn history_date;
         private Config Config = new Config();
 
-        frmMain()
+        FrmMain()
         {
             InitializeComponent();
         }
@@ -90,16 +102,16 @@ namespace SABSync
         {
             Application.EnableVisualStyles();
             
-            Application.Run(new frmMain());
+            Application.Run(new FrmMain());
         }
 
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMain));
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle16 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle17 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle18 = new System.Windows.Forms.DataGridViewCellStyle();
             this.notifyIconTray = new System.Windows.Forms.NotifyIcon(this.components);
             this.contextMenuStripTray = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStripMenuItemExit = new System.Windows.Forms.ToolStripMenuItem();
@@ -130,11 +142,14 @@ namespace SABSync
             this.btnScanNewShows = new System.Windows.Forms.Button();
             this.tabHistory = new System.Windows.Forms.TabPage();
             this.tableLayoutPanelHistory = new System.Windows.Forms.TableLayoutPanel();
-            this.dataGridViewHistory = new System.Windows.Forms.DataGridView();
             this.tabPageFeeds = new System.Windows.Forms.TabPage();
             this.tableLayoutPanelFeeds = new System.Windows.Forms.TableLayoutPanel();
             this.objectListViewFeeds = new BrightIdeasSoftware.ObjectListView();
-            this.id = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.feed_id = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.feed_name = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.feed_url = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.btnAddFeed = new System.Windows.Forms.Button();
             this.menuStripMain = new System.Windows.Forms.MenuStrip();
             this.toolStripMenuItemFile = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemRun = new System.Windows.Forms.ToolStripMenuItem();
@@ -155,8 +170,17 @@ namespace SABSync
             this.StatusStripLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.timerUpdateCache = new System.Windows.Forms.Timer(this.components);
             this.tableLayoutPanelMain = new System.Windows.Forms.TableLayoutPanel();
-            this.name = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.url = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.btnDelete = new System.Windows.Forms.Button();
+            this.objectListViewHistory = new BrightIdeasSoftware.ObjectListView();
+            this.history_show_name = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.history_season_number = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.history_episode_number = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.history_episode_name = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.history_feed_title = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.history_quality = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.history_proper = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.history_provider = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.history_date = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.contextMenuStripTray.SuspendLayout();
             this.tabControlMain.SuspendLayout();
             this.tabShows.SuspendLayout();
@@ -165,16 +189,17 @@ namespace SABSync
             ((System.ComponentModel.ISupportInitialize)(this.showsBindingSource)).BeginInit();
             this.tabHistory.SuspendLayout();
             this.tableLayoutPanelHistory.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewHistory)).BeginInit();
             this.tabPageFeeds.SuspendLayout();
             this.tableLayoutPanelFeeds.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.objectListViewFeeds)).BeginInit();
+            this.tableLayoutPanel1.SuspendLayout();
             this.menuStripMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.sABSyncEntitiesBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.sABSyncEntitiesBindingSource1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.historiesBindingSource)).BeginInit();
             this.statusMain.SuspendLayout();
             this.tableLayoutPanelMain.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.objectListViewHistory)).BeginInit();
             this.SuspendLayout();
             // 
             // notifyIconTray
@@ -251,14 +276,14 @@ namespace SABSync
             this.dataGridViewShows.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dataGridViewShows.BackgroundColor = System.Drawing.SystemColors.ControlLightLight;
             this.dataGridViewShows.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewShows.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle16.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle16.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle16.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle16.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle16.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle16.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle16.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewShows.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle16;
             this.dataGridViewShows.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridViewShows.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.idDataGridViewTextBoxColumn,
@@ -280,26 +305,26 @@ namespace SABSync
             this.genreDataGridViewTextBoxColumn,
             this.overviewDataGridViewTextBoxColumn});
             this.dataGridViewShows.DataSource = this.showsBindingSource;
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle8.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridViewShows.DefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle17.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle17.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle17.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle17.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle17.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle17.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle17.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridViewShows.DefaultCellStyle = dataGridViewCellStyle17;
             this.dataGridViewShows.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridViewShows.Location = new System.Drawing.Point(1, 1);
             this.dataGridViewShows.Margin = new System.Windows.Forms.Padding(1);
             this.dataGridViewShows.Name = "dataGridViewShows";
-            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle9.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle9.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle9.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle9.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle9.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewShows.RowHeadersDefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle18.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle18.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle18.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle18.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle18.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle18.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle18.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewShows.RowHeadersDefaultCellStyle = dataGridViewCellStyle18;
             this.dataGridViewShows.Size = new System.Drawing.Size(966, 428);
             this.dataGridViewShows.TabIndex = 0;
             this.dataGridViewShows.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewShows_CellEndEdit);
@@ -454,7 +479,7 @@ namespace SABSync
             // 
             this.tableLayoutPanelHistory.ColumnCount = 1;
             this.tableLayoutPanelHistory.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanelHistory.Controls.Add(this.dataGridViewHistory, 0, 0);
+            this.tableLayoutPanelHistory.Controls.Add(this.objectListViewHistory, 0, 0);
             this.tableLayoutPanelHistory.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanelHistory.Location = new System.Drawing.Point(3, 3);
             this.tableLayoutPanelHistory.Name = "tableLayoutPanelHistory";
@@ -463,19 +488,6 @@ namespace SABSync
             this.tableLayoutPanelHistory.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5.711944F));
             this.tableLayoutPanelHistory.Size = new System.Drawing.Size(968, 456);
             this.tableLayoutPanelHistory.TabIndex = 1;
-            // 
-            // dataGridViewHistory
-            // 
-            this.dataGridViewHistory.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dataGridViewHistory.BackgroundColor = System.Drawing.Color.White;
-            this.dataGridViewHistory.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.dataGridViewHistory.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridViewHistory.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGridViewHistory.Location = new System.Drawing.Point(1, 1);
-            this.dataGridViewHistory.Margin = new System.Windows.Forms.Padding(1);
-            this.dataGridViewHistory.Name = "dataGridViewHistory";
-            this.dataGridViewHistory.Size = new System.Drawing.Size(966, 427);
-            this.dataGridViewHistory.TabIndex = 0;
             // 
             // tabPageFeeds
             // 
@@ -493,40 +505,94 @@ namespace SABSync
             this.tableLayoutPanelFeeds.ColumnCount = 1;
             this.tableLayoutPanelFeeds.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanelFeeds.Controls.Add(this.objectListViewFeeds, 0, 0);
+            this.tableLayoutPanelFeeds.Controls.Add(this.tableLayoutPanel1, 0, 1);
             this.tableLayoutPanelFeeds.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanelFeeds.Location = new System.Drawing.Point(3, 3);
             this.tableLayoutPanelFeeds.Name = "tableLayoutPanelFeeds";
             this.tableLayoutPanelFeeds.RowCount = 2;
-            this.tableLayoutPanelFeeds.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 90.09009F));
-            this.tableLayoutPanelFeeds.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 9.90991F));
+            this.tableLayoutPanelFeeds.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 94.24626F));
+            this.tableLayoutPanelFeeds.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5.753735F));
+            this.tableLayoutPanelFeeds.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanelFeeds.Size = new System.Drawing.Size(968, 456);
             this.tableLayoutPanelFeeds.TabIndex = 1;
             // 
             // objectListViewFeeds
             // 
-            this.objectListViewFeeds.AllColumns.Add(this.id);
-            this.objectListViewFeeds.AllColumns.Add(this.name);
-            this.objectListViewFeeds.AllColumns.Add(this.url);
+            this.objectListViewFeeds.AllColumns.Add(this.feed_id);
+            this.objectListViewFeeds.AllColumns.Add(this.feed_name);
+            this.objectListViewFeeds.AllColumns.Add(this.feed_url);
+            this.objectListViewFeeds.AlternateRowBackColor = System.Drawing.SystemColors.ButtonFace;
+            this.objectListViewFeeds.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.DoubleClick;
             this.objectListViewFeeds.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.id,
-            this.name,
-            this.url});
+            this.feed_id,
+            this.feed_name,
+            this.feed_url});
             this.objectListViewFeeds.Dock = System.Windows.Forms.DockStyle.Fill;
             this.objectListViewFeeds.FullRowSelect = true;
             this.objectListViewFeeds.Location = new System.Drawing.Point(3, 3);
             this.objectListViewFeeds.MultiSelect = false;
             this.objectListViewFeeds.Name = "objectListViewFeeds";
             this.objectListViewFeeds.ShowGroups = false;
-            this.objectListViewFeeds.Size = new System.Drawing.Size(962, 404);
+            this.objectListViewFeeds.Size = new System.Drawing.Size(962, 423);
             this.objectListViewFeeds.TabIndex = 0;
+            this.objectListViewFeeds.UseAlternatingBackColors = true;
             this.objectListViewFeeds.UseCompatibleStateImageBehavior = false;
             this.objectListViewFeeds.View = System.Windows.Forms.View.Details;
+            this.objectListViewFeeds.CellEditFinishing += new BrightIdeasSoftware.CellEditEventHandler(this.objectListViewFeeds_CellEditFinishing);
             // 
-            // id
+            // feed_id
             // 
-            this.id.AspectName = "id";
-            this.id.IsVisible = false;
-            this.id.Text = "ID";
+            this.feed_id.AspectName = "id";
+            this.feed_id.IsEditable = false;
+            this.feed_id.IsVisible = false;
+            this.feed_id.MaximumWidth = 0;
+            this.feed_id.MinimumWidth = 0;
+            this.feed_id.Text = "ID";
+            this.feed_id.Width = 0;
+            // 
+            // feed_name
+            // 
+            this.feed_name.AspectName = "name";
+            this.feed_name.MaximumWidth = 200;
+            this.feed_name.MinimumWidth = 200;
+            this.feed_name.Text = "Name";
+            this.feed_name.Width = 200;
+            // 
+            // feed_url
+            // 
+            this.feed_url.AspectName = "url";
+            this.feed_url.FillsFreeSpace = true;
+            this.feed_url.Text = "URL";
+            this.feed_url.Width = 400;
+            // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.ColumnCount = 4;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 362F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 84F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 86F));
+            this.tableLayoutPanel1.Controls.Add(this.btnAddFeed, 3, 0);
+            this.tableLayoutPanel1.Controls.Add(this.btnDelete, 2, 0);
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 429);
+            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 1;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(968, 27);
+            this.tableLayoutPanel1.TabIndex = 1;
+            // 
+            // btnAddFeed
+            // 
+            this.btnAddFeed.Location = new System.Drawing.Point(882, 0);
+            this.btnAddFeed.Margin = new System.Windows.Forms.Padding(0);
+            this.btnAddFeed.Name = "btnAddFeed";
+            this.btnAddFeed.Size = new System.Drawing.Size(75, 25);
+            this.btnAddFeed.TabIndex = 0;
+            this.btnAddFeed.Text = "Add";
+            this.btnAddFeed.UseVisualStyleBackColor = true;
+            this.btnAddFeed.Click += new System.EventHandler(this.btnAddFeed_Click);
             // 
             // menuStripMain
             // 
@@ -678,28 +744,128 @@ namespace SABSync
             this.tableLayoutPanelMain.Size = new System.Drawing.Size(984, 532);
             this.tableLayoutPanelMain.TabIndex = 4;
             // 
-            // name
+            // btnDelete
             // 
-            this.name.AspectName = "name";
-            this.name.MaximumWidth = 200;
-            this.name.MinimumWidth = 200;
-            this.name.Text = "Name";
-            this.name.Width = 200;
+            this.btnDelete.Location = new System.Drawing.Point(798, 0);
+            this.btnDelete.Margin = new System.Windows.Forms.Padding(0);
+            this.btnDelete.Name = "btnDelete";
+            this.btnDelete.Size = new System.Drawing.Size(75, 25);
+            this.btnDelete.TabIndex = 1;
+            this.btnDelete.Text = "Delete";
+            this.btnDelete.UseVisualStyleBackColor = true;
+            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
             // 
-            // url
+            // objectListViewHistory
             // 
-            this.url.AspectName = "url";
-            this.url.FillsFreeSpace = true;
-            this.url.Text = "URL";
-            this.url.Width = 400;
+            this.objectListViewHistory.AllColumns.Add(this.history_show_name);
+            this.objectListViewHistory.AllColumns.Add(this.history_season_number);
+            this.objectListViewHistory.AllColumns.Add(this.history_episode_number);
+            this.objectListViewHistory.AllColumns.Add(this.history_episode_name);
+            this.objectListViewHistory.AllColumns.Add(this.history_feed_title);
+            this.objectListViewHistory.AllColumns.Add(this.history_quality);
+            this.objectListViewHistory.AllColumns.Add(this.history_proper);
+            this.objectListViewHistory.AllColumns.Add(this.history_provider);
+            this.objectListViewHistory.AllColumns.Add(this.history_date);
+            this.objectListViewHistory.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.history_show_name,
+            this.history_season_number,
+            this.history_episode_number,
+            this.history_episode_name,
+            this.history_feed_title,
+            this.history_quality,
+            this.history_proper,
+            this.history_provider,
+            this.history_date});
+            this.objectListViewHistory.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.objectListViewHistory.FullRowSelect = true;
+            this.objectListViewHistory.Location = new System.Drawing.Point(3, 3);
+            this.objectListViewHistory.Name = "objectListViewHistory";
+            this.objectListViewHistory.ShowItemCountOnGroups = true;
+            this.objectListViewHistory.Size = new System.Drawing.Size(962, 423);
+            this.objectListViewHistory.TabIndex = 0;
+            this.objectListViewHistory.UseCompatibleStateImageBehavior = false;
+            this.objectListViewHistory.View = System.Windows.Forms.View.Details;
+            this.objectListViewHistory.SelectedIndexChanged += new System.EventHandler(this.objectListViewHistory_SelectedIndexChanged);
             // 
-            // frmMain
+            // history_show_name
+            // 
+            this.history_show_name.AspectName = "show_name";
+            this.history_show_name.FillsFreeSpace = true;
+            this.history_show_name.MinimumWidth = 80;
+            this.history_show_name.Text = "Show Name";
+            this.history_show_name.Width = 100;
+            // 
+            // history_season_number
+            // 
+            this.history_season_number.AspectName = "season_number";
+            this.history_season_number.FillsFreeSpace = true;
+            this.history_season_number.MaximumWidth = 90;
+            this.history_season_number.MinimumWidth = 90;
+            this.history_season_number.Text = "Season Number";
+            this.history_season_number.Width = 90;
+            // 
+            // history_episode_number
+            // 
+            this.history_episode_number.AspectName = "episode_number";
+            this.history_episode_number.FillsFreeSpace = true;
+            this.history_episode_number.MaximumWidth = 90;
+            this.history_episode_number.MinimumWidth = 90;
+            this.history_episode_number.Text = "Episode Number";
+            this.history_episode_number.Width = 90;
+            // 
+            // history_episode_name
+            // 
+            this.history_episode_name.AspectName = "episode_name";
+            this.history_episode_name.MinimumWidth = 90;
+            this.history_episode_name.Text = "Episode Name";
+            this.history_episode_name.Width = 90;
+            // 
+            // history_feed_title
+            // 
+            this.history_feed_title.AspectName = "feed_title";
+            this.history_feed_title.FillsFreeSpace = true;
+            this.history_feed_title.MinimumWidth = 160;
+            this.history_feed_title.Text = "Feed Title";
+            this.history_feed_title.Width = 160;
+            // 
+            // history_quality
+            // 
+            this.history_quality.AspectName = "quality";
+            this.history_quality.MaximumWidth = 50;
+            this.history_quality.MinimumWidth = 50;
+            this.history_quality.Text = "Quality";
+            this.history_quality.Width = 50;
+            // 
+            // history_proper
+            // 
+            this.history_proper.AspectName = "proper";
+            this.history_proper.MaximumWidth = 50;
+            this.history_proper.MinimumWidth = 50;
+            this.history_proper.Text = "Proper";
+            this.history_proper.Width = 50;
+            // 
+            // history_provider
+            // 
+            this.history_provider.AspectName = "provider";
+            this.history_provider.MaximumWidth = 120;
+            this.history_provider.MinimumWidth = 60;
+            this.history_provider.Text = "Provider";
+            // 
+            // history_date
+            // 
+            this.history_date.AspectName = "date";
+            this.history_date.MaximumWidth = 150;
+            this.history_date.MinimumWidth = 150;
+            this.history_date.Text = "Date";
+            this.history_date.Width = 150;
+            // 
+            // FrmMain
             // 
             this.ClientSize = new System.Drawing.Size(984, 532);
             this.Controls.Add(this.tableLayoutPanelMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStripMain;
-            this.Name = "frmMain";
+            this.Name = "FrmMain";
             this.Text = "SABSync";
             this.Load += new System.EventHandler(this.Program_Load);
             this.Resize += new System.EventHandler(this.FrmMain_Resize);
@@ -711,10 +877,10 @@ namespace SABSync
             ((System.ComponentModel.ISupportInitialize)(this.showsBindingSource)).EndInit();
             this.tabHistory.ResumeLayout(false);
             this.tableLayoutPanelHistory.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewHistory)).EndInit();
             this.tabPageFeeds.ResumeLayout(false);
             this.tableLayoutPanelFeeds.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.objectListViewFeeds)).EndInit();
+            this.tableLayoutPanel1.ResumeLayout(false);
             this.menuStripMain.ResumeLayout(false);
             this.menuStripMain.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.sABSyncEntitiesBindingSource)).EndInit();
@@ -724,6 +890,7 @@ namespace SABSync
             this.statusMain.PerformLayout();
             this.tableLayoutPanelMain.ResumeLayout(false);
             this.tableLayoutPanelMain.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.objectListViewHistory)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -838,8 +1005,8 @@ namespace SABSync
 
         private void optionsToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            frmOptions frmOptions = new frmOptions();
-            frmOptions.Visible = true;
+            FrmOptions frmOptions = new FrmOptions();
+            frmOptions.ShowDialog();
             frmOptions.FormClosed +=new FormClosedEventHandler(frmOptions_FormClosed);
         }
 
@@ -894,16 +1061,16 @@ namespace SABSync
                                           h.date
                                       };
 
-                dataGridViewHistory.DataSource = history.ToList();
-                dataGridViewHistory.Columns[0].HeaderText = "Show Name";
-                dataGridViewHistory.Columns[1].HeaderText = "Season Number";
-                dataGridViewHistory.Columns[2].HeaderText = "Episode Number";
-                dataGridViewHistory.Columns[3].HeaderText = "Episode Name";
-                dataGridViewHistory.Columns[4].HeaderText = "Feed Title";
-                dataGridViewHistory.Columns[5].HeaderText = "Quality";
-                dataGridViewHistory.Columns[6].HeaderText = "Proper";
-                dataGridViewHistory.Columns[7].HeaderText = "Provider";
-                dataGridViewHistory.Columns[8].HeaderText = "Date";
+                objectListViewHistory.SetObjects(history.ToList());
+                //dataGridViewHistory.Columns[0].HeaderText = "Show Name";
+                //dataGridViewHistory.Columns[1].HeaderText = "Season Number";
+                //dataGridViewHistory.Columns[2].HeaderText = "Episode Number";
+                //dataGridViewHistory.Columns[3].HeaderText = "Episode Name";
+                //dataGridViewHistory.Columns[4].HeaderText = "Feed Title";
+                //dataGridViewHistory.Columns[5].HeaderText = "Quality";
+                //dataGridViewHistory.Columns[6].HeaderText = "Proper";
+                //dataGridViewHistory.Columns[7].HeaderText = "Provider";
+                //dataGridViewHistory.Columns[8].HeaderText = "Date";
             }
         }
 
@@ -1090,6 +1257,83 @@ namespace SABSync
         private void websiteToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Process.Start("http://code.google.com/p/sabscripts/");
+        }
+
+        private void objectListViewFeeds_CellEditFinishing(object sender, CellEditEventArgs e)
+        {
+            string columnName = e.Column.Text.ToLower();
+            string oldValue = e.Value.ToString();
+            string newValue = e.NewValue.ToString();
+
+            if (e.Cancel)
+                return;
+
+            if (columnName.Equals("url", StringComparison.InvariantCultureIgnoreCase))
+            {
+                using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
+                {
+                    var feed = (from f in sabSyncEntities.providers where f.url.Equals(oldValue) select f).First();
+
+                    feed.url = newValue;
+                    sabSyncEntities.providers.ApplyCurrentValues(feed);
+                    sabSyncEntities.SaveChanges();
+                }
+            }
+
+            if (columnName.Equals("name", StringComparison.InvariantCultureIgnoreCase))
+            {
+                using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
+                {
+                    var feed = (from f in sabSyncEntities.providers where f.name.Equals(oldValue) select f).First();
+
+                    feed.name = newValue;
+                    sabSyncEntities.providers.ApplyCurrentValues(feed);
+                    sabSyncEntities.SaveChanges();
+                }
+            }
+        }
+
+        private void btnAddFeed_Click(object sender, EventArgs e)
+        {
+            FrmAddFeed frmAddFeed = new FrmAddFeed();
+            frmAddFeed.ShowDialog();
+            frmAddFeed.FormClosed +=new FormClosedEventHandler(frmAddFeed_FormClosed);
+        }
+
+        private void frmAddFeed_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            //Update objectListViewFeeds
+            
+            using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
+            {
+                var feeds = from f in sabSyncEntities.providers select f;
+                objectListViewFeeds.SetObjects(feeds.ToList());
+            }
+        }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            //Get Selected Row and Delete it from DB and reload table
+
+            if (MessageBox.Show("Are you sure you want to delete this feed?", "Confirm Delete", MessageBoxButtons.YesNo) != DialogResult.Yes)
+                return;
+
+            int id = Convert.ToInt32(objectListViewFeeds.SelectedItem.Text);
+
+            using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
+            {
+                var delete = (from d in sabSyncEntities.providers where d.id == id select d).First();
+                sabSyncEntities.providers.DeleteObject(delete);
+                sabSyncEntities.SaveChanges();
+
+                var feeds = from f in sabSyncEntities.providers select f;
+                objectListViewFeeds.SetObjects(feeds.ToList());
+            }
+        }
+
+        private void objectListViewHistory_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

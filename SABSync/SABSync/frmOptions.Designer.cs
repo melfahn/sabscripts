@@ -1,6 +1,6 @@
 ﻿namespace SABSync
 {
-    partial class frmOptions
+    partial class FrmOptions
     {
         /// <summary>
         /// Required designer variable.

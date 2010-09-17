@@ -14,7 +14,7 @@ using System.Xml;
 
 namespace SABSync
 {
-    public partial class frmOptions : Form
+    public partial class FrmOptions : Form
     {
         private bool isFormChanged;
 
@@ -70,7 +70,7 @@ namespace SABSync
             btnApply.Enabled = true;
         }
 
-        public frmOptions()
+        public FrmOptions()
         {
             InitializeComponent();
             LoadConfig();
