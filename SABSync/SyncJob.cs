@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using Rss;
+using SABSync.Entities;
+using SABSync.TvDb;
 
 namespace SABSync
 {
@@ -588,7 +590,7 @@ namespace SABSync
             //TODO Move this to Database
 
             Logger.Log("Checking SABSync.db for: [{0}]", episode.FeedItem.TitleFix);
-            using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
+            using (var sabSyncEntities = new SABSyncEntities())
             {
                 var ep = (from e in sabSyncEntities.histories
                           where

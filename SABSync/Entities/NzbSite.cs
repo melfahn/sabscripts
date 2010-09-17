@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace SABSync
+namespace SABSync.Entities
 {
     public class NzbSite
     {

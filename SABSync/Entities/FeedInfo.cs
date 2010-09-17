@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace SABSync
+namespace SABSync.Entities
 {
     public class FeedInfo
     {

@@ -2,6 +2,7 @@
 using System.Collections.Specialized;
 using System.IO;
 using NUnit.Framework;
+using SABSync.Entities;
 
 namespace SABSync.Tests
 {

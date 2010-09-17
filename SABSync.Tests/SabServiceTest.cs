@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Xml.Linq;
 using NUnit.Framework;
+using SABSync.Entities;
 
 namespace SABSync.Tests
 {

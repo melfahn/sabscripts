@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SABSync
+namespace SABSync.TvDb
 {
     public class TvDbShowInfo
     {

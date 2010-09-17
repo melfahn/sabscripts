@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using SABSync.Entities;
+using SABSync.TvDb;
 
 namespace SABSync
 {
@@ -56,7 +58,7 @@ namespace SABSync
 
             try
             {
-                using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
+                using (var sabSyncEntities = new SABSyncEntities())
                 {
                     if (sabSyncEntities.shows.Any(s => s.show_name == showName)) //If show was already added...skip it (Use local disk name)
                         return;
@@ -304,7 +306,7 @@ namespace SABSync
             //Check if Episode is in table, if not, add it!
             try
             {
-                using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
+                using (var sabSyncEntities = new SABSyncEntities())
                 {
                     var shows = from s in sabSyncEntities.shows
                                 where s.tvdb_id == seriesId
@@ -318,7 +320,7 @@ namespace SABSync
                         if (sabSyncEntities.episodes.Any(e => e.tvdb_id == episode.EpisodeId)) //If episode was already added...skip it (use the TVDB episode ID)
                             continue;
 
-                        episodes newItem = new episodes
+                        var newItem = new episodes
                         {
                             id = new long(),
                             show_id = shows.First().id,

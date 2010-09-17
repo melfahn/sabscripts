@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 
-namespace SABSync
+namespace SABSync.Entities
 {
     public class Episode
     {

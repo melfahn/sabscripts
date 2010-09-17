@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Xml;
 using System.Xml.Linq;
+using SABSync.Entities;
 
 namespace SABSync
 {

@@ -1,5 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
+using SABSync.Entities;
+using SABSync.TvDb;
 
 namespace SABSync.Tests
 {

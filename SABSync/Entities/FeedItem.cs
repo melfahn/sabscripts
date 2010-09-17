@@ -1,4 +1,4 @@
-﻿namespace SABSync
+﻿namespace SABSync.Entities
 {
     public class FeedItem
     {

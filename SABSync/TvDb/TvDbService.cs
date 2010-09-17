@@ -1,21 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
+using SABSync.Entities;
 
-namespace SABSync
+namespace SABSync.TvDb
 {
-    public interface ITvDbService
-    {
-        void GetEpisodeName(Episode episode);
-        TvDbShowInfo GetShowData(string seriesName);
-        TvDbEpisodeInfo GetEpisodeData(int episodeId);
-        int GetServerTime();
-        TvDbUpdates GetUpdates(int time);
-        TvDbShowInfo GetShowUpdates(int seriesId);
-    }
-
     public class TvDbService : ITvDbService
     {
         private const string TvDbApiKey = "5D2D188E86E07F4F";

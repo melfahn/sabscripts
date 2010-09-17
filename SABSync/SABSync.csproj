@@ -161,9 +161,9 @@
     <Compile Include="ConfigSettings.cs" />
     <Compile Include="ServiceLocator\Services.cs" />
     <Compile Include="Database.cs" />
-    <Compile Include="Episode.cs" />
-    <Compile Include="FeedInfo.cs" />
-    <Compile Include="FeedItem.cs" />
+    <Compile Include="Entities\Episode.cs" />
+    <Compile Include="Entities\FeedInfo.cs" />
+    <Compile Include="Entities\FeedItem.cs" />
     <Compile Include="FrmAddFeed.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -177,8 +177,8 @@
       <DependentUpon>FrmOptions.cs</DependentUpon>
     </Compile>
     <Compile Include="Logger.cs" />
-    <Compile Include="NzbInfo.cs" />
-    <Compile Include="NzbSite.cs" />
+    <Compile Include="Entities\NzbInfo.cs" />
+    <Compile Include="Entities\NzbSite.cs" />
     <Compile Include="FrmMain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -194,15 +194,16 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>SABSync.edmx</DependentUpon>
     </Compile>
-    <Compile Include="ShowAlias.cs" />
-    <Compile Include="ShowQuality.cs" />
+    <Compile Include="Entities\ShowAlias.cs" />
+    <Compile Include="Entities\ShowQuality.cs" />
     <Compile Include="SQLite.cs" />
     <Compile Include="SyncJob.cs" />
-    <Compile Include="TvDbEpisodeInfo.cs" />
+    <Compile Include="TvDb\ITvDbService.cs" />
+    <Compile Include="TvDb\TvDbEpisodeInfo.cs" />
     <Compile Include="Config.cs" />
-    <Compile Include="TvDbService.cs" />
-    <Compile Include="TvDbShowInfo.cs" />
-    <Compile Include="TvDbUpdates.cs" />
+    <Compile Include="TvDb\TvDbService.cs" />
+    <Compile Include="TvDb\TvDbShowInfo.cs" />
+    <Compile Include="TvDb\TvDbUpdates.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="References\ObjectListView.dll" />
