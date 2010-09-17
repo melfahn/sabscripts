@@ -14,12 +14,78 @@ namespace SABSync
 
         public void SetupDatabase()
         {
-            //Create new DB if it doesn't exist
-            //Create table if Database was created
-
+            //Create new DB
             CreateDatabase();
-            string historyTableCommand = "CREATE TABLE history(recordnumber INTEGER PRIMARY KEY, showname TEXT, showid NUMERIC, season NUMERIC, episode NUMERIC, episodename TEXT, feedtitle TEXT, quality NUMERIC, proper NUMERIC, provider TEXT, date TEXT)";
-            ExecuteNonQuery(historyTableCommand);
+
+            //Create tables
+            string shows =
+                @"CREATE TABLE shows(
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    show_name TEXT,
+                    tvdb_id INTEGER,
+                    tvdb_name TEXT,
+                    quality INTEGER,
+                    tvr_id INTEGER,
+                    tvr_name TEXT,
+	                ignore_season int,
+	                aliases TEXT,
+	                air_day TEXT,
+	                air_time TEXT,
+	                run_time INTEGER,
+	                status TEXT,
+	                poster_url TEXT,
+	                banner_url TEXT,
+	                imdb_id TEXT,
+	                genre TEXT,
+	                overview TEXT
+	                )";
+            
+            string episodes =
+                @"CREATE TABLE episodes(
+	               id INTEGER PRIMARY KEY AUTOINCREMENT,
+	               show_id INTEGER,
+	               season_number INTEGER,
+	               episode_number INTEGER,
+	               episode_name TEXT,
+	               air_date TEXT,
+	               tvdb_id INTEGER,
+	               tvr_id INTEGER,
+	               overview TEXT,
+	               FOREIGN KEY(show_id) REFERENCES shows(id)
+	               )";
+
+            string histories =
+                @"CREATE TABLE histories(
+	               id INTEGER PRIMARY KEY AUTOINCREMENT,
+	               show_id INTEGER,
+	               episode_id INTEGER,
+	               feed_title TEXT,
+	               quality INTERGER,
+	               proper INTEGER,
+	               provider TEXT,
+	               date TEXT,
+	               FOREIGN KEY(show_id) REFERENCES shows(id),
+	               FOREIGN KEY(episode_id) REFERENCES episodes(id)
+	               )";
+
+            string info =
+                @"CREATE TABLE info(
+	                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    last_tvdb INTEGER
+                    )";
+
+            string providers =
+                @"CREATE TABLE providers(
+                   id INTEGER PRIMARY KEY AUTOINCREMENT,
+                   name TEXT,
+                   url TEXT
+                   )";
+
+            ExecuteNonQuery(shows);
+            ExecuteNonQuery(episodes);
+            ExecuteNonQuery(histories);
+            ExecuteNonQuery(info);
+            ExecuteNonQuery(providers);
         }
 
         private void CreateDatabase()

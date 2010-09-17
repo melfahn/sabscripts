@@ -65,6 +65,9 @@ namespace SABSync
                     TvDbShowInfo info = new TvDbShowInfo();
                     info = TvDb.GetShowData(showName);
 
+                    if (info == null)
+                        return;
+
                     //string aliases = GetAliasForDb(showName, info.SeriesName);
                     int downloadQuality = GetQualityForDb();
 

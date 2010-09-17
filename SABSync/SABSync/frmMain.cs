@@ -1,14 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
-using System.IO;
+using System.IO; 
 using System.Windows.Forms;
 using System.Threading;
 using System.Linq;
 using System.Data.Objects;
-
+using BrightIdeasSoftware;
 
 namespace SABSync
 {
@@ -47,6 +48,10 @@ namespace SABSync
         private Logger Logger = new Logger();
         private Button btnScanNewShows;
         private StatusStrip statusMain;
+        private ToolStripStatusLabel StatusStripLabel;
+        private System.Windows.Forms.Timer timerUpdateCache;
+        private ToolStripMenuItem donateToolStripMenuItem;
+        private ToolStripMenuItem websiteToolStripMenuItem;
         private DataGridViewTextBoxColumn idDataGridViewTextBoxColumn;
         private DataGridViewTextBoxColumn shownameDataGridViewTextBoxColumn;
         private DataGridViewTextBoxColumn tvdbidDataGridViewTextBoxColumn;
@@ -65,10 +70,14 @@ namespace SABSync
         private DataGridViewTextBoxColumn imdbidDataGridViewTextBoxColumn;
         private DataGridViewTextBoxColumn genreDataGridViewTextBoxColumn;
         private DataGridViewTextBoxColumn overviewDataGridViewTextBoxColumn;
-        private DataGridViewTextBoxColumn episodesDataGridViewTextBoxColumn;
-        private DataGridViewTextBoxColumn historiesDataGridViewTextBoxColumn;
-        private ToolStripStatusLabel StatusStripLabel;
-        private System.Windows.Forms.Timer timerUpdateCache;
+        private TableLayoutPanel tableLayoutPanelShows;
+        private TableLayoutPanel tableLayoutPanelMain;
+        private TableLayoutPanel tableLayoutPanelHistory;
+        private TableLayoutPanel tableLayoutPanelFeeds;
+        private BrightIdeasSoftware.ObjectListView objectListViewFeeds;
+        private OLVColumn id;
+        private OLVColumn name;
+        private OLVColumn url;
         private Config Config = new Config();
 
         frmMain()
@@ -88,36 +97,17 @@ namespace SABSync
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
             this.notifyIconTray = new System.Windows.Forms.NotifyIcon(this.components);
             this.contextMenuStripTray = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStripMenuItemExit = new System.Windows.Forms.ToolStripMenuItem();
             this.timerSync = new System.Windows.Forms.Timer(this.components);
             this.tabControlMain = new System.Windows.Forms.TabControl();
             this.tabShows = new System.Windows.Forms.TabPage();
-            this.btnScanNewShows = new System.Windows.Forms.Button();
+            this.tableLayoutPanelShows = new System.Windows.Forms.TableLayoutPanel();
             this.dataGridViewShows = new System.Windows.Forms.DataGridView();
-            this.showsBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.tabHistory = new System.Windows.Forms.TabPage();
-            this.dataGridViewHistory = new System.Windows.Forms.DataGridView();
-            this.tabPageFeeds = new System.Windows.Forms.TabPage();
-            this.menuStripMain = new System.Windows.Forms.MenuStrip();
-            this.toolStripMenuItemFile = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItemRun = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
-            this.exitToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.optionsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItemHelp = new System.Windows.Forms.ToolStripMenuItem();
-            this.contentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.sABSyncEntitiesBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.sABSyncEntitiesBindingSource1 = new System.Windows.Forms.BindingSource(this.components);
-            this.historiesBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.statusMain = new System.Windows.Forms.StatusStrip();
             this.idDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.shownameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tvdbidDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -136,22 +126,55 @@ namespace SABSync
             this.imdbidDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.genreDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.overviewDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.episodesDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.historiesDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.showsBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.btnScanNewShows = new System.Windows.Forms.Button();
+            this.tabHistory = new System.Windows.Forms.TabPage();
+            this.tableLayoutPanelHistory = new System.Windows.Forms.TableLayoutPanel();
+            this.dataGridViewHistory = new System.Windows.Forms.DataGridView();
+            this.tabPageFeeds = new System.Windows.Forms.TabPage();
+            this.tableLayoutPanelFeeds = new System.Windows.Forms.TableLayoutPanel();
+            this.objectListViewFeeds = new BrightIdeasSoftware.ObjectListView();
+            this.id = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.menuStripMain = new System.Windows.Forms.MenuStrip();
+            this.toolStripMenuItemFile = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemRun = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
+            this.exitToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.optionsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemHelp = new System.Windows.Forms.ToolStripMenuItem();
+            this.contentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+            this.donateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.websiteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sABSyncEntitiesBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.sABSyncEntitiesBindingSource1 = new System.Windows.Forms.BindingSource(this.components);
+            this.historiesBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.statusMain = new System.Windows.Forms.StatusStrip();
             this.StatusStripLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.timerUpdateCache = new System.Windows.Forms.Timer(this.components);
+            this.tableLayoutPanelMain = new System.Windows.Forms.TableLayoutPanel();
+            this.name = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.url = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.contextMenuStripTray.SuspendLayout();
             this.tabControlMain.SuspendLayout();
             this.tabShows.SuspendLayout();
+            this.tableLayoutPanelShows.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewShows)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.showsBindingSource)).BeginInit();
             this.tabHistory.SuspendLayout();
+            this.tableLayoutPanelHistory.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewHistory)).BeginInit();
+            this.tabPageFeeds.SuspendLayout();
+            this.tableLayoutPanelFeeds.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.objectListViewFeeds)).BeginInit();
             this.menuStripMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.sABSyncEntitiesBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.sABSyncEntitiesBindingSource1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.historiesBindingSource)).BeginInit();
             this.statusMain.SuspendLayout();
+            this.tableLayoutPanelMain.SuspendLayout();
             this.SuspendLayout();
             // 
             // notifyIconTray
@@ -186,47 +209,56 @@ namespace SABSync
             this.tabControlMain.Controls.Add(this.tabShows);
             this.tabControlMain.Controls.Add(this.tabHistory);
             this.tabControlMain.Controls.Add(this.tabPageFeeds);
-            this.tabControlMain.Location = new System.Drawing.Point(2, 27);
+            this.tabControlMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControlMain.Location = new System.Drawing.Point(1, 23);
+            this.tabControlMain.Margin = new System.Windows.Forms.Padding(1, 1, 1, 0);
             this.tabControlMain.Name = "tabControlMain";
             this.tabControlMain.SelectedIndex = 0;
-            this.tabControlMain.Size = new System.Drawing.Size(980, 482);
+            this.tabControlMain.Size = new System.Drawing.Size(982, 488);
             this.tabControlMain.TabIndex = 1;
             // 
             // tabShows
             // 
-            this.tabShows.Controls.Add(this.btnScanNewShows);
-            this.tabShows.Controls.Add(this.dataGridViewShows);
+            this.tabShows.Controls.Add(this.tableLayoutPanelShows);
             this.tabShows.Location = new System.Drawing.Point(4, 22);
             this.tabShows.Name = "tabShows";
             this.tabShows.Padding = new System.Windows.Forms.Padding(3);
-            this.tabShows.Size = new System.Drawing.Size(972, 456);
+            this.tabShows.Size = new System.Drawing.Size(974, 462);
             this.tabShows.TabIndex = 0;
             this.tabShows.Text = "Shows";
             this.tabShows.UseVisualStyleBackColor = true;
             // 
-            // btnScanNewShows
+            // tableLayoutPanelShows
             // 
-            this.btnScanNewShows.Location = new System.Drawing.Point(891, 427);
-            this.btnScanNewShows.Name = "btnScanNewShows";
-            this.btnScanNewShows.Size = new System.Drawing.Size(75, 23);
-            this.btnScanNewShows.TabIndex = 1;
-            this.btnScanNewShows.Text = "Scan";
-            this.btnScanNewShows.UseVisualStyleBackColor = true;
-            this.btnScanNewShows.Click += new System.EventHandler(this.btnScanNewShows_Click);
+            this.tableLayoutPanelShows.ColumnCount = 1;
+            this.tableLayoutPanelShows.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanelShows.Controls.Add(this.dataGridViewShows, 0, 0);
+            this.tableLayoutPanelShows.Controls.Add(this.btnScanNewShows, 0, 1);
+            this.tableLayoutPanelShows.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanelShows.Location = new System.Drawing.Point(3, 3);
+            this.tableLayoutPanelShows.Name = "tableLayoutPanelShows";
+            this.tableLayoutPanelShows.RowCount = 2;
+            this.tableLayoutPanelShows.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 94.50096F));
+            this.tableLayoutPanelShows.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5.499035F));
+            this.tableLayoutPanelShows.Size = new System.Drawing.Size(968, 456);
+            this.tableLayoutPanelShows.TabIndex = 2;
             // 
             // dataGridViewShows
             // 
+            this.dataGridViewShows.AllowUserToAddRows = false;
+            this.dataGridViewShows.AllowUserToDeleteRows = false;
             this.dataGridViewShows.AutoGenerateColumns = false;
+            this.dataGridViewShows.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dataGridViewShows.BackgroundColor = System.Drawing.SystemColors.ControlLightLight;
             this.dataGridViewShows.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewShows.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewShows.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
             this.dataGridViewShows.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridViewShows.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.idDataGridViewTextBoxColumn,
@@ -246,173 +278,33 @@ namespace SABSync
             this.bannerurlDataGridViewTextBoxColumn,
             this.imdbidDataGridViewTextBoxColumn,
             this.genreDataGridViewTextBoxColumn,
-            this.overviewDataGridViewTextBoxColumn,
-            this.episodesDataGridViewTextBoxColumn,
-            this.historiesDataGridViewTextBoxColumn});
+            this.overviewDataGridViewTextBoxColumn});
             this.dataGridViewShows.DataSource = this.showsBindingSource;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridViewShows.DefaultCellStyle = dataGridViewCellStyle2;
-            this.dataGridViewShows.Location = new System.Drawing.Point(6, 6);
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle8.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridViewShows.DefaultCellStyle = dataGridViewCellStyle8;
+            this.dataGridViewShows.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dataGridViewShows.Location = new System.Drawing.Point(1, 1);
+            this.dataGridViewShows.Margin = new System.Windows.Forms.Padding(1);
             this.dataGridViewShows.Name = "dataGridViewShows";
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewShows.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
-            this.dataGridViewShows.Size = new System.Drawing.Size(960, 415);
+            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle9.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle9.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle9.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle9.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle9.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewShows.RowHeadersDefaultCellStyle = dataGridViewCellStyle9;
+            this.dataGridViewShows.Size = new System.Drawing.Size(966, 428);
             this.dataGridViewShows.TabIndex = 0;
             this.dataGridViewShows.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewShows_CellEndEdit);
             this.dataGridViewShows.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dataGridViewShows_CellFormatting);
             this.dataGridViewShows.CellParsing += new System.Windows.Forms.DataGridViewCellParsingEventHandler(this.dataGridViewShows_CellParsing);
-            // 
-            // showsBindingSource
-            // 
-            this.showsBindingSource.DataSource = typeof(SABSync.shows);
-            // 
-            // tabHistory
-            // 
-            this.tabHistory.Controls.Add(this.dataGridViewHistory);
-            this.tabHistory.Location = new System.Drawing.Point(4, 22);
-            this.tabHistory.Name = "tabHistory";
-            this.tabHistory.Padding = new System.Windows.Forms.Padding(3);
-            this.tabHistory.Size = new System.Drawing.Size(972, 456);
-            this.tabHistory.TabIndex = 1;
-            this.tabHistory.Text = "History";
-            this.tabHistory.UseVisualStyleBackColor = true;
-            // 
-            // dataGridViewHistory
-            // 
-            this.dataGridViewHistory.BackgroundColor = System.Drawing.Color.White;
-            this.dataGridViewHistory.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridViewHistory.Location = new System.Drawing.Point(6, 6);
-            this.dataGridViewHistory.Name = "dataGridViewHistory";
-            this.dataGridViewHistory.Size = new System.Drawing.Size(960, 415);
-            this.dataGridViewHistory.TabIndex = 0;
-            // 
-            // tabPageFeeds
-            // 
-            this.tabPageFeeds.Location = new System.Drawing.Point(4, 22);
-            this.tabPageFeeds.Name = "tabPageFeeds";
-            this.tabPageFeeds.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageFeeds.Size = new System.Drawing.Size(952, 447);
-            this.tabPageFeeds.TabIndex = 2;
-            this.tabPageFeeds.Text = "RSS Feeds";
-            this.tabPageFeeds.UseVisualStyleBackColor = true;
-            // 
-            // menuStripMain
-            // 
-            this.menuStripMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripMenuItemFile,
-            this.toolsToolStripMenuItem,
-            this.toolStripMenuItemHelp});
-            this.menuStripMain.Location = new System.Drawing.Point(0, 0);
-            this.menuStripMain.Name = "menuStripMain";
-            this.menuStripMain.Size = new System.Drawing.Size(984, 24);
-            this.menuStripMain.TabIndex = 2;
-            this.menuStripMain.Text = "menuStrip1";
-            // 
-            // toolStripMenuItemFile
-            // 
-            this.toolStripMenuItemFile.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripMenuItemRun,
-            this.toolStripSeparator,
-            this.exitToolStripMenuItem1});
-            this.toolStripMenuItemFile.Name = "toolStripMenuItemFile";
-            this.toolStripMenuItemFile.Size = new System.Drawing.Size(37, 20);
-            this.toolStripMenuItemFile.Text = "&File";
-            // 
-            // toolStripMenuItemRun
-            // 
-            this.toolStripMenuItemRun.Name = "toolStripMenuItemRun";
-            this.toolStripMenuItemRun.Size = new System.Drawing.Size(95, 22);
-            this.toolStripMenuItemRun.Text = "&Run";
-            this.toolStripMenuItemRun.Click += new System.EventHandler(this.toolStripMenuItemRun_Click);
-            // 
-            // toolStripSeparator
-            // 
-            this.toolStripSeparator.Name = "toolStripSeparator";
-            this.toolStripSeparator.Size = new System.Drawing.Size(92, 6);
-            // 
-            // exitToolStripMenuItem1
-            // 
-            this.exitToolStripMenuItem1.Name = "exitToolStripMenuItem1";
-            this.exitToolStripMenuItem1.Size = new System.Drawing.Size(95, 22);
-            this.exitToolStripMenuItem1.Text = "E&xit";
-            // 
-            // toolsToolStripMenuItem
-            // 
-            this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.optionsToolStripMenuItem1});
-            this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
-            this.toolsToolStripMenuItem.Text = "&Tools";
-            // 
-            // optionsToolStripMenuItem1
-            // 
-            this.optionsToolStripMenuItem1.Name = "optionsToolStripMenuItem1";
-            this.optionsToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.optionsToolStripMenuItem1.Size = new System.Drawing.Size(159, 22);
-            this.optionsToolStripMenuItem1.Text = "&Options";
-            this.optionsToolStripMenuItem1.Click += new System.EventHandler(this.optionsToolStripMenuItem1_Click);
-            // 
-            // toolStripMenuItemHelp
-            // 
-            this.toolStripMenuItemHelp.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.contentsToolStripMenuItem,
-            this.toolStripSeparator5,
-            this.aboutToolStripMenuItem});
-            this.toolStripMenuItemHelp.Name = "toolStripMenuItemHelp";
-            this.toolStripMenuItemHelp.Size = new System.Drawing.Size(44, 20);
-            this.toolStripMenuItemHelp.Text = "&Help";
-            // 
-            // contentsToolStripMenuItem
-            // 
-            this.contentsToolStripMenuItem.Name = "contentsToolStripMenuItem";
-            this.contentsToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
-            this.contentsToolStripMenuItem.Text = "&Contents";
-            // 
-            // toolStripSeparator5
-            // 
-            this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(119, 6);
-            // 
-            // aboutToolStripMenuItem
-            // 
-            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
-            this.aboutToolStripMenuItem.Text = "&About...";
-            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
-            // 
-            // sABSyncEntitiesBindingSource
-            // 
-            this.sABSyncEntitiesBindingSource.DataSource = typeof(SABSync.SABSyncEntities);
-            // 
-            // sABSyncEntitiesBindingSource1
-            // 
-            this.sABSyncEntitiesBindingSource1.DataSource = typeof(SABSync.SABSyncEntities);
-            // 
-            // historiesBindingSource
-            // 
-            this.historiesBindingSource.DataSource = typeof(SABSync.histories);
-            // 
-            // statusMain
-            // 
-            this.statusMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.StatusStripLabel});
-            this.statusMain.Location = new System.Drawing.Point(0, 510);
-            this.statusMain.Name = "statusMain";
-            this.statusMain.Size = new System.Drawing.Size(984, 22);
-            this.statusMain.TabIndex = 3;
-            this.statusMain.Text = "Status Strip...";
             // 
             // idDataGridViewTextBoxColumn
             // 
@@ -468,6 +360,7 @@ namespace SABSync
             // 
             this.ignoreseasonDataGridViewTextBoxColumn.DataPropertyName = "ignore_season";
             this.ignoreseasonDataGridViewTextBoxColumn.HeaderText = "ignore_season";
+            this.ignoreseasonDataGridViewTextBoxColumn.MinimumWidth = 80;
             this.ignoreseasonDataGridViewTextBoxColumn.Name = "ignoreseasonDataGridViewTextBoxColumn";
             // 
             // aliasesDataGridViewTextBoxColumn
@@ -530,22 +423,237 @@ namespace SABSync
             this.overviewDataGridViewTextBoxColumn.HeaderText = "overview";
             this.overviewDataGridViewTextBoxColumn.Name = "overviewDataGridViewTextBoxColumn";
             // 
-            // episodesDataGridViewTextBoxColumn
+            // showsBindingSource
             // 
-            this.episodesDataGridViewTextBoxColumn.DataPropertyName = "episodes";
-            this.episodesDataGridViewTextBoxColumn.HeaderText = "episodes";
-            this.episodesDataGridViewTextBoxColumn.Name = "episodesDataGridViewTextBoxColumn";
+            this.showsBindingSource.DataSource = typeof(SABSync.shows);
             // 
-            // historiesDataGridViewTextBoxColumn
+            // btnScanNewShows
             // 
-            this.historiesDataGridViewTextBoxColumn.DataPropertyName = "histories";
-            this.historiesDataGridViewTextBoxColumn.HeaderText = "histories";
-            this.historiesDataGridViewTextBoxColumn.Name = "historiesDataGridViewTextBoxColumn";
+            this.btnScanNewShows.Dock = System.Windows.Forms.DockStyle.Right;
+            this.btnScanNewShows.Location = new System.Drawing.Point(888, 431);
+            this.btnScanNewShows.Margin = new System.Windows.Forms.Padding(1, 1, 5, 0);
+            this.btnScanNewShows.Name = "btnScanNewShows";
+            this.btnScanNewShows.Size = new System.Drawing.Size(75, 25);
+            this.btnScanNewShows.TabIndex = 1;
+            this.btnScanNewShows.Text = "Scan";
+            this.btnScanNewShows.UseVisualStyleBackColor = true;
+            this.btnScanNewShows.Click += new System.EventHandler(this.btnScanNewShows_Click);
+            // 
+            // tabHistory
+            // 
+            this.tabHistory.Controls.Add(this.tableLayoutPanelHistory);
+            this.tabHistory.Location = new System.Drawing.Point(4, 22);
+            this.tabHistory.Name = "tabHistory";
+            this.tabHistory.Padding = new System.Windows.Forms.Padding(3);
+            this.tabHistory.Size = new System.Drawing.Size(974, 462);
+            this.tabHistory.TabIndex = 1;
+            this.tabHistory.Text = "History";
+            this.tabHistory.UseVisualStyleBackColor = true;
+            // 
+            // tableLayoutPanelHistory
+            // 
+            this.tableLayoutPanelHistory.ColumnCount = 1;
+            this.tableLayoutPanelHistory.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanelHistory.Controls.Add(this.dataGridViewHistory, 0, 0);
+            this.tableLayoutPanelHistory.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanelHistory.Location = new System.Drawing.Point(3, 3);
+            this.tableLayoutPanelHistory.Name = "tableLayoutPanelHistory";
+            this.tableLayoutPanelHistory.RowCount = 2;
+            this.tableLayoutPanelHistory.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 94.28806F));
+            this.tableLayoutPanelHistory.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5.711944F));
+            this.tableLayoutPanelHistory.Size = new System.Drawing.Size(968, 456);
+            this.tableLayoutPanelHistory.TabIndex = 1;
+            // 
+            // dataGridViewHistory
+            // 
+            this.dataGridViewHistory.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dataGridViewHistory.BackgroundColor = System.Drawing.Color.White;
+            this.dataGridViewHistory.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.dataGridViewHistory.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridViewHistory.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dataGridViewHistory.Location = new System.Drawing.Point(1, 1);
+            this.dataGridViewHistory.Margin = new System.Windows.Forms.Padding(1);
+            this.dataGridViewHistory.Name = "dataGridViewHistory";
+            this.dataGridViewHistory.Size = new System.Drawing.Size(966, 427);
+            this.dataGridViewHistory.TabIndex = 0;
+            // 
+            // tabPageFeeds
+            // 
+            this.tabPageFeeds.Controls.Add(this.tableLayoutPanelFeeds);
+            this.tabPageFeeds.Location = new System.Drawing.Point(4, 22);
+            this.tabPageFeeds.Name = "tabPageFeeds";
+            this.tabPageFeeds.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageFeeds.Size = new System.Drawing.Size(974, 462);
+            this.tabPageFeeds.TabIndex = 2;
+            this.tabPageFeeds.Text = "RSS Feeds";
+            this.tabPageFeeds.UseVisualStyleBackColor = true;
+            // 
+            // tableLayoutPanelFeeds
+            // 
+            this.tableLayoutPanelFeeds.ColumnCount = 1;
+            this.tableLayoutPanelFeeds.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanelFeeds.Controls.Add(this.objectListViewFeeds, 0, 0);
+            this.tableLayoutPanelFeeds.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanelFeeds.Location = new System.Drawing.Point(3, 3);
+            this.tableLayoutPanelFeeds.Name = "tableLayoutPanelFeeds";
+            this.tableLayoutPanelFeeds.RowCount = 2;
+            this.tableLayoutPanelFeeds.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 90.09009F));
+            this.tableLayoutPanelFeeds.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 9.90991F));
+            this.tableLayoutPanelFeeds.Size = new System.Drawing.Size(968, 456);
+            this.tableLayoutPanelFeeds.TabIndex = 1;
+            // 
+            // objectListViewFeeds
+            // 
+            this.objectListViewFeeds.AllColumns.Add(this.id);
+            this.objectListViewFeeds.AllColumns.Add(this.name);
+            this.objectListViewFeeds.AllColumns.Add(this.url);
+            this.objectListViewFeeds.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.id,
+            this.name,
+            this.url});
+            this.objectListViewFeeds.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.objectListViewFeeds.FullRowSelect = true;
+            this.objectListViewFeeds.Location = new System.Drawing.Point(3, 3);
+            this.objectListViewFeeds.MultiSelect = false;
+            this.objectListViewFeeds.Name = "objectListViewFeeds";
+            this.objectListViewFeeds.ShowGroups = false;
+            this.objectListViewFeeds.Size = new System.Drawing.Size(962, 404);
+            this.objectListViewFeeds.TabIndex = 0;
+            this.objectListViewFeeds.UseCompatibleStateImageBehavior = false;
+            this.objectListViewFeeds.View = System.Windows.Forms.View.Details;
+            // 
+            // id
+            // 
+            this.id.AspectName = "id";
+            this.id.IsVisible = false;
+            this.id.Text = "ID";
+            // 
+            // menuStripMain
+            // 
+            this.menuStripMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItemFile,
+            this.toolsToolStripMenuItem,
+            this.toolStripMenuItemHelp});
+            this.menuStripMain.Location = new System.Drawing.Point(0, 0);
+            this.menuStripMain.Name = "menuStripMain";
+            this.menuStripMain.Size = new System.Drawing.Size(984, 22);
+            this.menuStripMain.TabIndex = 2;
+            this.menuStripMain.Text = "menuStrip1";
+            // 
+            // toolStripMenuItemFile
+            // 
+            this.toolStripMenuItemFile.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItemRun,
+            this.toolStripSeparator,
+            this.exitToolStripMenuItem1});
+            this.toolStripMenuItemFile.Name = "toolStripMenuItemFile";
+            this.toolStripMenuItemFile.Size = new System.Drawing.Size(37, 18);
+            this.toolStripMenuItemFile.Text = "&File";
+            // 
+            // toolStripMenuItemRun
+            // 
+            this.toolStripMenuItemRun.Name = "toolStripMenuItemRun";
+            this.toolStripMenuItemRun.Size = new System.Drawing.Size(123, 22);
+            this.toolStripMenuItemRun.Text = "&Run Sync";
+            this.toolStripMenuItemRun.Click += new System.EventHandler(this.toolStripMenuItemRun_Click);
+            // 
+            // toolStripSeparator
+            // 
+            this.toolStripSeparator.Name = "toolStripSeparator";
+            this.toolStripSeparator.Size = new System.Drawing.Size(120, 6);
+            // 
+            // exitToolStripMenuItem1
+            // 
+            this.exitToolStripMenuItem1.Name = "exitToolStripMenuItem1";
+            this.exitToolStripMenuItem1.Size = new System.Drawing.Size(123, 22);
+            this.exitToolStripMenuItem1.Text = "E&xit";
+            // 
+            // toolsToolStripMenuItem
+            // 
+            this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.optionsToolStripMenuItem1});
+            this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
+            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 18);
+            this.toolsToolStripMenuItem.Text = "&Tools";
+            // 
+            // optionsToolStripMenuItem1
+            // 
+            this.optionsToolStripMenuItem1.Name = "optionsToolStripMenuItem1";
+            this.optionsToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
+            this.optionsToolStripMenuItem1.Size = new System.Drawing.Size(159, 22);
+            this.optionsToolStripMenuItem1.Text = "&Options";
+            this.optionsToolStripMenuItem1.Click += new System.EventHandler(this.optionsToolStripMenuItem1_Click);
+            // 
+            // toolStripMenuItemHelp
+            // 
+            this.toolStripMenuItemHelp.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.contentsToolStripMenuItem,
+            this.toolStripSeparator5,
+            this.donateToolStripMenuItem,
+            this.websiteToolStripMenuItem,
+            this.aboutToolStripMenuItem});
+            this.toolStripMenuItemHelp.Name = "toolStripMenuItemHelp";
+            this.toolStripMenuItemHelp.Size = new System.Drawing.Size(44, 18);
+            this.toolStripMenuItemHelp.Text = "&Help";
+            // 
+            // contentsToolStripMenuItem
+            // 
+            this.contentsToolStripMenuItem.Name = "contentsToolStripMenuItem";
+            this.contentsToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.contentsToolStripMenuItem.Text = "&Contents";
+            // 
+            // toolStripSeparator5
+            // 
+            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            this.toolStripSeparator5.Size = new System.Drawing.Size(119, 6);
+            // 
+            // donateToolStripMenuItem
+            // 
+            this.donateToolStripMenuItem.Name = "donateToolStripMenuItem";
+            this.donateToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.donateToolStripMenuItem.Text = "Donate";
+            this.donateToolStripMenuItem.Click += new System.EventHandler(this.donateToolStripMenuItem_Click);
+            // 
+            // websiteToolStripMenuItem
+            // 
+            this.websiteToolStripMenuItem.Name = "websiteToolStripMenuItem";
+            this.websiteToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.websiteToolStripMenuItem.Text = "Website";
+            this.websiteToolStripMenuItem.Click += new System.EventHandler(this.websiteToolStripMenuItem_Click);
+            // 
+            // aboutToolStripMenuItem
+            // 
+            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.aboutToolStripMenuItem.Text = "&About...";
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
+            // 
+            // sABSyncEntitiesBindingSource
+            // 
+            this.sABSyncEntitiesBindingSource.DataSource = typeof(SABSync.SABSyncEntities);
+            // 
+            // sABSyncEntitiesBindingSource1
+            // 
+            this.sABSyncEntitiesBindingSource1.DataSource = typeof(SABSync.SABSyncEntities);
+            // 
+            // historiesBindingSource
+            // 
+            this.historiesBindingSource.DataSource = typeof(SABSync.histories);
+            // 
+            // statusMain
+            // 
+            this.statusMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.StatusStripLabel});
+            this.statusMain.Location = new System.Drawing.Point(0, 511);
+            this.statusMain.Name = "statusMain";
+            this.statusMain.Size = new System.Drawing.Size(984, 21);
+            this.statusMain.TabIndex = 3;
+            this.statusMain.Text = "Status Strip...";
             // 
             // StatusStripLabel
             // 
             this.StatusStripLabel.Name = "StatusStripLabel";
-            this.StatusStripLabel.Size = new System.Drawing.Size(53, 17);
+            this.StatusStripLabel.Size = new System.Drawing.Size(53, 16);
             this.StatusStripLabel.Text = "SABSync";
             // 
             // timerUpdateCache
@@ -553,12 +661,42 @@ namespace SABSync
             this.timerUpdateCache.Interval = 3600000;
             this.timerUpdateCache.Tick += new System.EventHandler(this.timerUpdateCache_Tick);
             // 
+            // tableLayoutPanelMain
+            // 
+            this.tableLayoutPanelMain.ColumnCount = 1;
+            this.tableLayoutPanelMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanelMain.Controls.Add(this.menuStripMain, 0, 0);
+            this.tableLayoutPanelMain.Controls.Add(this.statusMain, 0, 2);
+            this.tableLayoutPanelMain.Controls.Add(this.tabControlMain, 0, 1);
+            this.tableLayoutPanelMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanelMain.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanelMain.Name = "tableLayoutPanelMain";
+            this.tableLayoutPanelMain.RowCount = 3;
+            this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 4.453441F));
+            this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 95.54656F));
+            this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanelMain.Size = new System.Drawing.Size(984, 532);
+            this.tableLayoutPanelMain.TabIndex = 4;
+            // 
+            // name
+            // 
+            this.name.AspectName = "name";
+            this.name.MaximumWidth = 200;
+            this.name.MinimumWidth = 200;
+            this.name.Text = "Name";
+            this.name.Width = 200;
+            // 
+            // url
+            // 
+            this.url.AspectName = "url";
+            this.url.FillsFreeSpace = true;
+            this.url.Text = "URL";
+            this.url.Width = 400;
+            // 
             // frmMain
             // 
             this.ClientSize = new System.Drawing.Size(984, 532);
-            this.Controls.Add(this.statusMain);
-            this.Controls.Add(this.menuStripMain);
-            this.Controls.Add(this.tabControlMain);
+            this.Controls.Add(this.tableLayoutPanelMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStripMain;
             this.Name = "frmMain";
@@ -568,10 +706,15 @@ namespace SABSync
             this.contextMenuStripTray.ResumeLayout(false);
             this.tabControlMain.ResumeLayout(false);
             this.tabShows.ResumeLayout(false);
+            this.tableLayoutPanelShows.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewShows)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.showsBindingSource)).EndInit();
             this.tabHistory.ResumeLayout(false);
+            this.tableLayoutPanelHistory.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewHistory)).EndInit();
+            this.tabPageFeeds.ResumeLayout(false);
+            this.tableLayoutPanelFeeds.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.objectListViewFeeds)).EndInit();
             this.menuStripMain.ResumeLayout(false);
             this.menuStripMain.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.sABSyncEntitiesBindingSource)).EndInit();
@@ -579,8 +722,9 @@ namespace SABSync
             ((System.ComponentModel.ISupportInitialize)(this.historiesBindingSource)).EndInit();
             this.statusMain.ResumeLayout(false);
             this.statusMain.PerformLayout();
+            this.tableLayoutPanelMain.ResumeLayout(false);
+            this.tableLayoutPanelMain.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -597,6 +741,7 @@ namespace SABSync
 
             GetShows();
             GetHistory();
+            GetFeeds();
         }
 
         private void SetSyncInterval()
@@ -680,8 +825,10 @@ namespace SABSync
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            frmAbout frmAbout = new frmAbout();
-            frmAbout.Visible = true;
+            //frmAbout frmAbout = new frmAbout();
+            //frmAbout.Visible = true;
+            AboutBox ab = new AboutBox();
+            ab.Show();
         }
 
         private void toolStripMenuItemRun_Click(object sender, EventArgs e)
@@ -718,12 +865,13 @@ namespace SABSync
                 qualityDataGridViewTextBoxColumn.ValueMember = "id";
 
                 //Hide the Episodes amd Histories columns from the Show DGV
-                episodesDataGridViewTextBoxColumn.Visible = false;
-                historiesDataGridViewTextBoxColumn.Visible = false;
                 tvridDataGridViewTextBoxColumn.Visible = false;
                 tvrnameDataGridViewTextBoxColumn.Visible = false;
                 posterurlDataGridViewTextBoxColumn.Visible = false;
                 bannerurlDataGridViewTextBoxColumn.Visible = false;
+                imdbidDataGridViewTextBoxColumn.Visible = false;
+                genreDataGridViewTextBoxColumn.Visible = false;
+                overviewDataGridViewTextBoxColumn.Visible = false;
             }
         }
 
@@ -756,9 +904,16 @@ namespace SABSync
                 dataGridViewHistory.Columns[6].HeaderText = "Proper";
                 dataGridViewHistory.Columns[7].HeaderText = "Provider";
                 dataGridViewHistory.Columns[8].HeaderText = "Date";
+            }
+        }
 
-                foreach (DataGridViewColumn col in dataGridViewHistory.Columns)
-                    col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+        private void GetFeeds()
+        {
+            using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
+            {
+                var feeds = from f in sabSyncEntities.providers select f;
+
+                objectListViewFeeds.SetObjects(feeds.ToList());
             }
         }
 
@@ -925,6 +1080,16 @@ namespace SABSync
         {
             Database db = new Database();
             db.GetTvDbUpdates();
+        }
+
+        private void donateToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://www.paypal.com/ca/cgi-bin/webscr?cmd=_flow&SESSION=iS-YpSPr5fzHNnbWDLvRHT7aOymnWjYw-CvWj36bR_Thy4d4XTcDfATEqL0&dispatch=5885d80a13c0db1f8e263663d3faee8dc18bca4c6f47e633fcf61b288f5ebea2");
+        }
+
+        private void websiteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Process.Start("http://code.google.com/p/sabscripts/");
         }
     }
 }
