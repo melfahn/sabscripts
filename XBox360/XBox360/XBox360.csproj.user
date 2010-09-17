@@ -1,9 +1,0 @@
-﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <StartArguments>"W:\XBox 360\Halo 3 ODST" 2 "Halo 3 ODST"</StartArguments>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <StartArguments>
-    </StartArguments>
-  </PropertyGroup>
-</Project>
