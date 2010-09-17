@@ -159,6 +159,7 @@
     </Compile>
     <Compile Include="App.cs" />
     <Compile Include="ConfigSettings.cs" />
+    <Compile Include="ServiceLocator\Services.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="Episode.cs" />
     <Compile Include="FeedInfo.cs" />
@@ -198,9 +199,9 @@
     <Compile Include="SQLite.cs" />
     <Compile Include="SyncJob.cs" />
     <Compile Include="TvDbEpisodeInfo.cs" />
-    <Compile Include="TvDbShowInfo.cs" />
-    <Compile Include="TvDbService.cs" />
     <Compile Include="Config.cs" />
+    <Compile Include="TvDbService.cs" />
+    <Compile Include="TvDbShowInfo.cs" />
     <Compile Include="TvDbUpdates.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -212,6 +213,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="References\System.Data.SQLite.XML" />
+    <Content Include="References\TvdbLib.dll" />
+    <Content Include="References\TvdbLib.pdb" />
+    <Content Include="References\TvdbLib.XML" />
     <Content Include="SABSync.ico" />
     <Content Include="Settings.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -270,6 +274,9 @@
       <DependentUpon>FrmOptions.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Sab\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
