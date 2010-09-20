@@ -20,20 +20,8 @@ namespace SABSync
         private const string PatternDaily = @"(?<Year>\d{4}).{1}(?<Month>\d{2}).{1}(?<Day>\d{2})";
 
         private static readonly Logger Logger = new Logger();
-        private Database Database = new Database(); //Create a new Instance of Database
-        public int AcceptCount;
-        public int FeedItemCount;
-        public int MyFeedsCount;
-        public int MyShowsCount;
-        public int MyShowsInFeedCount;
-        public int RejectArchivedNzbCount;
-        public int RejectDownloadQualityCount;
-        public int RejectIgnoredSeasonCount;
-        public int RejectOnDiskCount;
-        public int RejectPasswordedCount;
-        public int RejectSabHistoryCount;
-        public int RejectSabQueuedCount;
-        public int RejectShowQualityCount;
+        private readonly Database _database = new Database(); //Create a new Instance of Database
+
 
         public SyncJob()
             : this(new Config(), new SabService(), new TvDbService())
@@ -62,21 +50,19 @@ namespace SABSync
 
             //Populate the shows table
 
-            Database.ShowsOnDiskToDatabase();
+            _database.ShowsOnDiskToDatabase();
             //return;
 
-            foreach (FeedInfo feedInfo in Config.Feeds)
+            foreach (var feedInfo in Config.Feeds)
             {
-                MyFeedsCount++;
-                foreach (RssItem item in GetFeedItems(feedInfo))
+                foreach (var item in GetFeedItems(feedInfo))
                 {
-                    FeedItemCount++;
                     NzbInfo nzb = ParseNzbInfo(feedInfo, item);
                     QueueIfWanted(nzb);
                 }
             }
 
-            MyShowsCount = Config.MyShows.Count;
+
             LogSummary();
         }
 
@@ -120,7 +106,6 @@ namespace SABSync
             {
                 if (nzb.IsPassworded())
                 {
-                    RejectPasswordedCount++;
                     Log("Skipping Passworded Report {0}", nzb.Title);
                     return;
                 }
@@ -142,10 +127,9 @@ namespace SABSync
                 nzb.Title = episode.FeedItem.TitleFix;
                 string queueResponse = Sab.AddByUrl(nzb);
 
-                Database.AddToHistory(episode, nzb);
+                _database.AddToHistory(episode, nzb);
 
                 // TODO: check if Queued.Add need unfixed Title (was previously)
-                AcceptCount++;
                 Queued.Add(string.Format("{0}: {1}", nzb.Title, queueResponse));
             }
             catch (Exception e)
@@ -164,7 +148,7 @@ namespace SABSync
             if (Summary.Count != 0)
                 Log(Environment.NewLine);
 
-            foreach (string item in Queued)
+            foreach (var item in Queued)
             {
                 Log("Queued for download: " + item);
             }
@@ -334,7 +318,7 @@ namespace SABSync
             if (Config.MyShows
                 .Any(myShow => myShow.Equals(CleanString(showName), StringComparison.InvariantCultureIgnoreCase)))
             {
-                MyShowsInFeedCount++;
+
                 Log("'{0}' is being watched.", showName);
                 return true;
             }
@@ -426,8 +410,8 @@ namespace SABSync
 
             if (IsInLocalHistory(episode))
                 return false;
-            
-            Database.GetEpisodeName(episode);
+
+            _database.GetEpisodeName(episode);
             GetTitleFix(episode);
 
             if (Queued.Contains(episode.FeedItem.TitleFix + ": ok"))
@@ -435,7 +419,6 @@ namespace SABSync
 
             if (Sab.IsInQueue(episode))
             {
-                RejectSabQueuedCount++;
                 return false;
             }
             if (IsArchivedNzb(episode.FeedItem))
@@ -447,7 +430,6 @@ namespace SABSync
             bool isProper = episode.IsProper && Config.DownloadPropers;
             if (!isProper && Sab.IsInHistory(episode))
             {
-                RejectSabHistoryCount++;
                 return false;
             }
 
@@ -489,7 +471,6 @@ namespace SABSync
 
                 if (matchingFiles.Length != 0)
                 {
-                    RejectOnDiskCount++;
                     Log("Episode on disk. '{0}'", true, matchingFiles[0]);
                     return true;
                 }
@@ -525,7 +506,6 @@ namespace SABSync
 
                     if (matchingFiles.Length != 0)
                     {
-                        RejectOnDiskCount++;
                         Log("Episode on disk. '{0}'", true, matchingFiles[0]);
                         return true;
                     }
@@ -539,9 +519,8 @@ namespace SABSync
             // TODO: add ignore season support for first aired (ignore <= date?)
             if (episode.IsDaily) return false;
 
-            if (Database.IsSeasonIgnored(episode))
+            if (_database.IsSeasonIgnored(episode))
             {
-                RejectIgnoredSeasonCount++;
                 Log("Ignoring '{0}' Season '{1}'  ", episode.ShowName, episode.SeasonNumber);
                 return true;
             }
@@ -577,8 +556,7 @@ namespace SABSync
 
             if (inNzbArchive)
             {
-                RejectArchivedNzbCount++;
-                Log("Episode in archive: '{0}'", true, nzbFileName + ".nzb.gz");
+                Log("Ignoring - Episode in archive: '{0}'", true, nzbFileName + ".nzb.gz");
                 return true;
             }
 
@@ -641,11 +619,12 @@ namespace SABSync
 
         private bool IsQualityWanted(Episode episode)
         {
-            if(Database.IsQualityWanted(episode))
-                return true;
+            if (!_database.IsQualityWanted(episode))
+            {
+                return false;
+            }
 
-            RejectDownloadQualityCount++;
-            return false;
+            return true;
         }
 
         private static string ReplaceSeparatorChars(string s)

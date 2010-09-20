@@ -120,6 +120,9 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL" />
+    <Reference Include="Ninject, Version=2.0.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL" />
+    <Reference Include="NLog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL" />
     <Reference Include="ObjectListView, Version=2.4.1.37818, Culture=neutral, PublicKeyToken=b1c5bf581481bcd4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>References\ObjectListView.dll</HintPath>
@@ -128,6 +131,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>References\RSS.NET.dll</HintPath>
     </Reference>
+    <Reference Include="SubSonic.Core, Version=3.0.0.3, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
@@ -149,6 +153,7 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="TvdbLib, Version=0.8.8.0, Culture=neutral, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AboutBox.cs">
@@ -159,6 +164,7 @@
     </Compile>
     <Compile Include="App.cs" />
     <Compile Include="ConfigSettings.cs" />
+    <Compile Include="Repository\Series.cs" />
     <Compile Include="ServiceLocator\Services.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="Entities\Episode.cs" />
@@ -196,6 +202,12 @@
     </Compile>
     <Compile Include="Entities\ShowAlias.cs" />
     <Compile Include="Entities\ShowQuality.cs" />
+    <Compile Include="Services\ConfigController.cs" />
+    <Compile Include="Services\DiskController.cs" />
+    <Compile Include="Services\IConfigController.cs" />
+    <Compile Include="Services\IDiskController.cs" />
+    <Compile Include="Services\SeriesController.cs" />
+    <Compile Include="Services\TvDbController.cs" />
     <Compile Include="SQLite.cs" />
     <Compile Include="SyncJob.cs" />
     <Compile Include="TvDb\ITvDbService.cs" />
@@ -206,9 +218,18 @@
     <Compile Include="TvDb\TvDbUpdates.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="References\log4net.dll" />
+    <Content Include="References\log4net.xml" />
+    <Content Include="References\Ninject.dll" />
+    <Content Include="References\Ninject.xml" />
+    <Content Include="References\NLog.dll" />
+    <Content Include="References\NLog.pdb" />
+    <Content Include="References\NLog.xml" />
     <Content Include="References\ObjectListView.dll" />
     <Content Include="References\RSS.NET.dll" />
     <Content Include="References\RSS.NET.XML" />
+    <Content Include="References\SubSonic.Core.dll" />
+    <Content Include="References\SubSonic.Core.XML" />
     <Content Include="References\System.Data.SQLite.dll" />
     <Content Include="References\System.Data.SQLite.Linq.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
