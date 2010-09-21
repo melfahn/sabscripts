@@ -20,7 +20,7 @@ namespace SABSync.ServiceLocator
             kernel.Bind<ISeriesController>().To<SeriesController>();
             kernel.Bind<IDiskController>().To<DiskController>();
             kernel.Bind<ITvDbController>().To<TvDbController>();
-            kernel.Bind<IConfigController>().To<ConfigController>();
+            kernel.Bind<IConfigController>().To<DbConfigController>();
             kernel.Bind<ILog>().ToMethod(c => LogManager.GetLogger("logger-name"));
             kernel.Bind<IRepository>().ToMethod(c => new SimpleRepository(provider, SimpleRepositoryOptions.RunMigrations));
         }

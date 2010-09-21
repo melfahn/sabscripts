@@ -20,9 +20,17 @@ namespace SABSync.Web.Controllers
 
         public ActionResult Index()
         {
-           ViewData.Model = _seriesController.GetSeries().ToList();
+            ViewData.Model = _seriesController.GetSeries().ToList();
             return View();
         }
+
+
+        public ActionResult Sync()
+        {
+            _seriesController.SyncSeriesWithDisk();
+            return RedirectToAction("Index");
+        }
+
 
         //
         // GET: /Series/Details/5
@@ -38,7 +46,7 @@ namespace SABSync.Web.Controllers
         public ActionResult Create()
         {
             return View();
-        } 
+        }
 
         //
         // POST: /Series/Create
@@ -57,10 +65,10 @@ namespace SABSync.Web.Controllers
                 return View();
             }
         }
-        
+
         //
         // GET: /Series/Edit/5
- 
+
         public ActionResult Edit(int id)
         {
             return View();
@@ -75,7 +83,7 @@ namespace SABSync.Web.Controllers
             try
             {
                 // TODO: Add update logic here
- 
+
                 return RedirectToAction("Index");
             }
             catch
@@ -86,7 +94,7 @@ namespace SABSync.Web.Controllers
 
         //
         // GET: /Series/Delete/5
- 
+
         public ActionResult Delete(int id)
         {
             return View();
@@ -101,7 +109,7 @@ namespace SABSync.Web.Controllers
             try
             {
                 // TODO: Add delete logic here
- 
+
                 return RedirectToAction("Index");
             }
             catch

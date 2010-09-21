@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace SABSync.Controllers
 {
-    public class ConfigController : IConfigController
+    public class FileConfigController : IConfigController
     {
         private readonly ILog _logger;
         private readonly IDiskController _diskController;
@@ -17,7 +17,7 @@ namespace SABSync.Controllers
         private readonly Configuration _config =
             ConfigurationManager.OpenExeConfiguration(Path.Combine(Application.StartupPath, @"sabsync.exe"));
 
-        public ConfigController(ILog logger, IDiskController diskController)
+        public FileConfigController(ILog logger, IDiskController diskController)
         {
             _logger = logger;
             _diskController = diskController;
