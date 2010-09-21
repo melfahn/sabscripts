@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Configuration;
@@ -17,7 +18,6 @@ namespace SABSync
         private DirectoryInfo _nzbDir;
         private string _sabRequest;
         private IList<ShowAlias> _showAliases;
-        private IList<ShowQuality> _showQualities;
         private string _tvDailyTemplate;
         private IList<DirectoryInfo> _tvRootFolders;
         private string _tvTemplate;
@@ -91,15 +91,15 @@ namespace SABSync
 
         public string[] VideoExt { get; set; }
 
-        public NameValueCollection Settings { get; private set; }
+        public Hashtable Settings { get; private set; }
 
         private string GetSabRequest()
         {
-            string sabnzbdInfo = GetSetting("sabnzbdInfo");
-            string priority = GetSetting("priority");
-            string apiKey = GetSetting("apiKey");
-            string username = GetSetting("username");
-            string password = GetSetting("password");
+            string sabnzbdInfo = GetValue("SabNzbdInfo");
+            string priority = GetValue("Priority");
+            string apiKey = GetValue("ApiKey");
+            string username = GetValue("Username");
+            string password = GetValue("Password");
             return string.Format(
                 "http://{0}/sabnzbd/api?$Action&priority={1}&apikey={2}&ma_username={3}&ma_password={4}",
                 sabnzbdInfo, priority, apiKey, username, password).Replace("$Action", "{0}");
@@ -107,7 +107,7 @@ namespace SABSync
 
         private string GetTvTemplate()
         {
-            string setting = GetSetting("tvTemplate");
+            string setting = GetValue("TvTemplate");
             if (string.IsNullOrEmpty(setting))
                 throw new ApplicationException("Configuration missing: tvTemplate");
             return setting;
@@ -115,7 +115,7 @@ namespace SABSync
 
         private string GetTvDailyTemplate()
         {
-            string setting = GetSetting("tvDailyTemplate");
+            string setting = GetValue("TvDailyTemplate");
             if (string.IsNullOrEmpty(setting))
                 throw new ApplicationException("Configuration missing: tvDailyTemplate");
             return setting;
@@ -123,7 +123,7 @@ namespace SABSync
 
         private DirectoryInfo GetNzbDir()
         {
-            string path = Settings["nzbDir"];
+            string path = GetValue("NzbDir");
             if (string.IsNullOrEmpty(path)) return null;
 
             var folder = new DirectoryInfo(path);
@@ -167,7 +167,7 @@ namespace SABSync
 
         private IList<DirectoryInfo> GetTvRootFolders()
         {
-            return (from path in GetSetting("tvRoot").Trim(';').Split(';')
+            return (from path in GetValue("TvRoot").Trim(';').Split(';')
                     select new DirectoryInfo(path)
                     into folder
                     where folder.Exists
@@ -214,73 +214,32 @@ namespace SABSync
             return aliasList;
         }
 
-        private string GetSetting(string key)
-        {
-            string value = Settings[key];
-            if (value == null)
-                throw new ApplicationException("Configuration missing: " + key);
-            return value;
-        }
-
         private void LoadConfig()
         {
             //Read the XML file
             XDocument xDoc = XDocument.Load(configFile);
+            var config = (from c in xDoc.Descendants("Configuration") select c).FirstOrDefault();
+            Hashtable ht = new Hashtable();
 
-            //Get the first configuration from the Config file (of one)
-            var config = (from c in xDoc.Descendants("Configuration")
-                          select new
-                          {
-                              TvRoot = c.Element("TvRoot").Value,
-                              TvTemplate = c.Element("TvTemplate").Value,
-                              TvDailyTemplate = c.Element("TvDailyTemplate").Value,
-                              VideoExt = c.Element("VideoExt").Value,
-                              IgnoreSeasons = c.Element("IgnoreSeasons").Value,
-                              NzbDir = c.Element("NzbDir").Value,
-                              SabNzbdInfo = c.Element("SabNzbdInfo").Value,
-                              Username = c.Element("Username").Value,
-                              Password = c.Element("Password").Value,
-                              ApiKey = c.Element("ApiKey").Value,
-                              Priority = c.Element("Priority").Value,
-                              SabReplaceChars = c.Element("SabReplaceChars").Value,
-                              DownloadQuality = c.Element("DownloadQuality").Value,
-                              DownloadPropers = c.Element("DownloadPropers").Value,
-                              Interval = c.Element("Interval").Value,
-                              SyncOnStart = c.Element("SyncOnStart").Value,
+            foreach (var c in config.Descendants())
+            {
+                ht.Add(c.Name, c.Value);
+            }
 
-                              Rss = c.Element("Rss").Value,
-                              Alias = c.Element("Alias").Value,
-                              Quality = c.Element("Quality").Value,
-                              VerboseLogging = c.Element("VerboseLogging").Value,
-                              DeleteLogs = c.Element("DeleteLogs").Value,
-                          }).First();
+            Settings = ht;
 
-            NameValueCollection settings = new NameValueCollection();
-            settings.Add("sabnzbdInfo", config.SabNzbdInfo);
-            settings.Add("priority", config.Priority);
-            settings.Add("apiKey", config.ApiKey);
-            settings.Add("username", config.Username);
-            settings.Add("password", config.Password);
-            settings.Add("tvTemplate", config.TvTemplate);
-            settings.Add("tvDailyTemplate", config.TvDailyTemplate);
-            settings.Add("nzbDir", config.NzbDir);
-            settings.Add("tvRoot", config.TvRoot);
-            settings.Add("rss", config.Rss);
-            settings.Add("alias", config.Alias);
-            settings.Add("quality", config.Quality);
-            settings.Add("ignoreSeasons", config.IgnoreSeasons);
-            settings.Add("downloadQuality", config.DownloadQuality);
-            settings.Add("syncOnStart", config.SyncOnStart);
+            LoadValues(); //Load values to Variables
+        }
 
-            Settings = settings;
-
-            DownloadPropers = Convert.ToBoolean(config.DownloadPropers ?? "false");
-            Interval = Convert.ToInt32(config.Interval ?? "15");
-            DownloadQualities = config.DownloadQuality.Trim(';', ' ').Split(';');
-            SabReplaceChars = Convert.ToBoolean(config.SabReplaceChars ?? "false");
-            VerboseLogging = Convert.ToBoolean(config.VerboseLogging ?? "false");
-            VideoExt = (config.VideoExt ?? string.Empty).Trim(';', ' ').Split(';');
-            SyncOnStart = Convert.ToBoolean(config.SyncOnStart ?? "false");
+        private void LoadValues()
+        {
+            DownloadPropers = Convert.ToBoolean(GetValue("DownloadPropers") ?? "false");
+            Interval = Convert.ToInt32(GetValue("Interval") ?? "15");
+            DownloadQualities = GetValue("DownloadQuality").Trim(';', ' ').Split(';');
+            SabReplaceChars = Convert.ToBoolean(GetValue("SabReplaceChars") ?? "false");
+            VerboseLogging = Convert.ToBoolean(GetValue("VerboseLogging") ?? "false");
+            VideoExt = (GetValue("VideoExt") ?? string.Empty).Trim(';', ' ').Split(';');
+            SyncOnStart = Convert.ToBoolean(GetValue("SyncOnStart") ?? "false");
         }
 
         public void ReloadConfig()
@@ -296,7 +255,7 @@ namespace SABSync
             {
                 XDocument xDoc = XDocument.Load(configFile);
 
-                var config = (from c in xDoc.Descendants("Configuration") select c).First();
+                var config = (from c in xDoc.Descendants("Configuration") select c).FirstOrDefault();
                 config.Element(element).Value = value;
                 config.Save(configFile);
             }
@@ -313,7 +272,7 @@ namespace SABSync
             {
                 XDocument xDoc = XDocument.Load(configFile);
 
-                var config = (from c in xDoc.Descendants("Configuration") select c).First();
+                var config = (from c in xDoc.Descendants("Configuration") select c).FirstOrDefault();
                 return config.Element(element).Value;
             }
             catch (Exception ex)

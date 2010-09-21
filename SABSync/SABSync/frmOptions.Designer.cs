@@ -30,8 +30,7 @@
         {
             System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("General");
             System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("SABnzbd");
-            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Config Files");
-            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("TV Shows");
+            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("TV Shows");
             this.treeViewOptions = new System.Windows.Forms.TreeView();
             this.panelSab = new System.Windows.Forms.Panel();
             this.btnTestSab = new System.Windows.Forms.Button();
@@ -59,16 +58,6 @@
             this.txtUsername = new System.Windows.Forms.TextBox();
             this.lblSabInfoHost = new System.Windows.Forms.Label();
             this.txtSabInfoHost = new System.Windows.Forms.TextBox();
-            this.panelConfig = new System.Windows.Forms.Panel();
-            this.btnQualityConfig = new System.Windows.Forms.Button();
-            this.lblQualityConfig = new System.Windows.Forms.Label();
-            this.txtQualityConfig = new System.Windows.Forms.TextBox();
-            this.btnAliasConfig = new System.Windows.Forms.Button();
-            this.lblAliasConfig = new System.Windows.Forms.Label();
-            this.txtAliasConfig = new System.Windows.Forms.TextBox();
-            this.txtRssConfig = new System.Windows.Forms.TextBox();
-            this.lblRssConfig = new System.Windows.Forms.Label();
-            this.btnRssConfig = new System.Windows.Forms.Button();
             this.panelShows = new System.Windows.Forms.Panel();
             this.chkDownloadPropers = new System.Windows.Forms.CheckBox();
             this.btnClearDQ = new System.Windows.Forms.Button();
@@ -76,8 +65,6 @@
             this.btnSd = new System.Windows.Forms.Button();
             this.lblDownloadQuality = new System.Windows.Forms.Label();
             this.txtDownloadQuality = new System.Windows.Forms.TextBox();
-            this.lblIgnoreSeasons = new System.Windows.Forms.Label();
-            this.txtIgnoreSeasons = new System.Windows.Forms.TextBox();
             this.txtVideoExt = new System.Windows.Forms.TextBox();
             this.lblVideoExt = new System.Windows.Forms.Label();
             this.btnTvRootClear = new System.Windows.Forms.Button();
@@ -85,6 +72,7 @@
             this.lblTvRoot = new System.Windows.Forms.Label();
             this.tvRootBrowse = new System.Windows.Forms.Button();
             this.panelGeneral = new System.Windows.Forms.Panel();
+            this.chkSyncOnStart = new System.Windows.Forms.CheckBox();
             this.lblMinutes = new System.Windows.Forms.Label();
             this.numMinutes = new System.Windows.Forms.NumericUpDown();
             this.lblTimer = new System.Windows.Forms.Label();
@@ -99,10 +87,8 @@
             this.btnApply = new System.Windows.Forms.Button();
             this.tvRootDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.nzbDirDialog = new System.Windows.Forms.FolderBrowserDialog();
-            this.chkSyncOnStart = new System.Windows.Forms.CheckBox();
             this.panelSab.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            this.panelConfig.SuspendLayout();
             this.panelShows.SuspendLayout();
             this.panelGeneral.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numMinutes)).BeginInit();
@@ -116,15 +102,12 @@
             treeNode1.Text = "General";
             treeNode2.Name = "NodeSab";
             treeNode2.Text = "SABnzbd";
-            treeNode3.Name = "NodeConfig";
-            treeNode3.Text = "Config Files";
-            treeNode4.Name = "NodeShows";
-            treeNode4.Text = "TV Shows";
+            treeNode3.Name = "NodeShows";
+            treeNode3.Text = "TV Shows";
             this.treeViewOptions.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode1,
             treeNode2,
-            treeNode3,
-            treeNode4});
+            treeNode3});
             this.treeViewOptions.Size = new System.Drawing.Size(121, 347);
             this.treeViewOptions.TabIndex = 0;
             this.treeViewOptions.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewOptions_AfterSelect);
@@ -146,9 +129,9 @@
             this.panelSab.Controls.Add(this.lblNzbDir);
             this.panelSab.Controls.Add(this.nzbDirBrowse);
             this.panelSab.Controls.Add(this.groupBox1);
-            this.panelSab.Location = new System.Drawing.Point(45, 245);
+            this.panelSab.Location = new System.Drawing.Point(45, 227);
             this.panelSab.Name = "panelSab";
-            this.panelSab.Size = new System.Drawing.Size(48, 47);
+            this.panelSab.Size = new System.Drawing.Size(59, 65);
             this.panelSab.TabIndex = 1;
             this.panelSab.Visible = false;
             // 
@@ -397,106 +380,6 @@
             this.txtSabInfoHost.Size = new System.Drawing.Size(214, 22);
             this.txtSabInfoHost.TabIndex = 5;
             // 
-            // panelConfig
-            // 
-            this.panelConfig.Controls.Add(this.btnQualityConfig);
-            this.panelConfig.Controls.Add(this.lblQualityConfig);
-            this.panelConfig.Controls.Add(this.txtQualityConfig);
-            this.panelConfig.Controls.Add(this.btnAliasConfig);
-            this.panelConfig.Controls.Add(this.lblAliasConfig);
-            this.panelConfig.Controls.Add(this.txtAliasConfig);
-            this.panelConfig.Controls.Add(this.txtRssConfig);
-            this.panelConfig.Controls.Add(this.lblRssConfig);
-            this.panelConfig.Controls.Add(this.btnRssConfig);
-            this.panelConfig.Location = new System.Drawing.Point(39, 157);
-            this.panelConfig.Name = "panelConfig";
-            this.panelConfig.Size = new System.Drawing.Size(71, 56);
-            this.panelConfig.TabIndex = 2;
-            // 
-            // btnQualityConfig
-            // 
-            this.btnQualityConfig.Location = new System.Drawing.Point(396, 65);
-            this.btnQualityConfig.Name = "btnQualityConfig";
-            this.btnQualityConfig.Size = new System.Drawing.Size(24, 23);
-            this.btnQualityConfig.TabIndex = 41;
-            this.btnQualityConfig.Text = "...";
-            this.btnQualityConfig.UseVisualStyleBackColor = true;
-            this.btnQualityConfig.Click += new System.EventHandler(this.btnQualityConfig_Click);
-            // 
-            // lblQualityConfig
-            // 
-            this.lblQualityConfig.AutoSize = true;
-            this.lblQualityConfig.Location = new System.Drawing.Point(3, 72);
-            this.lblQualityConfig.Name = "lblQualityConfig";
-            this.lblQualityConfig.Size = new System.Drawing.Size(94, 13);
-            this.lblQualityConfig.TabIndex = 40;
-            this.lblQualityConfig.Text = "Quality Config File:";
-            // 
-            // txtQualityConfig
-            // 
-            this.txtQualityConfig.BackColor = System.Drawing.SystemColors.Window;
-            this.txtQualityConfig.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtQualityConfig.Location = new System.Drawing.Point(104, 65);
-            this.txtQualityConfig.Name = "txtQualityConfig";
-            this.txtQualityConfig.Size = new System.Drawing.Size(284, 22);
-            this.txtQualityConfig.TabIndex = 39;
-            // 
-            // btnAliasConfig
-            // 
-            this.btnAliasConfig.Location = new System.Drawing.Point(396, 39);
-            this.btnAliasConfig.Name = "btnAliasConfig";
-            this.btnAliasConfig.Size = new System.Drawing.Size(24, 23);
-            this.btnAliasConfig.TabIndex = 38;
-            this.btnAliasConfig.Text = "...";
-            this.btnAliasConfig.UseVisualStyleBackColor = true;
-            this.btnAliasConfig.Click += new System.EventHandler(this.btnAliasConfig_Click);
-            // 
-            // lblAliasConfig
-            // 
-            this.lblAliasConfig.AutoSize = true;
-            this.lblAliasConfig.Location = new System.Drawing.Point(13, 47);
-            this.lblAliasConfig.Name = "lblAliasConfig";
-            this.lblAliasConfig.Size = new System.Drawing.Size(84, 13);
-            this.lblAliasConfig.TabIndex = 37;
-            this.lblAliasConfig.Text = "Alias Config File:";
-            // 
-            // txtAliasConfig
-            // 
-            this.txtAliasConfig.BackColor = System.Drawing.SystemColors.Window;
-            this.txtAliasConfig.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtAliasConfig.Location = new System.Drawing.Point(104, 39);
-            this.txtAliasConfig.Name = "txtAliasConfig";
-            this.txtAliasConfig.Size = new System.Drawing.Size(284, 22);
-            this.txtAliasConfig.TabIndex = 36;
-            // 
-            // txtRssConfig
-            // 
-            this.txtRssConfig.BackColor = System.Drawing.SystemColors.Window;
-            this.txtRssConfig.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtRssConfig.Location = new System.Drawing.Point(103, 13);
-            this.txtRssConfig.Name = "txtRssConfig";
-            this.txtRssConfig.Size = new System.Drawing.Size(285, 22);
-            this.txtRssConfig.TabIndex = 33;
-            // 
-            // lblRssConfig
-            // 
-            this.lblRssConfig.AutoSize = true;
-            this.lblRssConfig.Location = new System.Drawing.Point(13, 20);
-            this.lblRssConfig.Name = "lblRssConfig";
-            this.lblRssConfig.Size = new System.Drawing.Size(84, 13);
-            this.lblRssConfig.TabIndex = 34;
-            this.lblRssConfig.Text = "RSS Config File:";
-            // 
-            // btnRssConfig
-            // 
-            this.btnRssConfig.Location = new System.Drawing.Point(396, 10);
-            this.btnRssConfig.Name = "btnRssConfig";
-            this.btnRssConfig.Size = new System.Drawing.Size(24, 23);
-            this.btnRssConfig.TabIndex = 35;
-            this.btnRssConfig.Text = "...";
-            this.btnRssConfig.UseVisualStyleBackColor = true;
-            this.btnRssConfig.Click += new System.EventHandler(this.btnRssConfig_Click);
-            // 
             // panelShows
             // 
             this.panelShows.Controls.Add(this.chkDownloadPropers);
@@ -505,23 +388,21 @@
             this.panelShows.Controls.Add(this.btnSd);
             this.panelShows.Controls.Add(this.lblDownloadQuality);
             this.panelShows.Controls.Add(this.txtDownloadQuality);
-            this.panelShows.Controls.Add(this.lblIgnoreSeasons);
-            this.panelShows.Controls.Add(this.txtIgnoreSeasons);
             this.panelShows.Controls.Add(this.txtVideoExt);
             this.panelShows.Controls.Add(this.lblVideoExt);
             this.panelShows.Controls.Add(this.btnTvRootClear);
             this.panelShows.Controls.Add(this.txtTvRoot);
             this.panelShows.Controls.Add(this.lblTvRoot);
             this.panelShows.Controls.Add(this.tvRootBrowse);
-            this.panelShows.Location = new System.Drawing.Point(45, 325);
+            this.panelShows.Location = new System.Drawing.Point(33, 164);
             this.panelShows.Name = "panelShows";
-            this.panelShows.Size = new System.Drawing.Size(59, 52);
+            this.panelShows.Size = new System.Drawing.Size(57, 53);
             this.panelShows.TabIndex = 3;
             // 
             // chkDownloadPropers
             // 
             this.chkDownloadPropers.AutoSize = true;
-            this.chkDownloadPropers.Location = new System.Drawing.Point(103, 250);
+            this.chkDownloadPropers.Location = new System.Drawing.Point(103, 173);
             this.chkDownloadPropers.Name = "chkDownloadPropers";
             this.chkDownloadPropers.Size = new System.Drawing.Size(127, 17);
             this.chkDownloadPropers.TabIndex = 54;
@@ -531,7 +412,7 @@
             // btnClearDQ
             // 
             this.btnClearDQ.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnClearDQ.Location = new System.Drawing.Point(302, 219);
+            this.btnClearDQ.Location = new System.Drawing.Point(302, 142);
             this.btnClearDQ.Name = "btnClearDQ";
             this.btnClearDQ.Size = new System.Drawing.Size(120, 20);
             this.btnClearDQ.TabIndex = 53;
@@ -542,7 +423,7 @@
             // btnHd
             // 
             this.btnHd.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnHd.Location = new System.Drawing.Point(260, 220);
+            this.btnHd.Location = new System.Drawing.Point(260, 143);
             this.btnHd.Name = "btnHd";
             this.btnHd.Size = new System.Drawing.Size(31, 20);
             this.btnHd.TabIndex = 52;
@@ -553,7 +434,7 @@
             // btnSd
             // 
             this.btnSd.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSd.Location = new System.Drawing.Point(222, 220);
+            this.btnSd.Location = new System.Drawing.Point(222, 143);
             this.btnSd.Margin = new System.Windows.Forms.Padding(1);
             this.btnSd.Name = "btnSd";
             this.btnSd.Size = new System.Drawing.Size(30, 20);
@@ -565,7 +446,7 @@
             // lblDownloadQuality
             // 
             this.lblDownloadQuality.AutoSize = true;
-            this.lblDownloadQuality.Location = new System.Drawing.Point(7, 225);
+            this.lblDownloadQuality.Location = new System.Drawing.Point(7, 148);
             this.lblDownloadQuality.Name = "lblDownloadQuality";
             this.lblDownloadQuality.Size = new System.Drawing.Size(93, 13);
             this.lblDownloadQuality.TabIndex = 50;
@@ -575,32 +456,10 @@
             // 
             this.txtDownloadQuality.BackColor = System.Drawing.SystemColors.Window;
             this.txtDownloadQuality.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtDownloadQuality.Location = new System.Drawing.Point(103, 218);
+            this.txtDownloadQuality.Location = new System.Drawing.Point(103, 141);
             this.txtDownloadQuality.Name = "txtDownloadQuality";
             this.txtDownloadQuality.Size = new System.Drawing.Size(109, 22);
             this.txtDownloadQuality.TabIndex = 49;
-            // 
-            // lblIgnoreSeasons
-            // 
-            this.lblIgnoreSeasons.AutoSize = true;
-            this.lblIgnoreSeasons.Location = new System.Drawing.Point(4, 144);
-            this.lblIgnoreSeasons.Name = "lblIgnoreSeasons";
-            this.lblIgnoreSeasons.Size = new System.Drawing.Size(96, 13);
-            this.lblIgnoreSeasons.TabIndex = 48;
-            this.lblIgnoreSeasons.Text = "Seasons to Ignore:";
-            // 
-            // txtIgnoreSeasons
-            // 
-            this.txtIgnoreSeasons.AcceptsReturn = true;
-            this.txtIgnoreSeasons.BackColor = System.Drawing.SystemColors.Window;
-            this.txtIgnoreSeasons.Cursor = System.Windows.Forms.Cursors.Default;
-            this.txtIgnoreSeasons.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtIgnoreSeasons.Location = new System.Drawing.Point(103, 141);
-            this.txtIgnoreSeasons.Multiline = true;
-            this.txtIgnoreSeasons.Name = "txtIgnoreSeasons";
-            this.txtIgnoreSeasons.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtIgnoreSeasons.Size = new System.Drawing.Size(319, 72);
-            this.txtIgnoreSeasons.TabIndex = 47;
             // 
             // txtVideoExt
             // 
@@ -672,8 +531,18 @@
             this.panelGeneral.Controls.Add(this.chkVerboseLogging);
             this.panelGeneral.Location = new System.Drawing.Point(33, 96);
             this.panelGeneral.Name = "panelGeneral";
-            this.panelGeneral.Size = new System.Drawing.Size(386, 205);
+            this.panelGeneral.Size = new System.Drawing.Size(60, 55);
             this.panelGeneral.TabIndex = 4;
+            // 
+            // chkSyncOnStart
+            // 
+            this.chkSyncOnStart.AutoSize = true;
+            this.chkSyncOnStart.Location = new System.Drawing.Point(134, 119);
+            this.chkSyncOnStart.Name = "chkSyncOnStart";
+            this.chkSyncOnStart.Size = new System.Drawing.Size(92, 17);
+            this.chkSyncOnStart.TabIndex = 58;
+            this.chkSyncOnStart.Text = "Sync On Start";
+            this.chkSyncOnStart.UseVisualStyleBackColor = true;
             // 
             // lblMinutes
             // 
@@ -795,6 +664,7 @@
             // 
             // btnCancel
             // 
+            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnCancel.Location = new System.Drawing.Point(415, 341);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
@@ -819,34 +689,24 @@
             this.tvRootDialog.Description = "TV Root Folder";
             this.tvRootDialog.RootFolder = System.Environment.SpecialFolder.MyComputer;
             // 
-            // chkSyncOnStart
-            // 
-            this.chkSyncOnStart.AutoSize = true;
-            this.chkSyncOnStart.Location = new System.Drawing.Point(134, 119);
-            this.chkSyncOnStart.Name = "chkSyncOnStart";
-            this.chkSyncOnStart.Size = new System.Drawing.Size(92, 17);
-            this.chkSyncOnStart.TabIndex = 58;
-            this.chkSyncOnStart.Text = "Sync On Start";
-            this.chkSyncOnStart.UseVisualStyleBackColor = true;
-            // 
-            // frmOptions
+            // FrmOptions
             // 
             this.AcceptButton = this.btnOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(594, 372);
             this.Controls.Add(this.btnApply);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOk);
             this.Controls.Add(this.panelGeneral);
             this.Controls.Add(this.panelShows);
-            this.Controls.Add(this.panelConfig);
             this.Controls.Add(this.panelSab);
             this.Controls.Add(this.treeViewOptions);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmOptions";
+            this.Name = "FrmOptions";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.Text = "Options";
@@ -854,8 +714,6 @@
             this.panelSab.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            this.panelConfig.ResumeLayout(false);
-            this.panelConfig.PerformLayout();
             this.panelShows.ResumeLayout(false);
             this.panelShows.PerformLayout();
             this.panelGeneral.ResumeLayout(false);
@@ -887,16 +745,6 @@
         private System.Windows.Forms.Label lblTvTemplate;
         private System.Windows.Forms.TextBox txtTvDailyTemplate;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Panel panelConfig;
-        private System.Windows.Forms.Button btnQualityConfig;
-        private System.Windows.Forms.Label lblQualityConfig;
-        private System.Windows.Forms.TextBox txtQualityConfig;
-        private System.Windows.Forms.Button btnAliasConfig;
-        private System.Windows.Forms.Label lblAliasConfig;
-        private System.Windows.Forms.TextBox txtAliasConfig;
-        private System.Windows.Forms.TextBox txtRssConfig;
-        private System.Windows.Forms.Label lblRssConfig;
-        private System.Windows.Forms.Button btnRssConfig;
         private System.Windows.Forms.Button btnPriorityHigh;
         private System.Windows.Forms.Button btnPriorityNormal;
         private System.Windows.Forms.Button btnPriorityLow;
@@ -909,8 +757,6 @@
         private System.Windows.Forms.Button btnSd;
         private System.Windows.Forms.Label lblDownloadQuality;
         private System.Windows.Forms.TextBox txtDownloadQuality;
-        private System.Windows.Forms.Label lblIgnoreSeasons;
-        private System.Windows.Forms.TextBox txtIgnoreSeasons;
         private System.Windows.Forms.TextBox txtVideoExt;
         private System.Windows.Forms.Label lblVideoExt;
         private System.Windows.Forms.Button btnTvRootClear;

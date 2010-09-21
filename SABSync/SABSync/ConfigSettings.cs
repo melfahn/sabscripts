@@ -31,12 +31,6 @@ namespace SABSync
             set { UpdateValue("VideoExt", value); }
         }
 
-        internal static string IgnoreSeasons
-        {
-            get { return GetConfigValue("IgnoreSeasons").Replace(";", Environment.NewLine); }
-            set { UpdateValue("IgnoreSeasons", value.Replace(Environment.NewLine, ";")); }
-        }
-
         internal static string NzbDir
         {
             get { return GetConfigValue("NzbDir"); }
@@ -71,24 +65,6 @@ namespace SABSync
         {
             get { return GetConfigValue("Priority"); }
             set { UpdateValue("Priority", value); }
-        }
-
-        internal static string RssConfig
-        {
-            get { return GetConfigValue("Rss"); }
-            set { UpdateValue("Rss", value); }
-        }
-
-        internal static string AliasConfig
-        {
-            get { return GetConfigValue("Alias"); }
-            set { UpdateValue("Alias", value); }
-        }
-
-        internal static string QualityConfig
-        {
-            get { return GetConfigValue("Quality"); }
-            set { UpdateValue("Quality", value); }
         }
 
         internal static string DownloadQuality

@@ -25,8 +25,6 @@ namespace SABSync
                     tvdb_id INTEGER,
                     tvdb_name TEXT,
                     quality INTEGER,
-                    tvr_id INTEGER,
-                    tvr_name TEXT,
 	                ignore_season int,
 	                aliases TEXT,
 	                air_day TEXT,
@@ -49,7 +47,6 @@ namespace SABSync
 	               episode_name TEXT,
 	               air_date TEXT,
 	               tvdb_id INTEGER,
-	               tvr_id INTEGER,
 	               overview TEXT,
 	               FOREIGN KEY(show_id) REFERENCES shows(id)
 	               )";

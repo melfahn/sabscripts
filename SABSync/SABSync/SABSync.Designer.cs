@@ -18,8 +18,8 @@ using System.Runtime.Serialization;
 [assembly: EdmSchemaAttribute()]
 #region EDM Relationship Metadata
 
-[assembly: EdmRelationshipAttribute("SABSyncModel", "FK_histories_0", "episodes", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(SABSync.episodes), "histories", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(SABSync.histories), true)]
 [assembly: EdmRelationshipAttribute("SABSyncModel", "FK_episodes_0", "shows", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(SABSync.shows), "episodes", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(SABSync.episodes), true)]
+[assembly: EdmRelationshipAttribute("SABSyncModel", "FK_histories_0", "episodes", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(SABSync.episodes), "histories", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(SABSync.histories), true)]
 [assembly: EdmRelationshipAttribute("SABSyncModel", "FK_histories_1", "shows", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(SABSync.shows), "histories", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(SABSync.histories), true)]
 
 #endregion
@@ -123,18 +123,18 @@ namespace SABSync
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        public ObjectSet<shows> shows
+        public ObjectSet<providers> providers
         {
             get
             {
-                if ((_shows == null))
+                if ((_providers == null))
                 {
-                    _shows = base.CreateObjectSet<shows>("shows");
+                    _providers = base.CreateObjectSet<providers>("providers");
                 }
-                return _shows;
+                return _providers;
             }
         }
-        private ObjectSet<shows> _shows;
+        private ObjectSet<providers> _providers;
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -155,18 +155,18 @@ namespace SABSync
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        public ObjectSet<providers> providers
+        public ObjectSet<shows> shows
         {
             get
             {
-                if ((_providers == null))
+                if ((_shows == null))
                 {
-                    _providers = base.CreateObjectSet<providers>("providers");
+                    _shows = base.CreateObjectSet<shows>("shows");
                 }
-                return _providers;
+                return _shows;
             }
         }
-        private ObjectSet<providers> _providers;
+        private ObjectSet<shows> _shows;
 
         #endregion
         #region AddTo Methods
@@ -196,11 +196,11 @@ namespace SABSync
         }
     
         /// <summary>
-        /// Deprecated Method for adding a new object to the shows EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+        /// Deprecated Method for adding a new object to the providers EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
-        public void AddToshows(shows shows)
+        public void AddToproviders(providers providers)
         {
-            base.AddObject("shows", shows);
+            base.AddObject("providers", providers);
         }
     
         /// <summary>
@@ -212,11 +212,11 @@ namespace SABSync
         }
     
         /// <summary>
-        /// Deprecated Method for adding a new object to the providers EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+        /// Deprecated Method for adding a new object to the shows EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
-        public void AddToproviders(providers providers)
+        public void AddToshows(shows shows)
         {
-            base.AddObject("providers", providers);
+            base.AddObject("shows", shows);
         }
 
         #endregion
@@ -427,30 +427,6 @@ namespace SABSync
         /// </summary>
         [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
-        public Nullable<global::System.Int64> tvr_id
-        {
-            get
-            {
-                return _tvr_id;
-            }
-            set
-            {
-                Ontvr_idChanging(value);
-                ReportPropertyChanging("tvr_id");
-                _tvr_id = StructuralObject.SetValidValue(value);
-                ReportPropertyChanged("tvr_id");
-                Ontvr_idChanged();
-            }
-        }
-        private Nullable<global::System.Int64> _tvr_id;
-        partial void Ontvr_idChanging(Nullable<global::System.Int64> value);
-        partial void Ontvr_idChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
-        [DataMemberAttribute()]
         public global::System.String overview
         {
             get
@@ -473,28 +449,6 @@ namespace SABSync
         #endregion
     
         #region Navigation Properties
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [XmlIgnoreAttribute()]
-        [SoapIgnoreAttribute()]
-        [DataMemberAttribute()]
-        [EdmRelationshipNavigationPropertyAttribute("SABSyncModel", "FK_histories_0", "histories")]
-        public EntityCollection<histories> histories
-        {
-            get
-            {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<histories>("SABSyncModel.FK_histories_0", "histories");
-            }
-            set
-            {
-                if ((value != null))
-                {
-                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<histories>("SABSyncModel.FK_histories_0", "histories", value);
-                }
-            }
-        }
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -530,6 +484,28 @@ namespace SABSync
                 if ((value != null))
                 {
                     ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<shows>("SABSyncModel.FK_episodes_0", "shows", value);
+                }
+            }
+        }
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("SABSyncModel", "FK_histories_0", "histories")]
+        public EntityCollection<histories> histories
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<histories>("SABSyncModel.FK_histories_0", "histories");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<histories>("SABSyncModel.FK_histories_0", "histories", value);
                 }
             }
         }
@@ -1246,54 +1222,6 @@ namespace SABSync
         private Nullable<global::System.Int64> _quality;
         partial void OnqualityChanging(Nullable<global::System.Int64> value);
         partial void OnqualityChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
-        [DataMemberAttribute()]
-        public Nullable<global::System.Int64> tvr_id
-        {
-            get
-            {
-                return _tvr_id;
-            }
-            set
-            {
-                Ontvr_idChanging(value);
-                ReportPropertyChanging("tvr_id");
-                _tvr_id = StructuralObject.SetValidValue(value);
-                ReportPropertyChanged("tvr_id");
-                Ontvr_idChanged();
-            }
-        }
-        private Nullable<global::System.Int64> _tvr_id;
-        partial void Ontvr_idChanging(Nullable<global::System.Int64> value);
-        partial void Ontvr_idChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
-        [DataMemberAttribute()]
-        public global::System.String tvr_name
-        {
-            get
-            {
-                return _tvr_name;
-            }
-            set
-            {
-                Ontvr_nameChanging(value);
-                ReportPropertyChanging("tvr_name");
-                _tvr_name = StructuralObject.SetValidValue(value, true);
-                ReportPropertyChanged("tvr_name");
-                Ontvr_nameChanged();
-            }
-        }
-        private global::System.String _tvr_name;
-        partial void Ontvr_nameChanging(global::System.String value);
-        partial void Ontvr_nameChanged();
     
         /// <summary>
         /// No Metadata Documentation available.

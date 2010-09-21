@@ -16,15 +16,13 @@ namespace SABSync
 {
     public partial class FrmOptions : Form
     {
-        private bool isFormChanged;
+        private FrmMain FrmMain;
 
         /// <summary>
         /// Sets the form state change handlers.
         /// </summary>
         private void SetFormStateChangeHandlers(Control parent)
         {
-            isFormChanged = false;
-
             foreach (Control control in parent.Controls)
             {
                 // Attach to text changed event
@@ -66,12 +64,19 @@ namespace SABSync
         /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
         private void ControlStateChanged(object sender, EventArgs e)
         {
-            isFormChanged = true;
             btnApply.Enabled = true;
         }
 
         public FrmOptions()
         {
+            InitializeComponent();
+            LoadConfig();
+            SetFormStateChangeHandlers(this);
+        }
+
+        public FrmOptions(FrmMain form)
+        {
+            FrmMain = form;
             InitializeComponent();
             LoadConfig();
             SetFormStateChangeHandlers(this);
@@ -98,7 +103,6 @@ namespace SABSync
             txtTvTemplate.Text = ConfigSettings.TvTemplate;
             txtTvDailyTemplate.Text = ConfigSettings.TvDailyTemplate;
             txtVideoExt.Text = ConfigSettings.VideoExt;
-            txtIgnoreSeasons.Text = ConfigSettings.IgnoreSeasons;
             txtNzbDir.Text = ConfigSettings.NzbDir;
             txtSabInfoHost.Text = hostname;
             txtSabInfoPort.Text = port;
@@ -106,9 +110,6 @@ namespace SABSync
             txtPassword.Text = ConfigSettings.Password;
             txtApiKey.Text = ConfigSettings.ApiKey;
             txtPriority.Text = ConfigSettings.Priority;
-            txtRssConfig.Text = ConfigSettings.RssConfig;
-            txtAliasConfig.Text = ConfigSettings.AliasConfig;
-            txtQualityConfig.Text = ConfigSettings.QualityConfig;
             txtDownloadQuality.Text = ConfigSettings.DownloadQuality;
             txtDeleteLogs.Text = ConfigSettings.DeleteLogs;
             chkReplaceChars.Checked = Convert.ToBoolean(ConfigSettings.SabReplaceChars);
@@ -136,15 +137,11 @@ namespace SABSync
             ConfigSettings.TvTemplate = txtTvTemplate.Text;
             ConfigSettings.TvDailyTemplate = txtTvDailyTemplate.Text;
             ConfigSettings.VideoExt = txtVideoExt.Text;
-            ConfigSettings.IgnoreSeasons = txtIgnoreSeasons.Text;
             ConfigSettings.NzbDir = txtNzbDir.Text;
             ConfigSettings.SabNzbdInfo = SabInfoJoin(txtSabInfoHost.Text, txtSabInfoPort.Text);
             ConfigSettings.Username = txtUsername.Text;
             ConfigSettings.Password = txtPassword.Text;
             ConfigSettings.ApiKey = txtApiKey.Text;
-            ConfigSettings.RssConfig = txtRssConfig.Text;
-            ConfigSettings.AliasConfig = txtAliasConfig.Text;
-            ConfigSettings.QualityConfig = txtQualityConfig.Text;
             ConfigSettings.DownloadQuality = txtDownloadQuality.Text;
             ConfigSettings.SabReplaceChars = Convert.ToString(chkReplaceChars.Checked);
             ConfigSettings.VerboseLogging = Convert.ToString(chkVerboseLogging.Checked);
@@ -221,7 +218,6 @@ namespace SABSync
             if (this.treeViewOptions.SelectedNode.Name == "NodeGeneral")
             {
                 panelSab.Visible = false;
-                panelConfig.Visible = false;
                 panelShows.Visible = false;
                 panelGeneral.Width = 449;
                 panelGeneral.Height = 315;
@@ -232,7 +228,6 @@ namespace SABSync
             else if (this.treeViewOptions.SelectedNode.Name == "NodeSab")
             {
                 panelGeneral.Visible = false;
-                panelConfig.Visible = false;
                 panelShows.Visible = false;
                 panelSab.Width = 449;
                 panelSab.Height = 315;
@@ -245,17 +240,12 @@ namespace SABSync
                 panelGeneral.Visible = false;
                 panelSab.Visible = false;
                 panelShows.Visible = false;
-                panelConfig.Width = 449;
-                panelConfig.Height = 315;
-                panelConfig.Location = new Point(140, 13);
-                panelConfig.Visible = true;
             }
 
             else if (this.treeViewOptions.SelectedNode.Name == "NodeShows")
             {
                 panelGeneral.Visible = false;
                 panelSab.Visible = false;
-                panelConfig.Visible = false;
                 panelShows.Width = 449;
                 panelShows.Height = 315;
                 panelShows.Location = new Point(140, 13);
@@ -320,51 +310,6 @@ namespace SABSync
             txtTvRoot.Text = null;
         }
 
-        private void btnRssConfig_Click(object sender, EventArgs e)
-        {
-            OpenFileDialog fdlg = new OpenFileDialog();
-            fdlg.Title = "C# Corner Open File Dialog";
-            fdlg.InitialDirectory = @"c:\";
-            fdlg.Filter = "Config Files (*.config)|*.config|All files (*.*)|*.*";
-            fdlg.FilterIndex = 1;
-            fdlg.RestoreDirectory = true;
-
-            if (fdlg.ShowDialog() == DialogResult.OK)
-            {
-                txtRssConfig.Text = fdlg.FileName;
-            }
-        }
-
-        private void btnAliasConfig_Click(object sender, EventArgs e)
-        {
-            OpenFileDialog fdlg = new OpenFileDialog();
-            fdlg.Title = "C# Corner Open File Dialog";
-            fdlg.InitialDirectory = @"c:\";
-            fdlg.Filter = "Config Files (*.config)|*.config|All files (*.*)|*.*";
-            fdlg.FilterIndex = 1;
-            fdlg.RestoreDirectory = true;
-
-            if (fdlg.ShowDialog() == DialogResult.OK)
-            {
-                txtRssConfig.Text = fdlg.FileName;
-            }
-        }
-
-        private void btnQualityConfig_Click(object sender, EventArgs e)
-        {
-            OpenFileDialog fdlg = new OpenFileDialog();
-            fdlg.Title = "C# Corner Open File Dialog";
-            fdlg.InitialDirectory = @"c:\";
-            fdlg.Filter = "Config Files (*.config)|*.config|All files (*.*)|*.*";
-            fdlg.FilterIndex = 1;
-            fdlg.RestoreDirectory = true;
-
-            if (fdlg.ShowDialog() == DialogResult.OK)
-            {
-                txtRssConfig.Text = fdlg.FileName;
-            }
-        }
-
         private void btnSd_Click(object sender, EventArgs e)
         {
             if (!txtDownloadQuality.Text.Contains("xvid"))
@@ -422,6 +367,7 @@ namespace SABSync
         {
             //Save and Close
             SaveGeneralSettings();
+            this.DialogResult = DialogResult.OK;
             Close();
         }
 
@@ -434,7 +380,8 @@ namespace SABSync
         private void btnApply_Click(object sender, EventArgs e)
         {
             //Save but Leave Open
-            SaveGeneralSettings();
+            SaveGeneralSettings(); //Save the Configuration
+            FrmMain.Config.ReloadConfig(); //Reload the Config for the Main Form, incase use clicks cancel after apply
         }
     }
 }

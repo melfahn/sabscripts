@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Configuration>
-  <TvRoot>W:\Test\TV</TvRoot>
+  <TvRoot>C:\Test\TV</TvRoot>
   <TvTemplate>%sn\Season %0s\%sn - S%0sE%0e - %en.%ext</TvTemplate>
   <TvDailyTemplate>%t/%t - %y-%0m-%0d - %.desc.%ext</TvDailyTemplate>
   <VideoExt>.mkv;.avi;.wmv</VideoExt>
@@ -17,10 +17,6 @@
   <SyncOnStart>false</SyncOnStart>
 
   <!--These will be Deprecated-->
-  <Rss>rss.config</Rss>
-  <Alias>alias.config</Alias>
-  <Quality>quality.config</Quality>
-  <IgnoreSeasons>The Simpsons=20;The Office (US)=2</IgnoreSeasons>
   <VerboseLogging>false</VerboseLogging>
   <DeleteLogs>2</DeleteLogs>
 </Configuration>

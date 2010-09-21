@@ -40,6 +40,7 @@ namespace SABSync
                 sabSyncEntities.SaveChanges();
             }
 
+            this.DialogResult = DialogResult.OK;
             this.Close();
         }
     }

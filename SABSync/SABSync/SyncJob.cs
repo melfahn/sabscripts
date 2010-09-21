@@ -442,12 +442,13 @@ namespace SABSync
             if (IsOnDisk(episode))
                 return false;
 
-            bool isProper = episode.IsProper && Config.DownloadPropers;
-            if (!isProper && Sab.IsInHistory(episode))
-            {
-                RejectSabHistoryCount++;
-                return false;
-            }
+            //Ignore the SAB History Check - It's too slow and causes issues with Quality "Upgrading"
+            //bool isProper = episode.IsProper && Config.DownloadPropers;
+            //if (!isProper && Sab.IsInHistory(episode))
+            //{
+            //    RejectSabHistoryCount++;
+            //    return false;
+            //}
 
             return true;
         }
@@ -585,9 +586,9 @@ namespace SABSync
 
         private bool IsInLocalHistory(Episode episode)
         {
-            //TODO Move this to Database
+            //TODO: Move this to Database
 
-            Logger.Log("Checking SABSync.db for: [{0}]", episode.FeedItem.TitleFix);
+            Logger.Log("Checking SABSync.db for: [{0} - S{1:00}E{2:00}]", episode.ShowName, episode.SeasonNumber, episode.EpisodeNumber);
             using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
             {
                 var ep = (from e in sabSyncEntities.histories
@@ -602,7 +603,7 @@ namespace SABSync
 
                 if (ep.Count() > 0)
                 {
-                    if (ep.Count(y => y.quality > episode.Quality) == ep.Count()) //If they are equal then higher quality episode has not yet been downloaded
+                    if (ep.Count(y => y.quality < episode.Quality) == ep.Count()) //If they are equal then higher quality episode has not yet been downloaded
                     {
                         Logger.Log("Episode is better quality than previously downloaded, deleting previous version");
 

@@ -15,6 +15,7 @@ namespace SABSync
         public Dictionary<int, string> QualityTable = new Dictionary<int, string>(); //Used to store the quality table
         private Config Config = new Config();
         private FrmMain frmMain;
+        private List<ShowAlias> Aliases = new List<ShowAlias>();
 
         public Database()
             : this(new TvDbService())
@@ -28,6 +29,26 @@ namespace SABSync
             //Add records to QualityTable
             QualityTable.Add(1, "xvid");
             QualityTable.Add(2, "720p");
+
+            Aliases.Add(new ShowAlias("CSI", "CSI: Crime Scene Investigation"));
+            Aliases.Add(new ShowAlias("CSI Miami", "CSI: Miami"));
+            Aliases.Add(new ShowAlias("CSI New Nork", "CSI: NY"));
+            Aliases.Add(new ShowAlias("CSI NY", "CSI: NY"));
+            Aliases.Add(new ShowAlias("The Office", "The Office (US)"));
+            Aliases.Add(new ShowAlias("Law and Order", "Law & Order"));
+            Aliases.Add(new ShowAlias("Law and Order CI", "Law & Order: Criminal Intent"));
+            Aliases.Add(new ShowAlias("Law and Order Criminal Intent", "Law & Order: Criminal Intent"));
+            Aliases.Add(new ShowAlias("Law and Order SVU", "Law & Order: Special Victims Unit"));
+            Aliases.Add(new ShowAlias("Law and Order Special Victims Unit", "Law & Order: Special Victims Unit"));
+            Aliases.Add(new ShowAlias("David Letterman", "Late Show with David Letterman"));
+            Aliases.Add(new ShowAlias("Dancing With the Stars (US)", "Dancing With the Stars"));
+            Aliases.Add(new ShowAlias("Pure Pwnage TV", "Pure Pwnage"));
+            Aliases.Add(new ShowAlias("The City", "The City (2008)"));
+            Aliases.Add(new ShowAlias("Rob Dyrdeks Fantasy Factory", "Rob Dyrdek's Fantasy Factory"));
+            Aliases.Add(new ShowAlias("Its Always Sunny in Philadelphia", "It's Always Sunny in Philadelphia"));
+            Aliases.Add(new ShowAlias("Hawaii Five 0", "Hawaii Five-0 (2010)"));
+            Aliases.Add(new ShowAlias("Hawaii Five 0 2010", "Hawaii Five-0 (2010)"));
+            Aliases.Add(new ShowAlias("Kitchen Nightmares (US)", "Kitchen Nightmares"));
         }
 
         public Database(FrmMain form)
@@ -41,10 +62,12 @@ namespace SABSync
             GetTvDbServerTime(); //Get TvDB server time first!
             foreach (var show in Config.MyShows)
             {
-                frmMain.UpdateStatusBar("Processing: " + show);
+                if (frmMain != null)
+                    frmMain.UpdateStatusBar("Processing: " + show);
                 AddNewShowWithEpisodes(show);
             }
-            frmMain.UpdateStatusBar("All Shows on Disk Processed: " + Config.MyShows.Count);
+            if (frmMain != null)
+                frmMain.UpdateStatusBar("All Shows on Disk Processed: " + Config.MyShows.Count);
         }
 
         private void AddNewShowWithEpisodes(string showName)
@@ -73,22 +96,23 @@ namespace SABSync
 
                     //Add to shows Database
                     shows newItem = new shows
-                    {
-                        id = new int(),
-                        show_name = showName,
-                        tvdb_id = Convert.ToInt32(info.SeriesId),
-                        tvdb_name = info.SeriesName,
-                        ignore_season = 0,
-                        air_day = info.AirDay,
-                        air_time = info.AirTime,
-                        run_time = Convert.ToInt32(info.RunTime),
-                        status = info.Status,
-                        poster_url = info.PosterUrl,
-                        banner_url = info.BannerUrl,
-                        imdb_id = info.ImdbId,
-                        genre = info.Genre.Trim('|'),
-                        overview = info.Overview,
-                        quality = downloadQuality, //Uses defined value in Quality.Config or uses downloadQuality in Config file (easy upgrading), can be adjusted later to remove the need for Quality.Config
+                                        {
+                                            id = new int(),
+                                            show_name = showName,
+                                            tvdb_id = Convert.ToInt32(info.SeriesId),
+                                            tvdb_name = info.SeriesName,
+                                            ignore_season = 0,
+                                            air_day = info.AirDay,
+                                            air_time = info.AirTime,
+                                            run_time = Convert.ToInt32(info.RunTime),
+                                            status = info.Status,
+                                            poster_url = info.PosterUrl,
+                                            banner_url = info.BannerUrl,
+                                            imdb_id = info.ImdbId,
+                                            genre = info.Genre.Trim('|'),
+                                            overview = info.Overview,
+                                            quality = downloadQuality,
+                                            aliases = GetAliasForDb(showName)
                     };
                     Logger.Log("Adding {0} to database.", showName);
 
@@ -138,10 +162,10 @@ namespace SABSync
                 using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
                 {
                     var oldTime = from t in sabSyncEntities.info select t; //Get the time from the DB
-                    TvDbUpdates updates = TvDb.GetUpdates(Convert.ToInt32(oldTime.First().last_tvdb.Value)); //Get the Updates since oldTime
+                    TvDbUpdates updates = TvDb.GetUpdates(Convert.ToInt32(oldTime.FirstOrDefault().last_tvdb.Value)); //Get the Updates since oldTime
 
-                    oldTime.First().last_tvdb = updates.Time;
-                    sabSyncEntities.info.ApplyCurrentValues(oldTime.First());
+                    oldTime.FirstOrDefault().last_tvdb = updates.Time;
+                    sabSyncEntities.info.ApplyCurrentValues(oldTime.FirstOrDefault());
                     sabSyncEntities.SaveChanges(); //Save the new time to the info table
 
                     var shows = from s in sabSyncEntities.shows
@@ -153,7 +177,7 @@ namespace SABSync
                         if (!shows.Any(s => s.tvdb_id == seriesId)) //If we're not watching any of these series continue
                             continue;
 
-                        var show = (from s in shows where s.tvdb_id == seriesId select s).First(); //set show to the first (of one) that is found (Should be one, if not something else is FUBAR)
+                        var show = (from s in shows where s.tvdb_id == seriesId select s).FirstOrDefault(); //set show to the first (of one) that is found (Should be one, if not something else is FUBAR)
 
                         //Get the updated series/new episode data for this seriesId
 
@@ -183,7 +207,7 @@ namespace SABSync
                         if (!episodes.Any(e => e.tvdb_id == episodeId))
                             continue;
 
-                        var episode = (from e in episodes where e.tvdb_id == episodeId select e).First(); //Select the first episode ID matching the TvDB Episode ID
+                        var episode = (from e in episodes where e.tvdb_id == episodeId select e).FirstOrDefault(); //Select the first episode ID matching the TvDB Episode ID
 
                         var updatedEpisodeInfo = TvDb.GetEpisodeData(episodeId); //Get the info for this episode
 
@@ -223,8 +247,8 @@ namespace SABSync
                 histories newItem = new histories
                 {
                     id = new long(),
-                    show_id = data.First().ShowId,
-                    episode_id = data.First().EpisodeId,
+                    show_id = data.FirstOrDefault().ShowId,
+                    episode_id = data.FirstOrDefault().EpisodeId,
                     feed_title = episode.FeedItem.Title,
                     quality = episode.Quality,
                     proper = Convert.ToInt32(episode.IsProper),
@@ -250,10 +274,13 @@ namespace SABSync
             {
                 var qualityNumber = (from q in sabSyncEntities.shows
                                      where q.show_name.Equals(episode.ShowName, StringComparison.InvariantCultureIgnoreCase)
-                                     select new { q.quality }).First();
+                                     select new { q.quality }).FirstOrDefault();
 
-                var qualityString =
-                    (from q in QualityTable where q.Key == qualityNumber.quality select q.Value).First();
+                if (qualityNumber == null)
+                {
+                    Logger.Log("Quality is not wanted");
+                    return false;
+                }
 
                 if (qualityNumber.quality == 0) //If quality is 0 get it!
                 {
@@ -263,11 +290,14 @@ namespace SABSync
                         if (title.Contains(q.Value) || description.Contains(q.Value))
                         {
                             episode.Quality = q.Key;
-                            Logger.Log("Quality -{0}- is wanted for: {1}.", qualityString, episode.ShowName);
+                            Logger.Log("Quality -{0}- is wanted for: {1}.", q.Value, episode.ShowName);
                             return true;
                         }
                     }
                 }
+
+                var qualityString =
+                    (from q in QualityTable where q.Key == qualityNumber.quality select q.Value).FirstOrDefault();
 
                 bool titleContainsQuality = title.Contains(qualityString);
                 bool descriptionContainsQuality = description.Contains(qualityString);
@@ -291,7 +321,7 @@ namespace SABSync
             {
                 var ignored = (from i in sabSyncEntities.shows
                                where i.show_name.Equals(episode.ShowName, StringComparison.InvariantCultureIgnoreCase)
-                               select i.ignore_season).First();
+                               select i.ignore_season).FirstOrDefault();
 
                 if (ignored >= episode.SeasonNumber)
                     return true;
@@ -321,7 +351,7 @@ namespace SABSync
                         episodes newItem = new episodes
                         {
                             id = new long(),
-                            show_id = shows.First().id,
+                            show_id = shows.FirstOrDefault().id,
                             season_number = episode.SeasonNumber,
                             episode_number = episode.EpisodeNumber,
                             episode_name = episode.EpisodeName,
@@ -346,7 +376,7 @@ namespace SABSync
             if (Config.DownloadQualities.Count() != 1)
                 return 0;
 
-            return (from q in QualityTable where q.Value.Equals(Config.DownloadQualities[0]) select q.Key).First(); //Get the first string from Config.DownloadQualities and Return the first matching Key in QualityTable
+            return (from q in QualityTable where q.Value.Equals(Config.DownloadQualities[0]) select q.Key).FirstOrDefault(); //Get the first string from Config.DownloadQualities and Return the first matching Key in QualityTable
         }
 
         public void GetEpisodeName(Episode episode)
@@ -371,7 +401,7 @@ namespace SABSync
                             where
                                 e.shows.show_name.Equals(showName, StringComparison.InvariantCultureIgnoreCase) &&
                                 e.season_number == seasonNumber && e.episode_number == episodeNumber
-                            select e.episode_name).First();
+                            select e.episode_name).FirstOrDefault();
             }
         }
 
@@ -385,22 +415,35 @@ namespace SABSync
                         where
                             e.shows.show_name.Equals(showName, StringComparison.InvariantCultureIgnoreCase) &&
                             e.air_date == myFirstAired
-                        select e.episode_name).First();
+                        select e.episode_name).FirstOrDefault();
             }
         }
 
-        //private string GetAliasForDb(string showName, string tvDbName)
-        //{
-        //    string aliases = string.Empty;
-        //    foreach (ShowAlias alias in Config.ShowAliases)
-        //    {
-        //        if (alias.Alias.ToLower() == showName || alias.Alias.ToLower() == tvDbName)
-        //            aliases += String.Format("{0};", alias.Alias);
-        //    }
+        private string GetAliasForDb(string showName)
+        {
+            string aliases = string.Empty;
+            foreach (ShowAlias name in Aliases)
+            {
+                if (showName.Equals(CleanString(name.Alias), StringComparison.InvariantCultureIgnoreCase))
+                    aliases += String.Format("{0};", name.BadName);
+            }
 
-        //    aliases.Trim(';');
-        //    return aliases;
-        //}
+            return aliases.Trim(';');
+        }
+
+        private string CleanString(string name)
+        {
+            string result = name;
+            string[] badCharacters = { "\\", "/", "<", ">", "?", "*", ":", "|", "\"" };
+            string[] goodCharacters = { "+", "+", "{", "}", "!", "@", "-", "#", "`" };
+
+            for (int i = 0; i < badCharacters.Length; i++)
+            {
+                result = result.Replace(badCharacters[i], Config.SabReplaceChars ? goodCharacters[i] : "");
+            }
+
+            return result.Trim();
+        }
         
         //private int GetIgnoredSeasonsForDb(string showName, string tvDbName)
         //{
@@ -448,7 +491,7 @@ namespace SABSync
 
         //    return (from q in QualityTable
         //            where q.Value.Equals(Config.DownloadQualities[0], StringComparison.InvariantCultureIgnoreCase)
-        //            select Convert.ToInt32(q.Key)).First();
+        //            select Convert.ToInt32(q.Key)).FirstOrDefault();
         //}
     }
 }

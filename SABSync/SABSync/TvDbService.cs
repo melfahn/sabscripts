@@ -88,7 +88,9 @@ namespace SABSync
 
         #endregion
 
-        private static string GetSeriesId(string seriesName)
+        private Config Config = new Config();
+
+        private string GetSeriesId(string seriesName)
         {
             try
             {
@@ -117,7 +119,7 @@ namespace SABSync
                         string tvDbShowName =
                             tvDbElement.GetElementsByTagName("SeriesName")[0].InnerText.ToLower();
 
-                        if (tvDbShowName.ToLower() == seriesName.ToLower())
+                        if (CleanString(tvDbShowName.ToLower()) == seriesName.ToLower())
                         {
                             return
                                 tvDbElement.GetElementsByTagName("seriesid")[0].InnerText.ToLower();
@@ -249,7 +251,7 @@ namespace SABSync
                                    Overview = e.Element("Overview").Value
                                };
 
-                TvDbShowInfo info = series.First(); //Store the first Series found for this ID (Only 1 will exist anyways)
+                TvDbShowInfo info = series.FirstOrDefault(); //Store the first Series found for this ID (Only 1 will exist anyways)
                 info.Episodes = episodes.ToList(); //Add the Epsiodes to info
                 
                 return info; 
@@ -283,7 +285,7 @@ namespace SABSync
                                    Overview = e.Element("Overview").Value
                                };
 
-                return episode.First(); //Return the list of episodes, to be added to the DB
+                return episode.FirstOrDefault(); //Return the list of episodes, to be added to the DB
             }
 
             catch (Exception ex)
@@ -308,7 +310,7 @@ namespace SABSync
                                  Time = Convert.ToInt32(s.Element("Time").Value)
                              };
 
-                return time.First().Time; //Return the first Time found (of one)
+                return time.FirstOrDefault().Time; //Return the first Time found (of one)
             }
 
             catch (Exception ex)
@@ -346,7 +348,7 @@ namespace SABSync
                         newUpdates.Episodes.Add(Convert.ToInt32(episode.Value));
                 }
 
-                newUpdates.Time = updates.First().Time; //Return the first Time found (of one)
+                newUpdates.Time = updates.FirstOrDefault().Time; //Return the first Time found (of one)
 
                 return newUpdates;
             }
@@ -356,6 +358,20 @@ namespace SABSync
                 Logger.Log("An Error has occurred while getting show information for Series ID: " + ex);
                 return null;
             }
+        }
+
+        private string CleanString(string name)
+        {
+            string result = name;
+            string[] badCharacters = { "\\", "/", "<", ">", "?", "*", ":", "|", "\"" };
+            string[] goodCharacters = { "+", "+", "{", "}", "!", "@", "-", "#", "`" };
+
+            for (int i = 0; i < badCharacters.Length; i++)
+            {
+                result = result.Replace(badCharacters[i], Config.SabReplaceChars ? goodCharacters[i] : "");
+            }
+
+            return result.Trim();
         }
     }
 }
