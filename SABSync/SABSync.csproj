@@ -164,6 +164,7 @@
     </Compile>
     <Compile Include="App.cs" />
     <Compile Include="ConfigSettings.cs" />
+    <Compile Include="Controllers\ITvDbController.cs" />
     <Compile Include="Repository\Series.cs" />
     <Compile Include="ServiceLocator\Services.cs" />
     <Compile Include="Database.cs" />
@@ -202,12 +203,12 @@
     </Compile>
     <Compile Include="Entities\ShowAlias.cs" />
     <Compile Include="Entities\ShowQuality.cs" />
-    <Compile Include="Services\ConfigController.cs" />
-    <Compile Include="Services\DiskController.cs" />
-    <Compile Include="Services\IConfigController.cs" />
-    <Compile Include="Services\IDiskController.cs" />
-    <Compile Include="Services\SeriesController.cs" />
-    <Compile Include="Services\TvDbController.cs" />
+    <Compile Include="Controllers\ConfigController.cs" />
+    <Compile Include="Controllers\DiskController.cs" />
+    <Compile Include="Controllers\IConfigController.cs" />
+    <Compile Include="Controllers\IDiskController.cs" />
+    <Compile Include="Controllers\SeriesController.cs" />
+    <Compile Include="Controllers\TvDbController.cs" />
     <Compile Include="SQLite.cs" />
     <Compile Include="SyncJob.cs" />
     <Compile Include="TvDb\ITvDbService.cs" />

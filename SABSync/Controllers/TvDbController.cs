@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using TvdbLib;
 using TvdbLib.Cache;
 using System.Windows.Forms;
 using TvdbLib.Data;
 
-namespace SABSync.Services
+namespace SABSync.Controllers
 {
-    class TvDbController
+    public class TvDbController : ITvDbController
     {
         private readonly TvdbLib.TvdbHandler _handler;
         private const string TvDbApiKey = "5D2D188E86E07F4F";
@@ -23,8 +20,6 @@ namespace SABSync.Services
         {
             return _handler.SearchSeries(name);
         }
-
-
 
     }
 }

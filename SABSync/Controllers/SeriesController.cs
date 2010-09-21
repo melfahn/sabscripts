@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using log4net;
-using NLog;
 using SABSync.Repository;
+using SABSync.Services;
 using SABSync.TvDb;
 using SubSonic.Repository;
 
-namespace SABSync.Services
+namespace SABSync.Controllers
 {
     class SeriesController
     {
@@ -17,15 +16,16 @@ namespace SABSync.Services
         private readonly IDiskController _diskController;
         private readonly IConfigController _config;
         private readonly IRepository _sonioRepo;
+        private readonly ITvDbController _tvDb;
 
-        public SeriesController(ILog logger, IDiskController diskController, IConfigController configController, IRepository dataRepository)
+        public SeriesController(ILog logger, IDiskController diskController, IConfigController configController, IRepository dataRepository, ITvDbController tvDbController)
         {
             _logger = logger;
             _diskController = diskController;
             _config = configController;
             _sonioRepo = dataRepository;
+            _tvDb = tvDbController;
         }
-
 
         public void SyncSeriesWithDisk()
         {
@@ -34,7 +34,11 @@ namespace SABSync.Services
                 foreach (var seriesFolder in _diskController.GetDirectories(root))
                 {
                     var dirInfo = new DirectoryInfo(seriesFolder);
-                    _sonioRepo.Single<Series>(s => s.Path == dirInfo.FullName);
+                    if (!_sonioRepo.Exists<Series>(s => s.Path == _diskController.CleanPath(dirInfo.FullName)))
+                    {
+                        _logger.InfoFormat("Folder '{0} isn't mapped to a series in the database. Trying to map it.'",seriesFolder);
+                    }
+
 
                 }
             }

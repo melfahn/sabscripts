@@ -7,5 +7,6 @@ namespace SABSync.Services
         bool Exists(string path);
         string[] GetDirectories(string path);
         String CreateDirectory(string path);
+        string CleanPath(string path);
     }
 }

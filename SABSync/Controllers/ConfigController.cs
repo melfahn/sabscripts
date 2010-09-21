@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Configuration;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Xml.Linq;
 using log4net;
-using SABSync.Properties;
+using SABSync.Services;
 
-namespace SABSync.Services
+namespace SABSync.Controllers
 {
     class ConfigController : IConfigController
     {
