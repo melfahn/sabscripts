@@ -164,6 +164,7 @@
     </Compile>
     <Compile Include="App.cs" />
     <Compile Include="ConfigSettings.cs" />
+    <Compile Include="Controllers\ISeriesController.cs" />
     <Compile Include="Controllers\ITvDbController.cs" />
     <Compile Include="Repository\Series.cs" />
     <Compile Include="ServiceLocator\Services.cs" />
@@ -219,6 +220,7 @@
     <Compile Include="TvDb\TvDbUpdates.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="References\CassiniDev-lib.dll" />
     <Content Include="References\log4net.dll" />
     <Content Include="References\log4net.xml" />
     <Content Include="References\Ninject.dll" />

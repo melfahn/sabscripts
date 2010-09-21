@@ -2,7 +2,7 @@
 
 namespace SABSync.Services
 {
-    internal interface IConfigController
+    public interface IConfigController
     {
         List<string> GetTvRoots();
     }

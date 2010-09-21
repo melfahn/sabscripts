@@ -1,19 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Linq;
 using log4net;
 using SABSync.Services;
+using System.Windows.Forms;
 
 namespace SABSync.Controllers
 {
-    class ConfigController : IConfigController
+    public class ConfigController : IConfigController
     {
         private readonly ILog _logger;
         private readonly IDiskController _diskController;
 
         private readonly Configuration _config =
-            ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            ConfigurationManager.OpenExeConfiguration(Path.Combine(Application.StartupPath, @"sabsync.exe"));
 
         public ConfigController(ILog logger, IDiskController diskController)
         {

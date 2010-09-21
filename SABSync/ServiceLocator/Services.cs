@@ -1,52 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
+using log4net;
+using Ninject;
+using SABSync.Controllers;
+using SABSync.Services;
+using SubSonic.DataProviders;
+using SubSonic.Repository;
 
 namespace SABSync.ServiceLocator
 {
-    static class Services
+    public static class Services
     {
 
-        private static readonly Dictionary<Type, Object> Container = new Dictionary<Type, object>();
-
-        private static readonly object Lock = new object();
-
-        /// <summary>
-        /// Registers an instance of a service based on it's type
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="instance"></param>
-        public static void Register<T>(T instance)
+        public static void BindKernel(IKernel kernel)
         {
-            //Lock to avoid duplicate adds
-            lock (Lock)
-            {
-                if (Container.ContainsKey(typeof(T)))
-                {
-                    Container.Remove(typeof(T));
-                    Container.Add(typeof(T), instance);
-                }
-            }
-        }
+            var provider = ProviderFactory.GetProvider("Data Source=filename;Version=3;","System.Data.SQLite");
 
 
-
-        /// <summary>
-        /// Resolves a service based on its type out of the dictionary.
-        /// If type is not previously registered a new instance will be created and returned.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public static T Resolve<T>() where T : new()
-        {
-            object result;
-            Container.TryGetValue(typeof(T), out result);
-
-            if (result != null)
-            {
-                return (T)result;
-            }
-
-            return new T();
+            kernel.Bind<ISeriesController>().To<SeriesController>();
+            kernel.Bind<IDiskController>().To<DiskController>();
+            kernel.Bind<ITvDbController>().To<TvDbController>();
+            kernel.Bind<IConfigController>().To<ConfigController>();
+            kernel.Bind<ILog>().ToMethod(c => LogManager.GetLogger("logger-name"));
+            kernel.Bind<IRepository>().ToMethod(c => new SimpleRepository(provider, SimpleRepositoryOptions.RunMigrations));
         }
 
 

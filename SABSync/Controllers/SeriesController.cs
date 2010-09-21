@@ -7,10 +7,11 @@ using SABSync.Repository;
 using SABSync.Services;
 using SABSync.TvDb;
 using SubSonic.Repository;
+using TvdbLib.Data;
 
 namespace SABSync.Controllers
 {
-    class SeriesController
+    public class SeriesController : ISeriesController
     {
         private readonly ILog _logger;
         private readonly IDiskController _diskController;
@@ -27,6 +28,12 @@ namespace SABSync.Controllers
             _tvDb = tvDbController;
         }
 
+
+        public IQueryable<Series> GetSeries()
+        {
+            return _sonioRepo.All<Series>();
+        }
+
         public void SyncSeriesWithDisk()
         {
             foreach (var root in _config.GetTvRoots())
@@ -36,12 +43,37 @@ namespace SABSync.Controllers
                     var dirInfo = new DirectoryInfo(seriesFolder);
                     if (!_sonioRepo.Exists<Series>(s => s.Path == _diskController.CleanPath(dirInfo.FullName)))
                     {
-                        _logger.InfoFormat("Folder '{0} isn't mapped to a series in the database. Trying to map it.'",seriesFolder);
+                        _logger.InfoFormat("Folder '{0} isn't mapped to a series in the database. Trying to map it.'", seriesFolder);
+                        AddShow(seriesFolder);
                     }
-
-
                 }
             }
+        }
+
+        private void AddShow(string path)
+        {
+            var searchResults = _tvDb.SearchSeries(new DirectoryInfo(path).Name);
+            if (searchResults.Count != 0)
+            {
+                AddShow(path, _tvDb.GetSeries(searchResults[0].Id, searchResults[0].Language));
+            }
+
+        }
+
+        private void AddShow(string path, TvdbSeries series)
+        {
+            _sonioRepo.Add<Series>(new Series()
+            {
+                Id = series.Id,
+                SeriesName = series.SeriesName,
+                AirTimes = series.AirsTime,
+                AirsDayOfWeek = series.AirsDayOfWeek,
+                Overview = series.Overview,
+                Status = series.Status,
+                Language = series.Language.Name,
+                Path = path
+            });
+
 
         }
 

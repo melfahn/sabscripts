@@ -2,7 +2,7 @@
 
 namespace SABSync.Services
 {
-    internal interface IDiskController
+    public interface IDiskController
     {
         bool Exists(string path);
         string[] GetDirectories(string path);

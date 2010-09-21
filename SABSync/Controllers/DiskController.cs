@@ -6,7 +6,7 @@ using System.Text;
 
 namespace SABSync.Services
 {
-    class DiskController : IDiskController
+    public class DiskController : IDiskController
     {
         public bool Exists(string path)
         {

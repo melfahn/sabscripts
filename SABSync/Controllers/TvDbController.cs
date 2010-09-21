@@ -21,5 +21,10 @@ namespace SABSync.Controllers
             return _handler.SearchSeries(name);
         }
 
+        public TvdbSeries GetSeries(int id, TvdbLanguage language)
+        {
+            return _handler.GetSeries(id, language, true, false, false);
+        }
+
     }
 }
