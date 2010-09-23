@@ -159,7 +159,6 @@
       <DependentUpon>AboutBox.cs</DependentUpon>
     </Compile>
     <Compile Include="App.cs" />
-    <Compile Include="ConfigSettings.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="HistoryObject.cs" />
     <Compile Include="Images.Designer.cs">
@@ -208,7 +207,6 @@
     <Compile Include="SQLite.cs" />
     <Compile Include="SyncJob.cs" />
     <Compile Include="TvDbEpisodeInfo.cs" />
-    <Compile Include="ConfigXml.cs" />
     <Compile Include="TvDbService.cs" />
     <Compile Include="TvDbShowInfo.cs" />
     <Compile Include="TvDbUpdates.cs" />
