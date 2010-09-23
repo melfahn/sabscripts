@@ -160,6 +160,9 @@
     </Compile>
     <Compile Include="App.cs" />
     <Compile Include="Config.cs" />
+    <Compile Include="FrmMain.Designer.cs">
+      <DependentUpon>FrmMain.cs</DependentUpon>
+    </Compile>
     <Compile Include="HistoryObject.cs" />
     <Compile Include="Images.Designer.cs">
       <AutoGen>True</AutoGen>
