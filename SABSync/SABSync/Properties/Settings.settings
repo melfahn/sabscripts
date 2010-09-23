@@ -2,13 +2,77 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="SABSync.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="SABSyncConnectionString" Type="(Connection string)" Scope="Application">
-      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
-&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-  &lt;ConnectionString&gt;data source="C:\Users\mark.mcdowall\Documents\Visual Studio 2010\Projects\sabscripts\SABSync\SABSync\bin\Debug\SABSync.db"&lt;/ConnectionString&gt;
-  &lt;ProviderName&gt;System.Data.SQLite&lt;/ProviderName&gt;
-&lt;/SerializableConnectionString&gt;</DesignTimeValue>
-      <Value Profile="(Default)">data source="C:\Users\mark.mcdowall\Documents\Visual Studio 2010\Projects\sabscripts\SABSync\SABSync\bin\Debug\SABSync.db"</Value>
+    <Setting Name="WindowLocation" Type="System.Drawing.Point" Scope="User">
+      <Value Profile="(Default)">0, 0</Value>
+    </Setting>
+    <Setting Name="WindowSize" Type="System.Drawing.Size" Scope="User">
+      <Value Profile="(Default)">1000, 570</Value>
+    </Setting>
+    <Setting Name="TvRoot" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Test\TV</Value>
+    </Setting>
+    <Setting Name="TvTemplate" Type="System.String" Scope="User">
+      <Value Profile="(Default)">%sn\Season %0s\%sn - S%0sE%0e - %en.%ext</Value>
+    </Setting>
+    <Setting Name="TvDailyTemplate" Type="System.String" Scope="User">
+      <Value Profile="(Default)">%t/%t - %y-%0m-%0d - %.desc.%ext</Value>
+    </Setting>
+    <Setting Name="VideoExt" Type="System.String" Scope="User">
+      <Value Profile="(Default)">.mkv;.avi;.wmv</Value>
+    </Setting>
+    <Setting Name="NzbDir" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Test\nzb\imported</Value>
+    </Setting>
+    <Setting Name="SabnzbdInfo" Type="System.String" Scope="User">
+      <Value Profile="(Default)">192.168.5.55:2222</Value>
+    </Setting>
+    <Setting Name="Username" Type="System.String" Scope="User">
+      <Value Profile="(Default)">admin</Value>
+    </Setting>
+    <Setting Name="Password" Type="System.String" Scope="User">
+      <Value Profile="(Default)">pass</Value>
+    </Setting>
+    <Setting Name="ApiKey" Type="System.String" Scope="User">
+      <Value Profile="(Default)">5c770e3197e4fe763423ee7c392c25d1</Value>
+    </Setting>
+    <Setting Name="Priority" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
+    <Setting Name="SabReplaceChars" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="DownloadQuality" Type="System.String" Scope="User">
+      <Value Profile="(Default)">xvid;720p</Value>
+    </Setting>
+    <Setting Name="DownloadPropers" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="Interval" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">15</Value>
+    </Setting>
+    <Setting Name="SyncOnStart" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="VerboseLogging" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="DeleteLogs" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">2</Value>
+    </Setting>
+    <Setting Name="UpgradeRequired" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="olvShows" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="olvHistory" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="olvFeeds" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="olvUpcoming" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
     </Setting>
   </Settings>
 </SettingsFile>

@@ -4,12 +4,14 @@ using System.Configuration;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
-using System.IO; 
+using System.IO;
+using System.Text;
 using System.Windows.Forms;
 using System.Threading;
 using System.Linq;
 using System.Data.Objects;
 using BrightIdeasSoftware;
+using SABSync.Properties;
 
 namespace SABSync
 {
@@ -34,9 +36,7 @@ namespace SABSync
         private ToolStripMenuItem contentsToolStripMenuItem;
         private ToolStripMenuItem toolsToolStripMenuItem;
         private ToolStripMenuItem optionsToolStripMenuItem1;
-
-        private TabPage tabPageFeeds; //Create new Instance of SQLite
-        private Logger Logger = new Logger();
+        private TabPage tabPageFeeds;
         private StatusStrip statusMain;
         private ToolStripStatusLabel StatusStripLabel;
         private System.Windows.Forms.Timer timerUpdateCache;
@@ -104,8 +104,7 @@ namespace SABSync
 
         private int _interval;
         private SQLite Sql = new SQLite();
-        //private Thread SyncThread;
-        //private Thread UpdateCacheThread;
+        private Logger Logger = new Logger();
 
         FrmMain()
         {
@@ -176,6 +175,17 @@ namespace SABSync
             this.tableLayoutPanelButtons = new System.Windows.Forms.TableLayoutPanel();
             this.btnAddFeed = new System.Windows.Forms.Button();
             this.btnDeleteFeeds = new System.Windows.Forms.Button();
+            this.tabPageUpcoming = new System.Windows.Forms.TabPage();
+            this.tableLayoutPanelUpcoming = new System.Windows.Forms.TableLayoutPanel();
+            this.objectListViewUpcoming = new BrightIdeasSoftware.ObjectListView();
+            this.upcoming_show_name = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.upcoming_season_number = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.upcoming_episode_number = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.upcoming_episode_name = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.upcoming_airs = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.upcoming_overview = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
+            this.btnRefreshUpcoming = new System.Windows.Forms.Button();
             this.menuStripMain = new System.Windows.Forms.MenuStrip();
             this.toolStripMenuItemFile = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemRun = new System.Windows.Forms.ToolStripMenuItem();
@@ -183,6 +193,7 @@ namespace SABSync
             this.exitToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.updateCacheToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemHelp = new System.Windows.Forms.ToolStripMenuItem();
             this.contentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
@@ -193,18 +204,6 @@ namespace SABSync
             this.StatusStripLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.timerUpdateCache = new System.Windows.Forms.Timer(this.components);
             this.tableLayoutPanelMain = new System.Windows.Forms.TableLayoutPanel();
-            this.tabPageUpcoming = new System.Windows.Forms.TabPage();
-            this.tableLayoutPanelUpcoming = new System.Windows.Forms.TableLayoutPanel();
-            this.objectListViewUpcoming = new BrightIdeasSoftware.ObjectListView();
-            this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
-            this.btnRefreshUpcoming = new System.Windows.Forms.Button();
-            this.upcoming_show_name = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.upcoming_season_number = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.upcoming_episode_number = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.upcoming_episode_name = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.upcoming_overview = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.upcoming_airs = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.updateCacheToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStripTray.SuspendLayout();
             this.tabControlMain.SuspendLayout();
             this.tabShows.SuspendLayout();
@@ -219,13 +218,13 @@ namespace SABSync
             this.tableLayoutPanelFeeds.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.objectListViewFeeds)).BeginInit();
             this.tableLayoutPanelButtons.SuspendLayout();
-            this.menuStripMain.SuspendLayout();
-            this.statusMain.SuspendLayout();
-            this.tableLayoutPanelMain.SuspendLayout();
             this.tabPageUpcoming.SuspendLayout();
             this.tableLayoutPanelUpcoming.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.objectListViewUpcoming)).BeginInit();
             this.tableLayoutPanel4.SuspendLayout();
+            this.menuStripMain.SuspendLayout();
+            this.statusMain.SuspendLayout();
+            this.tableLayoutPanelMain.SuspendLayout();
             this.SuspendLayout();
             // 
             // notifyIconTray
@@ -262,10 +261,10 @@ namespace SABSync
             this.tabControlMain.Controls.Add(this.tabPageFeeds);
             this.tabControlMain.Controls.Add(this.tabPageUpcoming);
             this.tabControlMain.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControlMain.Location = new System.Drawing.Point(3, 23);
+            this.tabControlMain.Location = new System.Drawing.Point(3, 26);
             this.tabControlMain.Name = "tabControlMain";
             this.tabControlMain.SelectedIndex = 0;
-            this.tabControlMain.Size = new System.Drawing.Size(978, 486);
+            this.tabControlMain.Size = new System.Drawing.Size(978, 483);
             this.tabControlMain.TabIndex = 1;
             // 
             // tabShows
@@ -274,7 +273,7 @@ namespace SABSync
             this.tabShows.Location = new System.Drawing.Point(4, 22);
             this.tabShows.Name = "tabShows";
             this.tabShows.Padding = new System.Windows.Forms.Padding(3);
-            this.tabShows.Size = new System.Drawing.Size(970, 460);
+            this.tabShows.Size = new System.Drawing.Size(970, 457);
             this.tabShows.TabIndex = 0;
             this.tabShows.Text = "Shows";
             this.tabShows.UseVisualStyleBackColor = true;
@@ -292,7 +291,7 @@ namespace SABSync
             this.tableLayoutPanelShows.RowCount = 2;
             this.tableLayoutPanelShows.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanelShows.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 27F));
-            this.tableLayoutPanelShows.Size = new System.Drawing.Size(964, 454);
+            this.tableLayoutPanelShows.Size = new System.Drawing.Size(964, 451);
             this.tableLayoutPanelShows.TabIndex = 2;
             // 
             // objectListViewShows
@@ -334,7 +333,7 @@ namespace SABSync
             this.objectListViewShows.MultiSelect = false;
             this.objectListViewShows.Name = "objectListViewShows";
             this.objectListViewShows.ShowGroups = false;
-            this.objectListViewShows.Size = new System.Drawing.Size(958, 421);
+            this.objectListViewShows.Size = new System.Drawing.Size(958, 418);
             this.objectListViewShows.TabIndex = 2;
             this.objectListViewShows.UseAlternatingBackColors = true;
             this.objectListViewShows.UseCompatibleStateImageBehavior = false;
@@ -345,9 +344,10 @@ namespace SABSync
             // shows_id
             // 
             this.shows_id.AspectName = "id";
-            this.shows_id.MinimumWidth = 25;
+            this.shows_id.IsVisible = false;
+            this.shows_id.MinimumWidth = 0;
             this.shows_id.Text = "ID";
-            this.shows_id.Width = 25;
+            this.shows_id.Width = 0;
             // 
             // shows_show_name
             // 
@@ -477,7 +477,7 @@ namespace SABSync
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 77F));
             this.tableLayoutPanel2.Controls.Add(this.btnScanNewShows, 1, 0);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 427);
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 424);
             this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 1;
@@ -502,7 +502,7 @@ namespace SABSync
             this.tabHistory.Location = new System.Drawing.Point(4, 22);
             this.tabHistory.Name = "tabHistory";
             this.tabHistory.Padding = new System.Windows.Forms.Padding(3);
-            this.tabHistory.Size = new System.Drawing.Size(970, 460);
+            this.tabHistory.Size = new System.Drawing.Size(970, 457);
             this.tabHistory.TabIndex = 1;
             this.tabHistory.Text = "History";
             this.tabHistory.UseVisualStyleBackColor = true;
@@ -520,7 +520,7 @@ namespace SABSync
             this.tableLayoutPanelHistory.RowCount = 2;
             this.tableLayoutPanelHistory.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanelHistory.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 27F));
-            this.tableLayoutPanelHistory.Size = new System.Drawing.Size(964, 454);
+            this.tableLayoutPanelHistory.Size = new System.Drawing.Size(964, 451);
             this.tableLayoutPanelHistory.TabIndex = 1;
             // 
             // tableLayoutPanel1
@@ -532,7 +532,7 @@ namespace SABSync
             this.tableLayoutPanel1.Controls.Add(this.btnPurgeHistory, 2, 0);
             this.tableLayoutPanel1.Controls.Add(this.btnDeleteHistory, 1, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 427);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 424);
             this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
@@ -601,7 +601,7 @@ namespace SABSync
             this.objectListViewHistory.ShowImagesOnSubItems = true;
             this.objectListViewHistory.ShowItemCountOnGroups = true;
             this.objectListViewHistory.ShowItemToolTips = true;
-            this.objectListViewHistory.Size = new System.Drawing.Size(958, 421);
+            this.objectListViewHistory.Size = new System.Drawing.Size(958, 418);
             this.objectListViewHistory.SmallImageList = this.imageListProvider;
             this.objectListViewHistory.TabIndex = 0;
             this.objectListViewHistory.UseAlternatingBackColors = true;
@@ -678,9 +678,9 @@ namespace SABSync
             // 
             this.history_date.AspectName = "Date";
             this.history_date.FillsFreeSpace = true;
-            this.history_date.MinimumWidth = 80;
+            this.history_date.MinimumWidth = 130;
             this.history_date.Text = "Date";
-            this.history_date.Width = 80;
+            this.history_date.Width = 130;
             // 
             // imageListProvider
             // 
@@ -808,6 +808,130 @@ namespace SABSync
             this.btnDeleteFeeds.UseVisualStyleBackColor = true;
             this.btnDeleteFeeds.Click += new System.EventHandler(this.btnDeleteFeeds_Click);
             // 
+            // tabPageUpcoming
+            // 
+            this.tabPageUpcoming.Controls.Add(this.tableLayoutPanelUpcoming);
+            this.tabPageUpcoming.Location = new System.Drawing.Point(4, 22);
+            this.tabPageUpcoming.Name = "tabPageUpcoming";
+            this.tabPageUpcoming.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageUpcoming.Size = new System.Drawing.Size(970, 455);
+            this.tabPageUpcoming.TabIndex = 3;
+            this.tabPageUpcoming.Text = "Upcoming";
+            this.tabPageUpcoming.UseVisualStyleBackColor = true;
+            // 
+            // tableLayoutPanelUpcoming
+            // 
+            this.tableLayoutPanelUpcoming.ColumnCount = 1;
+            this.tableLayoutPanelUpcoming.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanelUpcoming.Controls.Add(this.objectListViewUpcoming, 0, 0);
+            this.tableLayoutPanelUpcoming.Controls.Add(this.tableLayoutPanel4, 0, 1);
+            this.tableLayoutPanelUpcoming.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanelUpcoming.Location = new System.Drawing.Point(3, 3);
+            this.tableLayoutPanelUpcoming.Margin = new System.Windows.Forms.Padding(0);
+            this.tableLayoutPanelUpcoming.Name = "tableLayoutPanelUpcoming";
+            this.tableLayoutPanelUpcoming.RowCount = 2;
+            this.tableLayoutPanelUpcoming.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanelUpcoming.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 27F));
+            this.tableLayoutPanelUpcoming.Size = new System.Drawing.Size(964, 449);
+            this.tableLayoutPanelUpcoming.TabIndex = 2;
+            // 
+            // objectListViewUpcoming
+            // 
+            this.objectListViewUpcoming.AllColumns.Add(this.upcoming_show_name);
+            this.objectListViewUpcoming.AllColumns.Add(this.upcoming_season_number);
+            this.objectListViewUpcoming.AllColumns.Add(this.upcoming_episode_number);
+            this.objectListViewUpcoming.AllColumns.Add(this.upcoming_episode_name);
+            this.objectListViewUpcoming.AllColumns.Add(this.upcoming_airs);
+            this.objectListViewUpcoming.AllColumns.Add(this.upcoming_overview);
+            this.objectListViewUpcoming.AlternateRowBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(235)))), ((int)(((byte)(254)))));
+            this.objectListViewUpcoming.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.upcoming_show_name,
+            this.upcoming_season_number,
+            this.upcoming_episode_number,
+            this.upcoming_episode_name,
+            this.upcoming_airs,
+            this.upcoming_overview});
+            this.objectListViewUpcoming.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.objectListViewUpcoming.FullRowSelect = true;
+            this.objectListViewUpcoming.Location = new System.Drawing.Point(3, 3);
+            this.objectListViewUpcoming.MultiSelect = false;
+            this.objectListViewUpcoming.Name = "objectListViewUpcoming";
+            this.objectListViewUpcoming.ShowGroups = false;
+            this.objectListViewUpcoming.Size = new System.Drawing.Size(958, 416);
+            this.objectListViewUpcoming.TabIndex = 0;
+            this.objectListViewUpcoming.UseAlternatingBackColors = true;
+            this.objectListViewUpcoming.UseCompatibleStateImageBehavior = false;
+            this.objectListViewUpcoming.View = System.Windows.Forms.View.Details;
+            // 
+            // upcoming_show_name
+            // 
+            this.upcoming_show_name.AspectName = "ShowName";
+            this.upcoming_show_name.MinimumWidth = 70;
+            this.upcoming_show_name.Text = "Show Name";
+            this.upcoming_show_name.Width = 70;
+            // 
+            // upcoming_season_number
+            // 
+            this.upcoming_season_number.AspectName = "SeasonNumber";
+            this.upcoming_season_number.MinimumWidth = 90;
+            this.upcoming_season_number.Text = "Season Number";
+            this.upcoming_season_number.Width = 90;
+            // 
+            // upcoming_episode_number
+            // 
+            this.upcoming_episode_number.AspectName = "EpisodeNumber";
+            this.upcoming_episode_number.MinimumWidth = 90;
+            this.upcoming_episode_number.Text = "Episode Number";
+            this.upcoming_episode_number.Width = 90;
+            // 
+            // upcoming_episode_name
+            // 
+            this.upcoming_episode_name.AspectName = "EpisodeName";
+            this.upcoming_episode_name.MinimumWidth = 85;
+            this.upcoming_episode_name.Text = "Episode Name";
+            this.upcoming_episode_name.Width = 85;
+            // 
+            // upcoming_airs
+            // 
+            this.upcoming_airs.AspectName = "Airs";
+            this.upcoming_airs.MinimumWidth = 85;
+            this.upcoming_airs.Text = "Air Date & Time";
+            this.upcoming_airs.Width = 85;
+            // 
+            // upcoming_overview
+            // 
+            this.upcoming_overview.AspectName = "Overview";
+            this.upcoming_overview.FillsFreeSpace = true;
+            this.upcoming_overview.Text = "Overview";
+            // 
+            // tableLayoutPanel4
+            // 
+            this.tableLayoutPanel4.ColumnCount = 3;
+            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 77F));
+            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 77F));
+            this.tableLayoutPanel4.Controls.Add(this.btnRefreshUpcoming, 2, 0);
+            this.tableLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel4.Location = new System.Drawing.Point(0, 422);
+            this.tableLayoutPanel4.Margin = new System.Windows.Forms.Padding(0);
+            this.tableLayoutPanel4.Name = "tableLayoutPanel4";
+            this.tableLayoutPanel4.RowCount = 1;
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel4.Size = new System.Drawing.Size(964, 27);
+            this.tableLayoutPanel4.TabIndex = 1;
+            // 
+            // btnRefreshUpcoming
+            // 
+            this.btnRefreshUpcoming.Dock = System.Windows.Forms.DockStyle.Right;
+            this.btnRefreshUpcoming.Location = new System.Drawing.Point(888, 1);
+            this.btnRefreshUpcoming.Margin = new System.Windows.Forms.Padding(1, 1, 5, 0);
+            this.btnRefreshUpcoming.Name = "btnRefreshUpcoming";
+            this.btnRefreshUpcoming.Size = new System.Drawing.Size(71, 26);
+            this.btnRefreshUpcoming.TabIndex = 2;
+            this.btnRefreshUpcoming.Text = "Refresh";
+            this.btnRefreshUpcoming.UseVisualStyleBackColor = true;
+            this.btnRefreshUpcoming.Click += new System.EventHandler(this.btnRefreshUpcoming_Click);
+            // 
             // menuStripMain
             // 
             this.menuStripMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -816,7 +940,7 @@ namespace SABSync
             this.toolStripMenuItemHelp});
             this.menuStripMain.Location = new System.Drawing.Point(0, 0);
             this.menuStripMain.Name = "menuStripMain";
-            this.menuStripMain.Size = new System.Drawing.Size(984, 20);
+            this.menuStripMain.Size = new System.Drawing.Size(984, 23);
             this.menuStripMain.TabIndex = 2;
             this.menuStripMain.Text = "menuStrip1";
             // 
@@ -827,7 +951,7 @@ namespace SABSync
             this.toolStripSeparator,
             this.exitToolStripMenuItem1});
             this.toolStripMenuItemFile.Name = "toolStripMenuItemFile";
-            this.toolStripMenuItemFile.Size = new System.Drawing.Size(37, 16);
+            this.toolStripMenuItemFile.Size = new System.Drawing.Size(37, 20);
             this.toolStripMenuItemFile.Text = "&File";
             // 
             // toolStripMenuItemRun
@@ -854,7 +978,7 @@ namespace SABSync
             this.optionsToolStripMenuItem1,
             this.updateCacheToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 16);
+            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
             this.toolsToolStripMenuItem.Text = "&Tools";
             // 
             // optionsToolStripMenuItem1
@@ -865,6 +989,13 @@ namespace SABSync
             this.optionsToolStripMenuItem1.Text = "&Options";
             this.optionsToolStripMenuItem1.Click += new System.EventHandler(this.optionsToolStripMenuItem1_Click);
             // 
+            // updateCacheToolStripMenuItem
+            // 
+            this.updateCacheToolStripMenuItem.Name = "updateCacheToolStripMenuItem";
+            this.updateCacheToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
+            this.updateCacheToolStripMenuItem.Text = "&Update Cache";
+            this.updateCacheToolStripMenuItem.Click += new System.EventHandler(this.updateCacheToolStripMenuItem_Click);
+            // 
             // toolStripMenuItemHelp
             // 
             this.toolStripMenuItemHelp.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -874,7 +1005,7 @@ namespace SABSync
             this.websiteToolStripMenuItem,
             this.aboutToolStripMenuItem});
             this.toolStripMenuItemHelp.Name = "toolStripMenuItemHelp";
-            this.toolStripMenuItemHelp.Size = new System.Drawing.Size(44, 16);
+            this.toolStripMenuItemHelp.Size = new System.Drawing.Size(44, 20);
             this.toolStripMenuItemHelp.Text = "&Help";
             // 
             // contentsToolStripMenuItem
@@ -941,142 +1072,11 @@ namespace SABSync
             this.tableLayoutPanelMain.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanelMain.Name = "tableLayoutPanelMain";
             this.tableLayoutPanelMain.RowCount = 3;
-            this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 23F));
             this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanelMain.Size = new System.Drawing.Size(984, 532);
             this.tableLayoutPanelMain.TabIndex = 4;
-            // 
-            // tabPageUpcoming
-            // 
-            this.tabPageUpcoming.Controls.Add(this.tableLayoutPanelUpcoming);
-            this.tabPageUpcoming.Location = new System.Drawing.Point(4, 22);
-            this.tabPageUpcoming.Name = "tabPageUpcoming";
-            this.tabPageUpcoming.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageUpcoming.Size = new System.Drawing.Size(970, 460);
-            this.tabPageUpcoming.TabIndex = 3;
-            this.tabPageUpcoming.Text = "Upcoming";
-            this.tabPageUpcoming.UseVisualStyleBackColor = true;
-            // 
-            // tableLayoutPanelUpcoming
-            // 
-            this.tableLayoutPanelUpcoming.ColumnCount = 1;
-            this.tableLayoutPanelUpcoming.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanelUpcoming.Controls.Add(this.objectListViewUpcoming, 0, 0);
-            this.tableLayoutPanelUpcoming.Controls.Add(this.tableLayoutPanel4, 0, 1);
-            this.tableLayoutPanelUpcoming.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanelUpcoming.Location = new System.Drawing.Point(3, 3);
-            this.tableLayoutPanelUpcoming.Margin = new System.Windows.Forms.Padding(0);
-            this.tableLayoutPanelUpcoming.Name = "tableLayoutPanelUpcoming";
-            this.tableLayoutPanelUpcoming.RowCount = 2;
-            this.tableLayoutPanelUpcoming.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanelUpcoming.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 27F));
-            this.tableLayoutPanelUpcoming.Size = new System.Drawing.Size(964, 454);
-            this.tableLayoutPanelUpcoming.TabIndex = 2;
-            // 
-            // objectListViewUpcoming
-            // 
-            this.objectListViewUpcoming.AllColumns.Add(this.upcoming_show_name);
-            this.objectListViewUpcoming.AllColumns.Add(this.upcoming_season_number);
-            this.objectListViewUpcoming.AllColumns.Add(this.upcoming_episode_number);
-            this.objectListViewUpcoming.AllColumns.Add(this.upcoming_episode_name);
-            this.objectListViewUpcoming.AllColumns.Add(this.upcoming_airs);
-            this.objectListViewUpcoming.AllColumns.Add(this.upcoming_overview);
-            this.objectListViewUpcoming.AlternateRowBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(235)))), ((int)(((byte)(254)))));
-            this.objectListViewUpcoming.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.upcoming_show_name,
-            this.upcoming_season_number,
-            this.upcoming_episode_number,
-            this.upcoming_episode_name,
-            this.upcoming_airs,
-            this.upcoming_overview});
-            this.objectListViewUpcoming.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.objectListViewUpcoming.FullRowSelect = true;
-            this.objectListViewUpcoming.Location = new System.Drawing.Point(3, 3);
-            this.objectListViewUpcoming.MultiSelect = false;
-            this.objectListViewUpcoming.Name = "objectListViewUpcoming";
-            this.objectListViewUpcoming.ShowGroups = false;
-            this.objectListViewUpcoming.Size = new System.Drawing.Size(958, 421);
-            this.objectListViewUpcoming.TabIndex = 0;
-            this.objectListViewUpcoming.UseAlternatingBackColors = true;
-            this.objectListViewUpcoming.UseCompatibleStateImageBehavior = false;
-            this.objectListViewUpcoming.View = System.Windows.Forms.View.Details;
-            // 
-            // tableLayoutPanel4
-            // 
-            this.tableLayoutPanel4.ColumnCount = 3;
-            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 77F));
-            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 77F));
-            this.tableLayoutPanel4.Controls.Add(this.btnRefreshUpcoming, 2, 0);
-            this.tableLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel4.Location = new System.Drawing.Point(0, 427);
-            this.tableLayoutPanel4.Margin = new System.Windows.Forms.Padding(0);
-            this.tableLayoutPanel4.Name = "tableLayoutPanel4";
-            this.tableLayoutPanel4.RowCount = 1;
-            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel4.Size = new System.Drawing.Size(964, 27);
-            this.tableLayoutPanel4.TabIndex = 1;
-            // 
-            // btnRefreshUpcoming
-            // 
-            this.btnRefreshUpcoming.Dock = System.Windows.Forms.DockStyle.Right;
-            this.btnRefreshUpcoming.Location = new System.Drawing.Point(888, 1);
-            this.btnRefreshUpcoming.Margin = new System.Windows.Forms.Padding(1, 1, 5, 0);
-            this.btnRefreshUpcoming.Name = "btnRefreshUpcoming";
-            this.btnRefreshUpcoming.Size = new System.Drawing.Size(71, 26);
-            this.btnRefreshUpcoming.TabIndex = 2;
-            this.btnRefreshUpcoming.Text = "Refresh";
-            this.btnRefreshUpcoming.UseVisualStyleBackColor = true;
-            this.btnRefreshUpcoming.Click += new System.EventHandler(this.btnRefreshUpcoming_Click);
-            // 
-            // upcoming_show_name
-            // 
-            this.upcoming_show_name.AspectName = "ShowName";
-            this.upcoming_show_name.MinimumWidth = 70;
-            this.upcoming_show_name.Text = "Show Name";
-            this.upcoming_show_name.Width = 70;
-            // 
-            // upcoming_season_number
-            // 
-            this.upcoming_season_number.AspectName = "SeasonNumber";
-            this.upcoming_season_number.MinimumWidth = 90;
-            this.upcoming_season_number.Text = "Season Number";
-            this.upcoming_season_number.Width = 90;
-            // 
-            // upcoming_episode_number
-            // 
-            this.upcoming_episode_number.AspectName = "EpisodeNumber";
-            this.upcoming_episode_number.MinimumWidth = 90;
-            this.upcoming_episode_number.Text = "Episode Number";
-            this.upcoming_episode_number.Width = 90;
-            // 
-            // upcoming_episode_name
-            // 
-            this.upcoming_episode_name.AspectName = "EpisodeName";
-            this.upcoming_episode_name.MinimumWidth = 85;
-            this.upcoming_episode_name.Text = "Episode Name";
-            this.upcoming_episode_name.Width = 85;
-            // 
-            // upcoming_overview
-            // 
-            this.upcoming_overview.AspectName = "Overview";
-            this.upcoming_overview.FillsFreeSpace = true;
-            this.upcoming_overview.Text = "Overview";
-            // 
-            // upcoming_airs
-            // 
-            this.upcoming_airs.AspectName = "Airs";
-            this.upcoming_airs.MinimumWidth = 85;
-            this.upcoming_airs.Text = "Air Date & Time";
-            this.upcoming_airs.Width = 85;
-            // 
-            // updateCacheToolStripMenuItem
-            // 
-            this.updateCacheToolStripMenuItem.Name = "updateCacheToolStripMenuItem";
-            this.updateCacheToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
-            this.updateCacheToolStripMenuItem.Text = "&Update Cache";
-            this.updateCacheToolStripMenuItem.Click += new System.EventHandler(this.updateCacheToolStripMenuItem_Click);
             // 
             // FrmMain
             // 
@@ -1086,6 +1086,7 @@ namespace SABSync
             this.MainMenuStrip = this.menuStripMain;
             this.Name = "FrmMain";
             this.Text = "SABSync";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmMain_FormClosing);
             this.Load += new System.EventHandler(this.Program_Load);
             this.Resize += new System.EventHandler(this.FrmMain_Resize);
             this.contextMenuStripTray.ResumeLayout(false);
@@ -1102,37 +1103,39 @@ namespace SABSync
             this.tableLayoutPanelFeeds.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.objectListViewFeeds)).EndInit();
             this.tableLayoutPanelButtons.ResumeLayout(false);
+            this.tabPageUpcoming.ResumeLayout(false);
+            this.tableLayoutPanelUpcoming.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.objectListViewUpcoming)).EndInit();
+            this.tableLayoutPanel4.ResumeLayout(false);
             this.menuStripMain.ResumeLayout(false);
             this.menuStripMain.PerformLayout();
             this.statusMain.ResumeLayout(false);
             this.statusMain.PerformLayout();
             this.tableLayoutPanelMain.ResumeLayout(false);
             this.tableLayoutPanelMain.PerformLayout();
-            this.tabPageUpcoming.ResumeLayout(false);
-            this.tableLayoutPanelUpcoming.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.objectListViewUpcoming)).EndInit();
-            this.tableLayoutPanel4.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
 
         private void Program_Load(object sender, EventArgs e)
         {
-            this.Text = String.Format("{0} v{1}", App.Name, App.Version);
-            //Create the Database if needed
-            CreateDatabase();
+            
+            
+            this.Text = String.Format("{0} v{1}", App.Name, App.Version); //Set the GUI Task Bar Text
 
-            SetSyncInterval();
-            //Run a Sync at the Start if Configured to
-            if (Config.SyncOnStart)
+            CreateDatabase(); //Create the Database if needed
+            SetSyncInterval(); //Set the Interval for Sync
+            if (Config.SyncOnStart) //Run a Sync at the Start if Configured to
                 StartSync();
 
             GetShows();
             GetHistory();
             GetFeeds();
             GetUpcoming();
-        }
 
+            LoadGuiSettings(); //Load Previously saved settings for the gui
+        }
+        
         private void SetSyncInterval()
         {
             _interval = Config.Interval;
@@ -1191,6 +1194,11 @@ namespace SABSync
         {
             try
             {
+                //First Populate the Shows Table
+                Database db = new Database();
+                db.ProcessingShow +=new Database.ProcessingShowHandler(db_ProcessingShow);
+                db.ShowsOnDiskToDatabase();
+
                 Stopwatch sw = Stopwatch.StartNew();
 
                 Logger.Log("=====================================================================");
@@ -1201,6 +1209,7 @@ namespace SABSync
                 Logger.DeleteLogs();
 
                 var job = new SyncJob();
+                job.DbChanged +=new SyncJob.DatabaseChangedHandler(UpdateView);
                 job.Start();
 
                 sw.Stop();
@@ -1230,7 +1239,7 @@ namespace SABSync
 
         private void optionsToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            FrmOptions frmOptions = new FrmOptions(this);
+            FrmOptions frmOptions = new FrmOptions();
             frmOptions.StartPosition = FormStartPosition.CenterParent;
             frmOptions.ShowDialog();
 
@@ -1260,6 +1269,8 @@ namespace SABSync
             shows_status.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
             shows_imdb_id.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
             shows_genre.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+
+            objectListViewShows.Sort(shows_show_name); //Sort By The 'Show Name' Column
         }
 
         private void GetHistory()
@@ -1374,7 +1385,8 @@ namespace SABSync
         private void UpdateShows()
         {
             //Config.ReloadConfig();
-            Database db = new Database(this);
+            Database db = new Database();
+            db.ProcessingShow +=new Database.ProcessingShowHandler(db_ProcessingShow);
             db.ShowsOnDiskToDatabase();
             GetShowsInvoke();
         }
@@ -1392,13 +1404,26 @@ namespace SABSync
             GetShows();
         }
 
-        public void UpdateStatusBar(string text)
+        private void GetHistoryInvoke()
+        {
+            if (this.objectListViewHistory.InvokeRequired)
+            {
+                this.objectListViewShows.BeginInvoke(
+                    new MethodInvoker(
+                    delegate() { GetHistory(); }));
+                return;
+            }
+
+            GetHistory();
+        }
+
+        public void UpdateStatusBarInvoke(string text)
         {
             if (this.statusMain.InvokeRequired)
             {
                 this.statusMain.BeginInvoke(
                     new MethodInvoker(
-                    delegate() { UpdateStatusBar(text); }));
+                    delegate() { UpdateStatusBarInvoke(text); }));
             }
             else
             {
@@ -1629,6 +1654,66 @@ namespace SABSync
         {
             //Updates the Show/Episode Cache
             UpdateCache();
+        }
+
+        public void UpdateView(string dbName)
+        {
+            if (dbName == "history")
+                GetHistoryInvoke();
+        }
+
+        public void db_ProcessingShow(string message)
+        {
+            UpdateStatusBarInvoke(message);
+        }
+
+        private void FrmMain_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            SaveGuiSettings();
+        }
+
+        private void LoadGuiSettings()
+        {
+            if (Settings.Default.UpgradeRequired)
+            {
+                Settings.Default.Upgrade();
+                Settings.Default.UpgradeRequired = false;
+                Settings.Default.Save();
+            }
+
+            // Set window location
+            if (Settings.Default.WindowLocation != null)
+                this.Location = Settings.Default.WindowLocation;
+
+            // Set window size
+            if (Settings.Default.WindowSize != null)
+                this.Size = Settings.Default.WindowSize;
+
+            //Load OLV Data
+            objectListViewShows.RestoreState(Encoding.Default.GetBytes(Settings.Default.olvShows));
+            objectListViewHistory.RestoreState(Encoding.Default.GetBytes(Settings.Default.olvHistory));
+            objectListViewFeeds.RestoreState(Encoding.Default.GetBytes(Settings.Default.olvFeeds));
+            objectListViewUpcoming.RestoreState(Encoding.Default.GetBytes(Settings.Default.olvUpcoming));
+        }
+
+        private void SaveGuiSettings()
+        {
+            //Save the Window Settings
+            Settings.Default.WindowLocation = this.Location;
+
+            if (this.WindowState == FormWindowState.Normal) //Copy window size to app settings
+                Settings.Default.WindowSize = this.Size;
+
+            else
+                Settings.Default.WindowSize = this.RestoreBounds.Size;
+
+            //Save the OLVs
+            Settings.Default.olvShows = Encoding.Default.GetString(objectListViewShows.SaveState());
+            Settings.Default.olvHistory = Encoding.Default.GetString(objectListViewHistory.SaveState());
+            Settings.Default.olvFeeds = Encoding.Default.GetString(objectListViewFeeds.SaveState());
+            Settings.Default.olvUpcoming = Encoding.Default.GetString(objectListViewUpcoming.SaveState());
+
+            Settings.Default.Save(); //Save settings to file
         }
     }
 }

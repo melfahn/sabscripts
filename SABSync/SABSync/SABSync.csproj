@@ -160,11 +160,17 @@
     </Compile>
     <Compile Include="App.cs" />
     <Compile Include="ConfigSettings.cs" />
+    <Compile Include="Config.cs" />
     <Compile Include="HistoryObject.cs" />
     <Compile Include="Images.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Images.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="SABSync.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -202,7 +208,7 @@
     <Compile Include="SQLite.cs" />
     <Compile Include="SyncJob.cs" />
     <Compile Include="TvDbEpisodeInfo.cs" />
-    <Compile Include="Config.cs" />
+    <Compile Include="ConfigXml.cs" />
     <Compile Include="TvDbService.cs" />
     <Compile Include="TvDbShowInfo.cs" />
     <Compile Include="TvDbUpdates.cs" />
@@ -219,6 +225,10 @@
     <Content Include="References\TvdbLib.pdb" />
     <Content Include="References\TvdbLib.XML" />
     <None Include="Properties\DataSources\SABSyncEntities.datasource" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
     <None Include="Resources\newzbin.com.png" />
     <None Include="Resources\nzbmatrix.com.png" />
     <None Include="Resources\nzbs.org.png" />

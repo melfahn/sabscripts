@@ -10,6 +10,9 @@ namespace SABSync
 {
     public class SyncJob
     {
+        public event DatabaseChangedHandler DbChanged = delegate { };
+        public delegate void DatabaseChangedHandler(string dbName);
+
         private const string PatternS01E01E02 =
             @"[Ss](?<Season>(?:\d{1,2}))[Ee](?<EpisodeOne>(?:\d{1,2}))[Ee](?<EpisodeTwo>(?:\d{1,2}))";
 
@@ -56,12 +59,6 @@ namespace SABSync
         public void Start()
         {
             Log("Watching {0} shows", Config.MyShows.Count);
-            //Log("IgnoreSeasons: {0}", Config.IgnoreSeasons);
-
-            //Populate the shows table
-
-            Database.ShowsOnDiskToDatabase();
-            //return;
 
             foreach (FeedInfo feedInfo in Config.Feeds)
             {
@@ -141,7 +138,9 @@ namespace SABSync
                 string queueResponse = Sab.AddByUrl(nzb);
 
                 Database.AddToHistory(episode, nzb);
-
+                DatabaseChangedHandler handler = DbChanged;
+                if (handler != null) handler("history");
+                
                 // TODO: check if Queued.Add need unfixed Title (was previously)
                 AcceptCount++;
                 Queued.Add(string.Format("{0}: {1}", nzb.Title, queueResponse));

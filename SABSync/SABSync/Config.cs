@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using SABSync.Properties;
 
 namespace SABSync
 {
@@ -16,31 +17,52 @@ namespace SABSync
         private IList<FeedInfo> _feeds;
         private IList<string> _myShows;
         private DirectoryInfo _nzbDir;
-        private string _sabRequest;
         private IList<ShowAlias> _showAliases;
-        private string _tvDailyTemplate;
         private IList<DirectoryInfo> _tvRootFolders;
-        private string _tvTemplate;
 
-        private string configFile = @"Settings.xml"; //Used to load/save the config file
-
-        public Config()
-        {
-            LoadConfig();
-        }
+        private string _sabRequest;
 
         public bool DownloadPropers { get; set; }
-
         public bool SyncOnStart { get; set; }
+        public bool SabReplaceChars { get; set; }
+        public bool VerboseLogging { get; set; }
+        
+        public int Interval { get; set; }
+        public int DeleteLogs { get; set; }
 
+        public string TvTemplate { get; set; }
+        public string TvDailyTemplate { get; set; }
+
+        public string[] VideoExt { get; set; }
         public string[] DownloadQualities { get; set; }
 
-        public int Interval { get; set; }
+        public string SabRequest
+        {
+            get { return _sabRequest ?? (_sabRequest = GetSabRequest()); }
+            set { _sabRequest = value; }
+        }
+        
+        public Config()
+        {
+            LoadValues();
+        }
 
         public IList<FeedInfo> Feeds
         {
             get { return _feeds ?? (_feeds = GetFeeds()); }
             set { _feeds = value; }
+        }
+
+        public IList<ShowAlias> ShowAliases
+        {
+            get { return _showAliases ?? (_showAliases = GetShowAliases()); }
+            set { _showAliases = value; }
+        }
+
+        public IList<DirectoryInfo> TvRootFolders
+        {
+            get { return _tvRootFolders ?? (_tvRootFolders = GetTvRootFolders()); }
+            set { _tvRootFolders = value; }
         }
 
         public IList<string> MyShows
@@ -55,75 +77,9 @@ namespace SABSync
             set { _nzbDir = value; }
         }
 
-        public string SabRequest
-        {
-            get { return _sabRequest ?? (_sabRequest = GetSabRequest()); }
-            set { _sabRequest = value; }
-        }
-
-        public bool SabReplaceChars { get; set; }
-
-        public IList<ShowAlias> ShowAliases
-        {
-            get { return _showAliases ?? (_showAliases = GetShowAliases()); }
-            set { _showAliases = value; }
-        }
-
-        public string TvDailyTemplate
-        {
-            get { return _tvDailyTemplate ?? (_tvDailyTemplate = GetTvDailyTemplate()); }
-            set { _tvDailyTemplate = value; }
-        }
-
-        public IList<DirectoryInfo> TvRootFolders
-        {
-            get { return _tvRootFolders ?? (_tvRootFolders = GetTvRootFolders()); }
-            set { _tvRootFolders = value; }
-        }
-
-        public string TvTemplate
-        {
-            get { return _tvTemplate ?? (_tvTemplate = GetTvTemplate()); }
-            set { _tvTemplate = value; }
-        }
-
-        public bool VerboseLogging { get; set; }
-
-        public string[] VideoExt { get; set; }
-
-        public Hashtable Settings { get; private set; }
-
-        private string GetSabRequest()
-        {
-            string sabnzbdInfo = GetValue("SabNzbdInfo");
-            string priority = GetValue("Priority");
-            string apiKey = GetValue("ApiKey");
-            string username = GetValue("Username");
-            string password = GetValue("Password");
-            return string.Format(
-                "http://{0}/sabnzbd/api?$Action&priority={1}&apikey={2}&ma_username={3}&ma_password={4}",
-                sabnzbdInfo, priority, apiKey, username, password).Replace("$Action", "{0}");
-        }
-
-        private string GetTvTemplate()
-        {
-            string setting = GetValue("TvTemplate");
-            if (string.IsNullOrEmpty(setting))
-                throw new ApplicationException("Configuration missing: tvTemplate");
-            return setting;
-        }
-
-        private string GetTvDailyTemplate()
-        {
-            string setting = GetValue("TvDailyTemplate");
-            if (string.IsNullOrEmpty(setting))
-                throw new ApplicationException("Configuration missing: tvDailyTemplate");
-            return setting;
-        }
-
         private DirectoryInfo GetNzbDir()
         {
-            string path = GetValue("NzbDir");
+            string path = Settings.Default.NzbDir;
             if (string.IsNullOrEmpty(path)) return null;
 
             var folder = new DirectoryInfo(path);
@@ -131,6 +87,54 @@ namespace SABSync
                 throw new ApplicationException(string.Format("Configuration: Invalid nzbDir folder: {0}", folder));
 
             return folder;
+        }
+
+        private IList<ShowAlias> GetShowAliases()
+        {
+            //Get from DB
+            IList<ShowAlias> aliasList = new List<ShowAlias>();
+            using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
+            {
+                var aliases = from a in sabSyncEntities.shows
+                              where !String.IsNullOrEmpty(a.aliases)
+                              select new { a.show_name, a.aliases };
+
+                foreach (var alias in aliases)
+                {
+                    foreach (var badName in alias.aliases.Split(';'))
+                    {
+                        ShowAlias showAlias = new ShowAlias();
+                        showAlias.Alias = alias.show_name;
+                        showAlias.BadName = badName;
+                        aliasList.Add(showAlias);
+                    }
+                }
+            }
+
+            return aliasList;
+        }
+
+        private IList<FeedInfo> GetFeeds()
+        {
+            //Load from DB
+            using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
+            {
+                IList<FeedInfo> fi = new List<FeedInfo>();
+
+                foreach (var feed in from f in sabSyncEntities.providers select new { f.name, f.url })
+                    fi.Add(new FeedInfo(feed.name, feed.url));
+
+                return fi;
+            }
+        }
+
+        private IList<DirectoryInfo> GetTvRootFolders()
+        {
+            return (from path in Settings.Default.TvRoot.Trim(';').Split(';')
+                    select new DirectoryInfo(path)
+                        into folder
+                        where folder.Exists
+                        select folder).ToList();
         }
 
         private IList<string> GetMyShows()
@@ -158,6 +162,18 @@ namespace SABSync
             return list;
         }
 
+        private string GetSabRequest()
+        {
+            string sabnzbdInfo = Settings.Default.SabnzbdInfo;
+            int priority = Settings.Default.Priority;
+            string apiKey = Settings.Default.ApiKey;
+            string username = Settings.Default.Username;
+            string password = Settings.Default.Password;
+            return string.Format(
+                "http://{0}/sabnzbd/api?$Action&priority={1}&apikey={2}&ma_username={3}&ma_password={4}",
+                sabnzbdInfo, priority, apiKey, username, password).Replace("$Action", "{0}");
+        }
+
         private static bool IsExcluded(DirectoryInfo folder)
         {
             bool isSystem = (folder.Attributes & FileAttributes.System) == FileAttributes.System;
@@ -165,99 +181,12 @@ namespace SABSync
             return isSystem || isHidden;
         }
 
-        private IList<DirectoryInfo> GetTvRootFolders()
-        {
-            return (from path in GetValue("TvRoot").Trim(';').Split(';')
-                    select new DirectoryInfo(path)
-                    into folder
-                    where folder.Exists
-                    select folder).ToList();
-        }
-
-        private IList<FeedInfo> GetFeeds()
-        {
-            //Load from DB
-            using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
-            {
-                IList<FeedInfo> fi = new List<FeedInfo>();
-
-                foreach (var feed in from f in sabSyncEntities.providers select new { f.name, f.url })
-                    fi.Add(new FeedInfo(feed.name, feed.url));
-
-                return fi;
-            }
-        }
-
-        private IList<ShowAlias> GetShowAliases()
-        {
-            //Get from DB
-            IList<ShowAlias> aliasList = new List<ShowAlias>();
-            using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
-            {
-
-                var aliases = from a in sabSyncEntities.shows
-                              where !String.IsNullOrEmpty(a.aliases)
-                              select new {a.show_name, a.aliases};
-
-                foreach (var alias in aliases)
-                {
-                    foreach (var badName in alias.aliases.Split(';'))
-                    {
-                        ShowAlias showAlias = new ShowAlias();
-                        showAlias.Alias = alias.show_name;
-                        showAlias.BadName = badName;
-                        aliasList.Add(showAlias);
-                    }
-                }
-            }
-
-            return aliasList;
-        }
-
-        private void LoadConfig()
-        {
-            //Read the XML file
-            XDocument xDoc = XDocument.Load(configFile);
-            var config = (from c in xDoc.Descendants("Configuration") select c).FirstOrDefault();
-            Hashtable ht = new Hashtable();
-
-            foreach (var c in config.Descendants())
-            {
-                ht.Add(c.Name, c.Value);
-            }
-
-            Settings = ht;
-
-            LoadValues(); //Load values to Variables
-        }
-
-        private void LoadValues()
-        {
-            DownloadPropers = Convert.ToBoolean(GetValue("DownloadPropers") ?? "false");
-            Interval = Convert.ToInt32(GetValue("Interval") ?? "15");
-            DownloadQualities = GetValue("DownloadQuality").Trim(';', ' ').Split(';');
-            SabReplaceChars = Convert.ToBoolean(GetValue("SabReplaceChars") ?? "false");
-            VerboseLogging = Convert.ToBoolean(GetValue("VerboseLogging") ?? "false");
-            VideoExt = (GetValue("VideoExt") ?? string.Empty).Trim(';', ' ').Split(';');
-            SyncOnStart = Convert.ToBoolean(GetValue("SyncOnStart") ?? "false");
-        }
-
-        public void ReloadConfig()
-        {
-            //Used to Reload the Configuration from an Updated file...
-            LoadConfig();
-        }
-
-        public void SaveValue(string element, string value)
+        public void SaveValue(string element, object value)
         {
             //Save the value to the element
             try
             {
-                XDocument xDoc = XDocument.Load(configFile);
-
-                var config = (from c in xDoc.Descendants("Configuration") select c).FirstOrDefault();
-                config.Element(element).Value = value;
-                config.Save(configFile);
+                Settings.Default[element] = value;
             }
             catch (Exception ex)
             {
@@ -265,21 +194,45 @@ namespace SABSync
             }
         }
 
-        public string GetValue(string element)
+        public object GetValue(string element)
         {
             //Save the value to the element
             try
             {
-                XDocument xDoc = XDocument.Load(configFile);
-
-                var config = (from c in xDoc.Descendants("Configuration") select c).FirstOrDefault();
-                return config.Element(element).Value;
+                return Settings.Default[element];
             }
             catch (Exception ex)
             {
                 Logger.Log(ex.ToString());
             }
             return null;
+        }
+
+        public void SaveConfig()
+        {
+            Settings.Default.Save();
+        }
+
+        public void ReloadConfig()
+        {
+            Settings.Default.Reload();
+        }
+
+        private void LoadValues()
+        {
+            DownloadPropers = Settings.Default.DownloadPropers;
+            SyncOnStart = Settings.Default.SyncOnStart;
+            SabReplaceChars = Settings.Default.SabReplaceChars;
+            VerboseLogging = Settings.Default.VerboseLogging;
+
+            Interval = Settings.Default.Interval;
+            DeleteLogs = Settings.Default.DeleteLogs;
+
+            TvTemplate = Settings.Default.TvTemplate;
+            TvDailyTemplate = Settings.Default.TvDailyTemplate;
+
+            VideoExt = Settings.Default.VideoExt.Split(';');
+            DownloadQualities = Settings.Default.DownloadQuality.Split(';');
         }
     }
 }

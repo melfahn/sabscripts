@@ -8,13 +8,18 @@ namespace SABSync
 {
     public class Database
     {
+        public event DatabaseChangedHandler DbChanged = delegate { };
+        public delegate void DatabaseChangedHandler(string dbName);
+
+        public event ProcessingShowHandler ProcessingShow = delegate { };
+        public delegate void ProcessingShowHandler(string message);
+
         //Class to Hold Commands to Update the Database etc
 
         private ITvDbService TvDb { get; set; }
         private Logger Logger = new Logger();
         public Dictionary<int, string> QualityTable = new Dictionary<int, string>(); //Used to store the quality table
         private Config Config = new Config();
-        private FrmMain frmMain;
         private List<ShowAlias> Aliases = new List<ShowAlias>();
 
         public Database()
@@ -41,20 +46,14 @@ namespace SABSync
             Aliases.Add(new ShowAlias("Law and Order SVU", "Law & Order: Special Victims Unit"));
             Aliases.Add(new ShowAlias("Law and Order Special Victims Unit", "Law & Order: Special Victims Unit"));
             Aliases.Add(new ShowAlias("David Letterman", "Late Show with David Letterman"));
-            Aliases.Add(new ShowAlias("Dancing With the Stars (US)", "Dancing With the Stars"));
+            Aliases.Add(new ShowAlias("Dancing With the Stars US", "Dancing With the Stars"));
             Aliases.Add(new ShowAlias("Pure Pwnage TV", "Pure Pwnage"));
             Aliases.Add(new ShowAlias("The City", "The City (2008)"));
             Aliases.Add(new ShowAlias("Rob Dyrdeks Fantasy Factory", "Rob Dyrdek's Fantasy Factory"));
             Aliases.Add(new ShowAlias("Its Always Sunny in Philadelphia", "It's Always Sunny in Philadelphia"));
             Aliases.Add(new ShowAlias("Hawaii Five 0", "Hawaii Five-0 (2010)"));
             Aliases.Add(new ShowAlias("Hawaii Five 0 2010", "Hawaii Five-0 (2010)"));
-            Aliases.Add(new ShowAlias("Kitchen Nightmares (US)", "Kitchen Nightmares"));
-        }
-
-        public Database(FrmMain form)
-            : this(new TvDbService())
-        {
-            frmMain = form;
+            Aliases.Add(new ShowAlias("Kitchen Nightmares US", "Kitchen Nightmares"));
         }
 
         public void ShowsOnDiskToDatabase()
@@ -62,12 +61,10 @@ namespace SABSync
             GetTvDbServerTime(); //Get TvDB server time first!
             foreach (var show in Config.MyShows)
             {
-                if (frmMain != null)
-                    frmMain.UpdateStatusBar("Processing: " + show);
+                ProcessingShow("Processing: " + show);
                 AddNewShowWithEpisodes(show);
             }
-            if (frmMain != null)
-                frmMain.UpdateStatusBar("All Shows on Disk Processed: " + Config.MyShows.Count);
+            ProcessingShow("All Shows on Disk Processed: " + Config.MyShows.Count);
         }
 
         private void AddNewShowWithEpisodes(string showName)
@@ -294,6 +291,7 @@ namespace SABSync
                             return true;
                         }
                     }
+                    return false; //In the unlikely (Web DL) event that the quality is not shown in the title, return false since it will not be wanted
                 }
 
                 var qualityString =
