@@ -120,6 +120,10 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CassiniDev-lib, Version=3.5.1.7, Culture=neutral, PublicKeyToken=f7f6e0b4240c7c27, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>References\CassiniDev-lib.dll</HintPath>
+    </Reference>
     <Reference Include="ObjectListView, Version=2.4.1.37818, Culture=neutral, PublicKeyToken=b1c5bf581481bcd4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>References\ObjectListView.dll</HintPath>
@@ -222,6 +226,7 @@
     <Compile Include="UpcomingObject.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="References\CassiniDev-lib.dll" />
     <Content Include="References\ObjectListView.dll" />
     <Content Include="References\RSS.NET.dll" />
     <Content Include="References\RSS.NET.XML" />

@@ -1,0 +1,367 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="2.0" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="SABSyncModel.Store" Alias="Self" Provider="System.Data.SQLite" ProviderManifestToken="ISO8601" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+        <EntityContainer Name="SABSyncModelStoreContainer">
+          <EntitySet Name="episodes" EntityType="SABSyncModel.Store.episodes" store:Type="Tables" />
+          <EntitySet Name="histories" EntityType="SABSyncModel.Store.histories" store:Type="Tables" />
+          <EntitySet Name="info" EntityType="SABSyncModel.Store.info" store:Type="Tables" />
+          <EntitySet Name="providers" EntityType="SABSyncModel.Store.providers" store:Type="Tables" />
+          <EntitySet Name="shows" EntityType="SABSyncModel.Store.shows" store:Type="Tables" />
+          <AssociationSet Name="FK_episodes_0" Association="SABSyncModel.Store.FK_episodes_0">
+            <End Role="shows" EntitySet="shows" />
+            <End Role="episodes" EntitySet="episodes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_histories_0" Association="SABSyncModel.Store.FK_histories_0">
+            <End Role="episodes" EntitySet="episodes" />
+            <End Role="histories" EntitySet="histories" />
+          </AssociationSet>
+          <AssociationSet Name="FK_histories_1" Association="SABSyncModel.Store.FK_histories_1">
+            <End Role="shows" EntitySet="shows" />
+            <End Role="histories" EntitySet="histories" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="episodes">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="integer" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="show_id" Type="integer" />
+          <Property Name="season_number" Type="integer" />
+          <Property Name="episode_number" Type="integer" />
+          <Property Name="episode_name" Type="nvarchar" />
+          <Property Name="air_date" Type="nvarchar" />
+          <Property Name="tvdb_id" Type="integer" />
+          <Property Name="overview" Type="nvarchar" />
+        </EntityType>
+        <EntityType Name="histories">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="integer" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="show_id" Type="integer" />
+          <Property Name="episode_id" Type="integer" />
+          <Property Name="feed_title" Type="nvarchar" />
+          <Property Name="quality" Type="int" />
+          <Property Name="proper" Type="integer" />
+          <Property Name="provider" Type="nvarchar" />
+          <Property Name="date" Type="nvarchar" />
+        </EntityType>
+        <EntityType Name="info">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="integer" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="last_tvdb" Type="integer" />
+        </EntityType>
+        <EntityType Name="providers">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="integer" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="nvarchar" />
+          <Property Name="url" Type="nvarchar" />
+        </EntityType>
+        <EntityType Name="shows">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="integer" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="show_name" Type="nvarchar" />
+          <Property Name="tvdb_id" Type="integer" />
+          <Property Name="tvdb_name" Type="nvarchar" />
+          <Property Name="quality" Type="integer" />
+          <Property Name="ignore_season" Type="int" />
+          <Property Name="aliases" Type="nvarchar" />
+          <Property Name="air_day" Type="nvarchar" />
+          <Property Name="air_time" Type="nvarchar" />
+          <Property Name="run_time" Type="integer" />
+          <Property Name="status" Type="nvarchar" />
+          <Property Name="poster_url" Type="nvarchar" />
+          <Property Name="banner_url" Type="nvarchar" />
+          <Property Name="imdb_id" Type="nvarchar" />
+          <Property Name="genre" Type="nvarchar" />
+          <Property Name="overview" Type="nvarchar" />
+        </EntityType>
+        <Association Name="FK_episodes_0">
+          <End Role="shows" Type="SABSyncModel.Store.shows" Multiplicity="0..1" />
+          <End Role="episodes" Type="SABSyncModel.Store.episodes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="shows">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="episodes">
+              <PropertyRef Name="show_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_histories_0">
+          <End Role="episodes" Type="SABSyncModel.Store.episodes" Multiplicity="0..1" />
+          <End Role="histories" Type="SABSyncModel.Store.histories" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="episodes">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="histories">
+              <PropertyRef Name="episode_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_histories_1">
+          <End Role="shows" Type="SABSyncModel.Store.shows" Multiplicity="0..1" />
+          <End Role="histories" Type="SABSyncModel.Store.histories" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="shows">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="histories">
+              <PropertyRef Name="show_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="SABSyncModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+        <EntityContainer Name="SABSyncEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="episodes" EntityType="SABSyncModel.episodes" />
+          <EntitySet Name="histories" EntityType="SABSyncModel.histories" />
+          <EntitySet Name="info" EntityType="SABSyncModel.info" />
+          <EntitySet Name="providers" EntityType="SABSyncModel.providers" />
+          <EntitySet Name="shows" EntityType="SABSyncModel.shows" />
+          <AssociationSet Name="FK_episodes_0" Association="SABSyncModel.FK_episodes_0">
+            <End Role="shows" EntitySet="shows" />
+            <End Role="episodes" EntitySet="episodes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_histories_0" Association="SABSyncModel.FK_histories_0">
+            <End Role="episodes" EntitySet="episodes" />
+            <End Role="histories" EntitySet="histories" />
+          </AssociationSet>
+          <AssociationSet Name="FK_histories_1" Association="SABSyncModel.FK_histories_1">
+            <End Role="shows" EntitySet="shows" />
+            <End Role="histories" EntitySet="histories" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="episodes">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Type="Int64" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int64" Name="show_id" />
+          <Property Type="Int64" Name="season_number" />
+          <Property Type="Int64" Name="episode_number" />
+          <Property Type="String" Name="episode_name" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="air_date" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+          <Property Type="Int64" Name="tvdb_id" />
+          <Property Type="String" Name="overview" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="shows" Relationship="SABSyncModel.FK_episodes_0" FromRole="episodes" ToRole="shows" />
+          <NavigationProperty Name="histories" Relationship="SABSyncModel.FK_histories_0" FromRole="episodes" ToRole="histories" />
+        </EntityType>
+        <EntityType Name="histories">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Type="Int64" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int64" Name="show_id" />
+          <Property Type="Int64" Name="episode_id" />
+          <Property Type="String" Name="feed_title" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="quality" />
+          <Property Type="Int64" Name="proper" />
+          <Property Type="String" Name="provider" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="date" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="episodes" Relationship="SABSyncModel.FK_histories_0" FromRole="histories" ToRole="episodes" />
+          <NavigationProperty Name="shows" Relationship="SABSyncModel.FK_histories_1" FromRole="histories" ToRole="shows" />
+        </EntityType>
+        <EntityType Name="info">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Type="Int64" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int64" Name="last_tvdb" />
+        </EntityType>
+        <EntityType Name="providers">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Type="Int64" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="name" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="url" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="shows">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Type="Int64" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="show_name" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+          <Property Type="Int64" Name="tvdb_id" />
+          <Property Type="String" Name="tvdb_name" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+          <Property Type="Int64" Name="quality" />
+          <Property Type="Int32" Name="ignore_season" />
+          <Property Type="String" Name="aliases" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="air_day" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="air_time" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+          <Property Type="Int64" Name="run_time" />
+          <Property Type="String" Name="status" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="poster_url" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="banner_url" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="imdb_id" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="genre" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="overview" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="episodes" Relationship="SABSyncModel.FK_episodes_0" FromRole="shows" ToRole="episodes" />
+          <NavigationProperty Name="histories" Relationship="SABSyncModel.FK_histories_1" FromRole="shows" ToRole="histories" />
+        </EntityType>
+        <Association Name="FK_episodes_0">
+          <End Type="SABSyncModel.shows" Role="shows" Multiplicity="0..1" />
+          <End Type="SABSyncModel.episodes" Role="episodes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="shows">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="episodes">
+              <PropertyRef Name="show_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_histories_0">
+          <End Type="SABSyncModel.episodes" Role="episodes" Multiplicity="0..1" />
+          <End Type="SABSyncModel.histories" Role="histories" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="episodes">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="histories">
+              <PropertyRef Name="episode_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_histories_1">
+          <End Type="SABSyncModel.shows" Role="shows" Multiplicity="0..1" />
+          <End Type="SABSyncModel.histories" Role="histories" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="shows">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="histories">
+              <PropertyRef Name="show_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="SABSyncModelStoreContainer" CdmEntityContainer="SABSyncEntities">
+          <EntitySetMapping Name="episodes">
+            <EntityTypeMapping TypeName="SABSyncModel.episodes">
+              <MappingFragment StoreEntitySet="episodes">
+                <ScalarProperty Name="overview" ColumnName="overview" />
+                <ScalarProperty Name="tvdb_id" ColumnName="tvdb_id" />
+                <ScalarProperty Name="air_date" ColumnName="air_date" />
+                <ScalarProperty Name="episode_name" ColumnName="episode_name" />
+                <ScalarProperty Name="episode_number" ColumnName="episode_number" />
+                <ScalarProperty Name="season_number" ColumnName="season_number" />
+                <ScalarProperty Name="show_id" ColumnName="show_id" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="histories">
+            <EntityTypeMapping TypeName="SABSyncModel.histories">
+              <MappingFragment StoreEntitySet="histories">
+                <ScalarProperty Name="date" ColumnName="date" />
+                <ScalarProperty Name="provider" ColumnName="provider" />
+                <ScalarProperty Name="proper" ColumnName="proper" />
+                <ScalarProperty Name="quality" ColumnName="quality" />
+                <ScalarProperty Name="feed_title" ColumnName="feed_title" />
+                <ScalarProperty Name="episode_id" ColumnName="episode_id" />
+                <ScalarProperty Name="show_id" ColumnName="show_id" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="info">
+            <EntityTypeMapping TypeName="SABSyncModel.info">
+              <MappingFragment StoreEntitySet="info">
+                <ScalarProperty Name="last_tvdb" ColumnName="last_tvdb" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="providers">
+            <EntityTypeMapping TypeName="SABSyncModel.providers">
+              <MappingFragment StoreEntitySet="providers">
+                <ScalarProperty Name="url" ColumnName="url" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="shows">
+            <EntityTypeMapping TypeName="SABSyncModel.shows">
+              <MappingFragment StoreEntitySet="shows">
+                <ScalarProperty Name="overview" ColumnName="overview" />
+                <ScalarProperty Name="genre" ColumnName="genre" />
+                <ScalarProperty Name="imdb_id" ColumnName="imdb_id" />
+                <ScalarProperty Name="banner_url" ColumnName="banner_url" />
+                <ScalarProperty Name="poster_url" ColumnName="poster_url" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="run_time" ColumnName="run_time" />
+                <ScalarProperty Name="air_time" ColumnName="air_time" />
+                <ScalarProperty Name="air_day" ColumnName="air_day" />
+                <ScalarProperty Name="aliases" ColumnName="aliases" />
+                <ScalarProperty Name="ignore_season" ColumnName="ignore_season" />
+                <ScalarProperty Name="quality" ColumnName="quality" />
+                <ScalarProperty Name="tvdb_name" ColumnName="tvdb_name" />
+                <ScalarProperty Name="tvdb_id" ColumnName="tvdb_id" />
+                <ScalarProperty Name="show_name" ColumnName="show_name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="False" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams>
+      <Diagram Name="Model1">
+        <EntityTypeShape EntityType="SABSyncModel.episodes" Width="1.5" PointX="3" PointY="1.875" Height="2.941793619791667" />
+        <EntityTypeShape EntityType="SABSyncModel.histories" Width="1.5" PointX="5.25" PointY="1.875" Height="2.9417936197916674" />
+        <EntityTypeShape EntityType="SABSyncModel.info" Width="1.5" PointX="2.75" PointY="5.75" Height="1.4033821614583317" />
+        <EntityTypeShape EntityType="SABSyncModel.providers" Width="1.5" PointX="4.75" PointY="5.75" Height="1.5956835937499996" />
+        <EntityTypeShape EntityType="SABSyncModel.shows" Width="1.5" PointX="0.75" PointY="1" Height="4.480205078125" />
+        <AssociationConnector Association="SABSyncModel.FK_episodes_0" >
+          <ConnectorPoint PointX="2.25" PointY="3.3458968098958337" />
+          <ConnectorPoint PointX="3" PointY="3.3458968098958337" />
+        </AssociationConnector>
+        <AssociationConnector Association="SABSyncModel.FK_histories_0" >
+          <ConnectorPoint PointX="4.5" PointY="3.3458968098958337" />
+          <ConnectorPoint PointX="5.25" PointY="3.3458968098958337" />
+        </AssociationConnector>
+        <AssociationConnector Association="SABSyncModel.FK_histories_1" >
+          <ConnectorPoint PointX="2.25" PointY="5.148499848958334" />
+          <ConnectorPoint PointX="6" PointY="5.148499848958334" />
+          <ConnectorPoint PointX="6" PointY="4.8167936197916674" />
+        </AssociationConnector>
+      </Diagram>
+    </Diagrams>
+  </Designer>
+</edmx:Edmx>
