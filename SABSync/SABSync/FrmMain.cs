@@ -634,5 +634,13 @@ namespace SABSync
 
             Settings.Default.Save(); //Save settings to file
         }
+
+        private void viewLogsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //Show Logs Window
+            FrmLogs frmLogs = new FrmLogs();
+            frmLogs.StartPosition = FormStartPosition.CenterParent;
+            frmLogs.ShowDialog();
+        }
     }
 }

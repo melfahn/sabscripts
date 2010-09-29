@@ -101,6 +101,7 @@
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.updateCacheToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.viewLogsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemHelp = new System.Windows.Forms.ToolStripMenuItem();
             this.contentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
@@ -484,6 +485,7 @@
             this.objectListViewHistory.AllColumns.Add(this.history_provider);
             this.objectListViewHistory.AllColumns.Add(this.history_date);
             this.objectListViewHistory.AlternateRowBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(235)))), ((int)(((byte)(254)))));
+            this.objectListViewHistory.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.DoubleClick;
             this.objectListViewHistory.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.history_id,
             this.history_show_name,
@@ -882,8 +884,9 @@
             // toolsToolStripMenuItem
             // 
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.optionsToolStripMenuItem1,
-            this.updateCacheToolStripMenuItem});
+            this.updateCacheToolStripMenuItem,
+            this.viewLogsToolStripMenuItem,
+            this.optionsToolStripMenuItem1});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 19);
             this.toolsToolStripMenuItem.Text = "&Tools";
@@ -892,16 +895,24 @@
             // 
             this.optionsToolStripMenuItem1.Name = "optionsToolStripMenuItem1";
             this.optionsToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.optionsToolStripMenuItem1.Size = new System.Drawing.Size(159, 22);
+            this.optionsToolStripMenuItem1.Size = new System.Drawing.Size(167, 22);
             this.optionsToolStripMenuItem1.Text = "&Options";
             this.optionsToolStripMenuItem1.Click += new System.EventHandler(this.optionsToolStripMenuItem1_Click);
             // 
             // updateCacheToolStripMenuItem
             // 
             this.updateCacheToolStripMenuItem.Name = "updateCacheToolStripMenuItem";
-            this.updateCacheToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
+            this.updateCacheToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
             this.updateCacheToolStripMenuItem.Text = "&Update Cache";
             this.updateCacheToolStripMenuItem.Click += new System.EventHandler(this.updateCacheToolStripMenuItem_Click);
+            // 
+            // viewLogsToolStripMenuItem
+            // 
+            this.viewLogsToolStripMenuItem.Name = "viewLogsToolStripMenuItem";
+            this.viewLogsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.L)));
+            this.viewLogsToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
+            this.viewLogsToolStripMenuItem.Text = "&View Logs";
+            this.viewLogsToolStripMenuItem.Click += new System.EventHandler(this.viewLogsToolStripMenuItem_Click);
             // 
             // toolStripMenuItemHelp
             // 
@@ -1107,6 +1118,7 @@
         private BrightIdeasSoftware.OLVColumn upcoming_overview;
         private BrightIdeasSoftware.OLVColumn upcoming_airs;
         private System.Windows.Forms.ToolStripMenuItem updateCacheToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem viewLogsToolStripMenuItem;
 
 
 

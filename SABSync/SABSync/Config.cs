@@ -216,6 +216,7 @@ namespace SABSync
         public void ReloadConfig()
         {
             Settings.Default.Reload();
+            LoadValues();
         }
 
         private void LoadValues()

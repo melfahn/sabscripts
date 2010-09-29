@@ -620,13 +620,13 @@ namespace SABSync
                     //Check if Both are Propers
                     if (episode.IsProper)
                     {
-                        if (ep.Any(p => Convert.ToBoolean(p.proper.Value) && episode.Quality == p.quality))
+                        if (ep.AsEnumerable().Any(p => Convert.ToBoolean(p.proper.Value) && episode.Quality == p.quality))
                         {
                             Logger.Log("Found in Local History");
                             return true;
                         }
 
-                        return false; //Episode in History is not a proper, episode is better than on previosuly downloaded
+                        return false; //Episode in History is not a proper
                     }
 
                     //Episode to be downloaded is not a proper and episode was found in local history

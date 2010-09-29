@@ -250,7 +250,7 @@ namespace SABSync
                     quality = episode.Quality,
                     proper = Convert.ToInt32(episode.IsProper),
                     provider = nzb.Site.Name,
-                    date = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff")
+                    date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")
                 };
 
                 Logger.Log("Episode added to History Database: {0} - S{1}E{2}", episode.ShowName, episode.SeasonNumber.ToString("00"), episode.EpisodeNumber.ToString("00"));
