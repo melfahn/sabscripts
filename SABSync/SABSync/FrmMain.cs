@@ -22,7 +22,7 @@ namespace SABSync
         private int _interval;
         private SQLite Sql = new SQLite();
         private Logger Logger = new Logger();
-        //private CassiniDev.CassiniDevServer _server;
+        private CassiniDev.Server _server;
 
         FrmMain()
         {
@@ -39,8 +39,8 @@ namespace SABSync
 
         private void Program_Load(object sender, EventArgs e)
         {
-            //_server = new CassiniDev.CassiniDevServer();
-            //_server.StartServer(@"C:\Users\Mark.McDowall\Documents\Visual Studio 2010\Projects\sabscripts\SABSync\SABSync.Web", 8080, "", "localhost");
+            _server = new CassiniDev.Server(8081, "/", @"C:\Users\Markus\Documents\Visual Studio 2010\Projects\sabscripts\SABSync\SABSync.Web", true);
+            _server.Start();
             
             this.Text = String.Format("{0} v{1}", App.Name, App.Version); //Set the GUI Task Bar Text
 
@@ -624,7 +624,7 @@ namespace SABSync
 
         private void FrmMain_FormClosing(object sender, FormClosingEventArgs e)
         {
-            //_server.StopServer();
+            _server.ShutDown();
             SaveGuiSettings();
         }
 
