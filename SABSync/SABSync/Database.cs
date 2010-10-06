@@ -231,9 +231,9 @@ namespace SABSync
         {
             using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
             {
-                var data = from e in sabSyncEntities.episodes
+                var data = from e in sabSyncEntities.episodes.AsEnumerable()
                            where
-                               e.shows.show_name == episode.ShowName && e.episode_number == episode.EpisodeNumber &&
+                               e.shows.show_name.Equals(episode.ShowName, StringComparison.InvariantCultureIgnoreCase) && e.episode_number == episode.EpisodeNumber &&
                                e.season_number == episode.SeasonNumber
                            select new
                            {
@@ -269,12 +269,12 @@ namespace SABSync
 
             using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
             {
-                var qualityNumber = (from q in sabSyncEntities.shows
+                var qualityNumber = (from q in sabSyncEntities.shows.AsEnumerable()
                                      where q.show_name.Equals(episode.ShowName, StringComparison.InvariantCultureIgnoreCase)
                                      select new { q.quality }).FirstOrDefault();
 
                 if (qualityNumber == null)
-                {
+                {;
                     Logger.Log("Quality is not wanted");
                     return false;
                 }
@@ -296,6 +296,8 @@ namespace SABSync
 
                 var qualityString =
                     (from q in QualityTable where q.Key == qualityNumber.quality select q.Value).FirstOrDefault();
+
+                Logger.Log("Title is: {0}", title);
 
                 bool titleContainsQuality = title.Contains(qualityString);
                 bool descriptionContainsQuality = description.Contains(qualityString);

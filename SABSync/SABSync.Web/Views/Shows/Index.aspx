@@ -67,6 +67,8 @@
                 <%=item.ignore_season %>
             </td>
             <td nowrap="nowrap"> <%--Don't wrap lines--%>
+                <%if (item.aliases == null)
+                      item.aliases = "";%>
                 <%=item.aliases.Replace(";", "<BR>") %>
             </td>
             <td>

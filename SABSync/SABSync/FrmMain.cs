@@ -22,7 +22,7 @@ namespace SABSync
         private int _interval;
         private SQLite Sql = new SQLite();
         private Logger Logger = new Logger();
-        private CassiniDev.CassiniDevServer _server;
+        //private CassiniDev.CassiniDevServer _server;
 
         FrmMain()
         {
@@ -39,8 +39,8 @@ namespace SABSync
 
         private void Program_Load(object sender, EventArgs e)
         {
-            _server = new CassiniDev.CassiniDevServer();
-            _server.StartServer(@"C:\Users\Markus\Documents\Visual Studio 2010\Projects\sabscripts\SABSync\SABSync.Web");
+            //_server = new CassiniDev.CassiniDevServer();
+            //_server.StartServer(@"C:\Users\Mark.McDowall\Documents\Visual Studio 2010\Projects\sabscripts\SABSync\SABSync.Web", 8080, "", "localhost");
             
             this.Text = String.Format("{0} v{1}", App.Name, App.Version); //Set the GUI Task Bar Text
 
@@ -180,10 +180,27 @@ namespace SABSync
                 objectListViewShows.SetObjects(shows.ToList());
             }
 
+            shows_quality.AspectToStringConverter = delegate(object obj)
+            {
+                Int64 quality = (Int64)obj;
+
+                if (quality == 0)
+                    return "Best Possible";
+
+                if (quality == 1)
+                    return "xvid";
+
+                if (quality == 2)
+                    return "720p";
+
+                return "unknown"; //Default to unknown if well... unknown
+            };
+
             //Auto-Size the columns
-            id.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+            //id.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
             shows_show_name.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
             shows_tvdb_name.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+            shows_quality.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
             shows_aliases.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
             shows_air_day.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
             shows_air_time.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
@@ -237,12 +254,29 @@ namespace SABSync
                                                        return -1; //No Image
                                                    };
 
+                history_quality.AspectToStringConverter = delegate(object obj)
+                {
+                    Int32 quality = (Int32)obj;
+
+                    if (quality == 0)
+                        return "Best Possible";
+
+                    if (quality == 1)
+                        return "xvid";
+
+                    if (quality == 2)
+                        return "720p";
+
+                    return "unknown"; //Default to unknown if well... unknown
+                };
+
                 objectListViewHistory.SetObjects(history.ToList());
 
                 history_show_name.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
                 history_episode_name.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
                 history_feed_title.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
                 history_date.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+                objectListViewFeeds.Sort(history_date, SortOrder.Descending);
             }
         }
 
@@ -590,7 +624,7 @@ namespace SABSync
 
         private void FrmMain_FormClosing(object sender, FormClosingEventArgs e)
         {
-            _server.StopServer();
+            //_server.StopServer();
             SaveGuiSettings();
         }
 
@@ -644,6 +678,35 @@ namespace SABSync
             FrmLogs frmLogs = new FrmLogs();
             frmLogs.StartPosition = FormStartPosition.CenterParent;
             frmLogs.ShowDialog();
+        }
+
+        private void exitToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void btnDeleteShows_Click(object sender, EventArgs e)
+        {
+            if (objectListViewShows.SelectedItems.Count != 1)
+                return;
+            
+            if (MessageBox.Show("Are you sure?", "Confirm Delete", MessageBoxButtons.YesNo) != DialogResult.Yes)
+                return;
+
+            int id = Convert.ToInt32(objectListViewShows.SelectedItem.Text);
+
+            using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
+            {
+                var show = (from s in sabSyncEntities.shows where s.id == id select s).FirstOrDefault();
+                var episodes = from ep in sabSyncEntities.episodes where ep.show_id == id select ep;
+
+                //Delete each episode for the selected show
+                foreach (var episode in episodes)
+                    sabSyncEntities.DeleteObject(episode);
+                sabSyncEntities.DeleteObject(show); //Delete the show
+                sabSyncEntities.SaveChanges(); //Save the changes
+            }
+            GetShows();
         }
     }
 }

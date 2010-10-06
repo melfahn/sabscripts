@@ -99,9 +99,9 @@
             this.toolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.optionsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.updateCacheToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewLogsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.optionsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemHelp = new System.Windows.Forms.ToolStripMenuItem();
             this.contentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
@@ -112,6 +112,7 @@
             this.StatusStripLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.timerUpdateCache = new System.Windows.Forms.Timer(this.components);
             this.tableLayoutPanelMain = new System.Windows.Forms.TableLayoutPanel();
+            this.btnDeleteShows = new System.Windows.Forms.Button();
             this.contextMenuStripTray.SuspendLayout();
             this.tabControlMain.SuspendLayout();
             this.tabShows.SuspendLayout();
@@ -380,10 +381,12 @@
             // 
             // tableLayoutPanel2
             // 
-            this.tableLayoutPanel2.ColumnCount = 2;
+            this.tableLayoutPanel2.ColumnCount = 3;
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 77F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 77F));
-            this.tableLayoutPanel2.Controls.Add(this.btnScanNewShows, 1, 0);
+            this.tableLayoutPanel2.Controls.Add(this.btnDeleteShows, 0, 0);
+            this.tableLayoutPanel2.Controls.Add(this.btnScanNewShows, 2, 0);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 424);
             this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
@@ -880,6 +883,7 @@
             this.exitToolStripMenuItem1.Name = "exitToolStripMenuItem1";
             this.exitToolStripMenuItem1.Size = new System.Drawing.Size(123, 22);
             this.exitToolStripMenuItem1.Text = "E&xit";
+            this.exitToolStripMenuItem1.Click += new System.EventHandler(this.exitToolStripMenuItem1_Click);
             // 
             // toolsToolStripMenuItem
             // 
@@ -890,14 +894,6 @@
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 19);
             this.toolsToolStripMenuItem.Text = "&Tools";
-            // 
-            // optionsToolStripMenuItem1
-            // 
-            this.optionsToolStripMenuItem1.Name = "optionsToolStripMenuItem1";
-            this.optionsToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.optionsToolStripMenuItem1.Size = new System.Drawing.Size(167, 22);
-            this.optionsToolStripMenuItem1.Text = "&Options";
-            this.optionsToolStripMenuItem1.Click += new System.EventHandler(this.optionsToolStripMenuItem1_Click);
             // 
             // updateCacheToolStripMenuItem
             // 
@@ -913,6 +909,14 @@
             this.viewLogsToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
             this.viewLogsToolStripMenuItem.Text = "&View Logs";
             this.viewLogsToolStripMenuItem.Click += new System.EventHandler(this.viewLogsToolStripMenuItem_Click);
+            // 
+            // optionsToolStripMenuItem1
+            // 
+            this.optionsToolStripMenuItem1.Name = "optionsToolStripMenuItem1";
+            this.optionsToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
+            this.optionsToolStripMenuItem1.Size = new System.Drawing.Size(167, 22);
+            this.optionsToolStripMenuItem1.Text = "&Options";
+            this.optionsToolStripMenuItem1.Click += new System.EventHandler(this.optionsToolStripMenuItem1_Click);
             // 
             // toolStripMenuItemHelp
             // 
@@ -995,6 +999,17 @@
             this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanelMain.Size = new System.Drawing.Size(984, 532);
             this.tableLayoutPanelMain.TabIndex = 4;
+            // 
+            // btnDeleteShows
+            // 
+            this.btnDeleteShows.Location = new System.Drawing.Point(5, 1);
+            this.btnDeleteShows.Margin = new System.Windows.Forms.Padding(5, 1, 1, 0);
+            this.btnDeleteShows.Name = "btnDeleteShows";
+            this.btnDeleteShows.Size = new System.Drawing.Size(71, 26);
+            this.btnDeleteShows.TabIndex = 3;
+            this.btnDeleteShows.Text = "Delete";
+            this.btnDeleteShows.UseVisualStyleBackColor = true;
+            this.btnDeleteShows.Click += new System.EventHandler(this.btnDeleteShows_Click);
             // 
             // FrmMain
             // 
@@ -1119,6 +1134,7 @@
         private BrightIdeasSoftware.OLVColumn upcoming_airs;
         private System.Windows.Forms.ToolStripMenuItem updateCacheToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem viewLogsToolStripMenuItem;
+        private System.Windows.Forms.Button btnDeleteShows;
 
 
 

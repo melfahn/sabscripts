@@ -38,7 +38,7 @@ namespace SABSync
             };
 
             objectListViewLogs.SetObjects(logInfo.GetFileSystemInfos("*.txt"));
-            objectListViewLogs.Sort(logsModified);
+            objectListViewLogs.Sort(logsModified, SortOrder.Descending);
         }
 
         private void objectListViewLogs_DoubleClick(object sender, EventArgs e)
