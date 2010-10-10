@@ -5,6 +5,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 using System.Threading;
@@ -22,7 +23,9 @@ namespace SABSync
         private int _interval;
         private SQLite Sql = new SQLite();
         private Logger Logger = new Logger();
-        private CassiniDev.Server _server;
+        //private CassiniDev.Server _server;
+
+        private bool minimizedToTray;
 
         FrmMain()
         {
@@ -32,16 +35,36 @@ namespace SABSync
         [STAThread]
         static void Main()
         {
+            if (!SingleInstance.Start())
+            {
+                SingleInstance.ShowFirstInstance();
+                return;
+            }
+
             Application.EnableVisualStyles();
-            
-            Application.Run(new FrmMain());
+            Application.SetCompatibleTextRenderingDefault(false);
+
+            try
+            {
+                Application.Run(new FrmMain());
+            }
+
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
+
+            SingleInstance.Stop();
+
+            //Application.EnableVisualStyles();
+            //Application.Run(new FrmMain());
         }
 
         private void Program_Load(object sender, EventArgs e)
         {
-            _server = new CassiniDev.Server(8081, "/", @"C:\Users\Markus\Documents\Visual Studio 2010\Projects\sabscripts\SABSync\SABSync.Web", true);
-            _server.Start();
-            
+            //_server = new CassiniDev.Server(8081, "/", @"C:\Users\Markus\Documents\Visual Studio 2010\Projects\sabscripts\SABSync\SABSync.Web", true);
+            //this.Text = "SABSync";
+
             this.Text = String.Format("{0} v{1}", App.Name, App.Version); //Set the GUI Task Bar Text
 
             CreateDatabase(); //Create the Database if needed
@@ -49,14 +72,44 @@ namespace SABSync
             if (Config.SyncOnStart) //Run a Sync at the Start if Configured to
                 StartSync();
 
+            UpdateCache(); //Update the Cache on start
+
             GetShows();
             GetHistory();
             GetFeeds();
             GetUpcoming();
 
             LoadGuiSettings(); //Load Previously saved settings for the gui
+            shows_id.Width = 0;
+            shows_id.IsVisible = false;
         }
-        
+
+        public void ShowWindow()
+        {
+            if (minimizedToTray)
+            {
+                this.Show();
+                this.WindowState = FormWindowState.Normal;
+                minimizedToTray = false;
+                notifyIconTray.Visible = false;
+                ShowInTaskbar = true;
+            }
+
+            else
+            {
+                WinApi.ShowToFront(this.Handle);
+            }
+        }
+
+        protected override void WndProc(ref Message message)
+        {
+            if (message.Msg == SingleInstance.WM_SHOWFIRSTINSTANCE)
+            {
+                ShowWindow();
+            }
+            base.WndProc(ref message);
+        }
+
         private void SetSyncInterval()
         {
             _interval = Config.Interval;
@@ -69,33 +122,33 @@ namespace SABSync
             {
                 Logger.Log("Setting up SABSync Database for the first time");
                 Sql.SetupDatabase();
-            }    
+            }
         }
 
         private void FrmMain_Resize(object sender, EventArgs ex)
         {
             if (FormWindowState.Minimized == this.WindowState)
             {
-                ShowInTaskbar = false;
+                minimizedToTray = true;
+                //ShowInTaskbar = false;
                 notifyIconTray.Visible = true;
+                notifyIconTray.Text = String.Format("{0} v{1}", App.Name, App.Version);
                 notifyIconTray.BalloonTipText = "SABSync Minimized to Tray";
                 notifyIconTray.ShowBalloonTip(1000, "SABSync", "Minimized to Tray", ToolTipIcon.None);
                 Hide();
+                //MinimizeToTray();
             }
         }
 
         private void notifyIconTray_DoubleClick(object sender, EventArgs e)
         {
-            WindowState = FormWindowState.Normal;
-            Show();
-            this.WindowState = FormWindowState.Normal;
-            notifyIconTray.Visible = false;
-            ShowInTaskbar = true;
+            ShowWindow();
         }
 
         private void toolStripMenuItemExit_Click(object sender, EventArgs e)
         {
-            Close();
+            //this.ShowWindow();
+            this.Close();
         }
 
         private void timerSync_Tick(object sender, EventArgs e)
@@ -108,7 +161,7 @@ namespace SABSync
         {
             Thread thread = new Thread(SyncThread);
             thread.Name = "Sync Thread";
-            thread.Start();    
+            thread.Start();
         }
 
         private void SyncThread()
@@ -117,7 +170,7 @@ namespace SABSync
             {
                 //First Populate the Shows Table
                 Database db = new Database();
-                db.ProcessingShow +=new Database.ProcessingShowHandler(db_ProcessingShow);
+                db.ProcessingShow += new Database.ProcessingShowHandler(db_ProcessingShow);
                 db.ShowsOnDiskToDatabase();
 
                 Stopwatch sw = Stopwatch.StartNew();
@@ -130,7 +183,7 @@ namespace SABSync
                 Logger.DeleteLogs();
 
                 var job = new SyncJob();
-                job.DbChanged +=new SyncJob.DatabaseChangedHandler(UpdateView);
+                job.DbChanged += new SyncJob.DatabaseChangedHandler(UpdateView);
                 job.Start();
 
                 sw.Stop();
@@ -234,7 +287,7 @@ namespace SABSync
                 //Add an Image to the Provider Column
                 history_provider.ImageGetter = delegate(object rowObject)
                                                    {
-                                                       HistoryObject ho = (HistoryObject) rowObject;
+                                                       HistoryObject ho = (HistoryObject)rowObject;
 
                                                        if (ho.Provider == "nzbmatrix")
                                                            return 0;
@@ -305,18 +358,18 @@ namespace SABSync
                 DateTime dateWeek = DateTime.Now.Date.AddDays(7);
 
                 var shows = from s in sabSyncEntities.episodes.AsEnumerable()
-                           where s.air_date != "" && Convert.ToDateTime(s.air_date) >= dateToday
-                           && Convert.ToDateTime(s.air_date) < dateWeek
-                           select new UpcomingObject()
-                           {
-                               ShowName = s.shows.show_name,
-                               SeasonNumber = s.season_number,
-                               EpisodeNumber = s.episode_number,
-                               EpisodeName = s.episode_name,
-                               AirDate = s.air_date,
-                               AirTime = s.shows.air_time,
-                               Overview = s.overview
-                           };
+                            where s.air_date != "" && Convert.ToDateTime(s.air_date) >= dateToday
+                            && Convert.ToDateTime(s.air_date) < dateWeek
+                            select new UpcomingObject()
+                            {
+                                ShowName = s.shows.show_name,
+                                SeasonNumber = s.season_number,
+                                EpisodeNumber = s.episode_number,
+                                EpisodeName = s.episode_name,
+                                AirDate = s.air_date,
+                                AirTime = s.shows.air_time,
+                                Overview = s.overview
+                            };
 
                 objectListViewUpcoming.SetObjects(shows.ToList());
             }
@@ -341,7 +394,7 @@ namespace SABSync
         {
             //Config.ReloadConfig();
             Database db = new Database();
-            db.ProcessingShow +=new Database.ProcessingShowHandler(db_ProcessingShow);
+            db.ProcessingShow += new Database.ProcessingShowHandler(db_ProcessingShow);
             db.ShowsOnDiskToDatabase();
             GetShowsInvoke();
         }
@@ -451,7 +504,7 @@ namespace SABSync
                 return;
 
             if (MessageBox.Show("Are you sure?", "Confirm Delete", MessageBoxButtons.YesNo) != DialogResult.Yes)
-            return;
+                return;
 
             int id = Convert.ToInt32(objectListViewFeeds.SelectedItem.Text);
 
@@ -526,7 +579,7 @@ namespace SABSync
             ComboBox cb = new ComboBox();
             cb.Bounds = e.CellBounds;
             cb.Width = 70;
-            cb.Font = ((ObjectListView) sender).Font;
+            cb.Font = ((ObjectListView)sender).Font;
             cb.DropDownStyle = ComboBoxStyle.DropDownList;
             cb.Items.AddRange(new String[] { "Best Possible", "xvid", "720p" });
             cb.SelectedIndex = Convert.ToInt32(e.Value);
@@ -546,8 +599,8 @@ namespace SABSync
             //Only work on the Quality Column
             if (e.Column.Text == "Quality")
             {
-                long id = ((shows) e.RowObject).id;
-                long? quality = ((shows) e.RowObject).quality;
+                long id = ((shows)e.RowObject).id;
+                long? quality = ((shows)e.RowObject).quality;
 
                 using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
                 {
@@ -558,11 +611,11 @@ namespace SABSync
                 }
 
                 // Stop listening for change events
-                ((ComboBox) e.Control).SelectedIndexChanged -= new EventHandler(cb_SelectedIndexChanged);
+                ((ComboBox)e.Control).SelectedIndexChanged -= new EventHandler(cb_SelectedIndexChanged);
 
                 // Any updating will have been down in the SelectedIndexChanged event handler
                 // Here we simply make the list redraw the involved ListViewItem
-                ((ObjectListView) sender).RefreshItem(e.ListViewItem);
+                ((ObjectListView)sender).RefreshItem(e.ListViewItem);
 
                 // We have updated the model object, so we cancel the auto update
                 e.Cancel = true;
@@ -624,7 +677,7 @@ namespace SABSync
 
         private void FrmMain_FormClosing(object sender, FormClosingEventArgs e)
         {
-            _server.ShutDown();
+            //_server.ShutDown();
             SaveGuiSettings();
         }
 
@@ -687,26 +740,58 @@ namespace SABSync
 
         private void btnDeleteShows_Click(object sender, EventArgs e)
         {
-            if (objectListViewShows.SelectedItems.Count != 1)
-                return;
-            
             if (MessageBox.Show("Are you sure?", "Confirm Delete", MessageBoxButtons.YesNo) != DialogResult.Yes)
                 return;
 
-            int id = Convert.ToInt32(objectListViewShows.SelectedItem.Text);
-
             using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
             {
-                var show = (from s in sabSyncEntities.shows where s.id == id select s).FirstOrDefault();
-                var episodes = from ep in sabSyncEntities.episodes where ep.show_id == id select ep;
+                for (int i = 0; i < objectListViewShows.SelectedItems.Count; i++)
+                {
+                    int id = Convert.ToInt32(objectListViewShows.SelectedItems[i].Text);
 
-                //Delete each episode for the selected show
-                foreach (var episode in episodes)
-                    sabSyncEntities.DeleteObject(episode);
-                sabSyncEntities.DeleteObject(show); //Delete the show
+                    var show = (from s in sabSyncEntities.shows where s.id == id select s).FirstOrDefault();
+                    var episodes = from ep in sabSyncEntities.episodes where ep.show_id == id select ep;
+                    var history = from h in sabSyncEntities.histories where h.show_id == id select h;
+
+                    //Delete each item in history for the selected show
+                    foreach (var h in history)
+                        sabSyncEntities.DeleteObject(h);
+
+                    //Delete each episode for the selected show
+                    foreach (var episode in episodes)
+                        sabSyncEntities.DeleteObject(episode);
+                    sabSyncEntities.DeleteObject(show); //Delete the show
+                }
                 sabSyncEntities.SaveChanges(); //Save the changes
             }
             GetShows();
+        }
+
+        private void btnSetQualityShows_Click(object sender, EventArgs e)
+        {
+            if (comboBoxQualityShows.SelectedIndex < 0) //If quality combobox does not have a selected it, return
+                return;
+
+            if (objectListViewShows.SelectedItems.Count < 1) //If no shows are selected, return
+                return;
+
+            int quality = comboBoxQualityShows.SelectedIndex;
+
+            using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
+            {
+                for (int i = 0; i < objectListViewShows.SelectedItems.Count; i++)
+                {
+                    int id = Convert.ToInt32(objectListViewShows.SelectedItems[i].Text);
+
+                    var show = (from s in sabSyncEntities.shows where s.id == id select s).FirstOrDefault();
+                    show.quality = quality;
+
+                    sabSyncEntities.shows.ApplyCurrentValues(show); //Update the show
+                }
+                sabSyncEntities.SaveChanges(); //Save the changes
+            }
+            GetShows();
+
         }
     }
 }

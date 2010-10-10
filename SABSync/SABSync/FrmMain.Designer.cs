@@ -55,7 +55,10 @@
             this.shows_genre = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.shows_overview = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.btnDeleteShows = new System.Windows.Forms.Button();
             this.btnScanNewShows = new System.Windows.Forms.Button();
+            this.btnSetQualityShows = new System.Windows.Forms.Button();
+            this.comboBoxQualityShows = new System.Windows.Forms.ComboBox();
             this.tabHistory = new System.Windows.Forms.TabPage();
             this.tableLayoutPanelHistory = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
@@ -112,7 +115,6 @@
             this.StatusStripLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.timerUpdateCache = new System.Windows.Forms.Timer(this.components);
             this.tableLayoutPanelMain = new System.Windows.Forms.TableLayoutPanel();
-            this.btnDeleteShows = new System.Windows.Forms.Button();
             this.contextMenuStripTray.SuspendLayout();
             this.tabControlMain.SuspendLayout();
             this.tabShows.SuspendLayout();
@@ -239,9 +241,9 @@
             this.objectListViewShows.Dock = System.Windows.Forms.DockStyle.Fill;
             this.objectListViewShows.FullRowSelect = true;
             this.objectListViewShows.Location = new System.Drawing.Point(3, 3);
-            this.objectListViewShows.MultiSelect = false;
             this.objectListViewShows.Name = "objectListViewShows";
             this.objectListViewShows.ShowGroups = false;
+            this.objectListViewShows.ShowImagesOnSubItems = true;
             this.objectListViewShows.Size = new System.Drawing.Size(958, 418);
             this.objectListViewShows.TabIndex = 2;
             this.objectListViewShows.UseAlternatingBackColors = true;
@@ -284,6 +286,7 @@
             // shows_quality
             // 
             this.shows_quality.AspectName = "quality";
+            this.shows_quality.CheckBoxes = true;
             this.shows_quality.MinimumWidth = 45;
             this.shows_quality.Text = "Quality";
             this.shows_quality.Width = 45;
@@ -381,12 +384,17 @@
             // 
             // tableLayoutPanel2
             // 
-            this.tableLayoutPanel2.ColumnCount = 3;
+            this.tableLayoutPanel2.ColumnCount = 6;
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 77F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 288F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 71F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 95F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 77F));
             this.tableLayoutPanel2.Controls.Add(this.btnDeleteShows, 0, 0);
-            this.tableLayoutPanel2.Controls.Add(this.btnScanNewShows, 2, 0);
+            this.tableLayoutPanel2.Controls.Add(this.btnScanNewShows, 5, 0);
+            this.tableLayoutPanel2.Controls.Add(this.btnSetQualityShows, 2, 0);
+            this.tableLayoutPanel2.Controls.Add(this.comboBoxQualityShows, 3, 0);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 424);
             this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
@@ -395,6 +403,17 @@
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel2.Size = new System.Drawing.Size(964, 27);
             this.tableLayoutPanel2.TabIndex = 3;
+            // 
+            // btnDeleteShows
+            // 
+            this.btnDeleteShows.Location = new System.Drawing.Point(5, 1);
+            this.btnDeleteShows.Margin = new System.Windows.Forms.Padding(5, 1, 1, 0);
+            this.btnDeleteShows.Name = "btnDeleteShows";
+            this.btnDeleteShows.Size = new System.Drawing.Size(71, 26);
+            this.btnDeleteShows.TabIndex = 3;
+            this.btnDeleteShows.Text = "Delete";
+            this.btnDeleteShows.UseVisualStyleBackColor = true;
+            this.btnDeleteShows.Click += new System.EventHandler(this.btnDeleteShows_Click);
             // 
             // btnScanNewShows
             // 
@@ -406,6 +425,31 @@
             this.btnScanNewShows.Text = "Scan";
             this.btnScanNewShows.UseVisualStyleBackColor = true;
             this.btnScanNewShows.Click += new System.EventHandler(this.btnScanNewShows_Click);
+            // 
+            // btnSetQualityShows
+            // 
+            this.btnSetQualityShows.Location = new System.Drawing.Point(366, 3);
+            this.btnSetQualityShows.Margin = new System.Windows.Forms.Padding(1, 3, 1, 1);
+            this.btnSetQualityShows.Name = "btnSetQualityShows";
+            this.btnSetQualityShows.Size = new System.Drawing.Size(69, 23);
+            this.btnSetQualityShows.TabIndex = 4;
+            this.btnSetQualityShows.Text = "Set Quality";
+            this.btnSetQualityShows.UseVisualStyleBackColor = true;
+            this.btnSetQualityShows.Click += new System.EventHandler(this.btnSetQualityShows_Click);
+            // 
+            // comboBoxQualityShows
+            // 
+            this.comboBoxQualityShows.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxQualityShows.FormattingEnabled = true;
+            this.comboBoxQualityShows.Items.AddRange(new object[] {
+            "Best Possible",
+            "xvid",
+            "720p"});
+            this.comboBoxQualityShows.Location = new System.Drawing.Point(437, 4);
+            this.comboBoxQualityShows.Margin = new System.Windows.Forms.Padding(1, 4, 1, 2);
+            this.comboBoxQualityShows.Name = "comboBoxQualityShows";
+            this.comboBoxQualityShows.Size = new System.Drawing.Size(93, 21);
+            this.comboBoxQualityShows.TabIndex = 5;
             // 
             // tabHistory
             // 
@@ -1000,17 +1044,6 @@
             this.tableLayoutPanelMain.Size = new System.Drawing.Size(984, 532);
             this.tableLayoutPanelMain.TabIndex = 4;
             // 
-            // btnDeleteShows
-            // 
-            this.btnDeleteShows.Location = new System.Drawing.Point(5, 1);
-            this.btnDeleteShows.Margin = new System.Windows.Forms.Padding(5, 1, 1, 0);
-            this.btnDeleteShows.Name = "btnDeleteShows";
-            this.btnDeleteShows.Size = new System.Drawing.Size(71, 26);
-            this.btnDeleteShows.TabIndex = 3;
-            this.btnDeleteShows.Text = "Delete";
-            this.btnDeleteShows.UseVisualStyleBackColor = true;
-            this.btnDeleteShows.Click += new System.EventHandler(this.btnDeleteShows_Click);
-            // 
             // FrmMain
             // 
             this.ClientSize = new System.Drawing.Size(984, 532);
@@ -1135,6 +1168,8 @@
         private System.Windows.Forms.ToolStripMenuItem updateCacheToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem viewLogsToolStripMenuItem;
         private System.Windows.Forms.Button btnDeleteShows;
+        private System.Windows.Forms.Button btnSetQualityShows;
+        private System.Windows.Forms.ComboBox comboBoxQualityShows;
 
 
 

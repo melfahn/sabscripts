@@ -32,19 +32,19 @@ namespace SABSync.Web.Tests.Controllers
             Assert.AreEqual("Welcome to ASP.NET MVC!", viewData["Message"]);
         }
 
-        [Test]
-        public void About()
-        {
-            // Setup
-            HomeController controller = new HomeController();
+        //[Test]
+        //public void About()
+        //{
+        //    // Setup
+        //    HomeController controller = new HomeController();
 
-            // Execute
-            ViewResult result = controller.About() as ViewResult;
+        //    // Execute
+        //    ViewResult result = controller.About() as ViewResult;
 
-            // Verify
-            ViewDataDictionary viewData = result.ViewData as ViewDataDictionary;
+        //    // Verify
+        //    ViewDataDictionary viewData = result.ViewData as ViewDataDictionary;
 
-            Assert.AreEqual("About Page", viewData["Title"]);
-        }
+        //    Assert.AreEqual("About Page", viewData["Title"]);
+        //}
     }
 }

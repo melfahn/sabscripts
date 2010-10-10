@@ -181,10 +181,10 @@ namespace SABSync.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("xvid;720p")]
-        public string DownloadQuality {
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int DownloadQuality {
             get {
-                return ((string)(this["DownloadQuality"]));
+                return ((int)(this["DownloadQuality"]));
             }
             set {
                 this["DownloadQuality"] = value;

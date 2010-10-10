@@ -179,6 +179,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Images.resx</DependentUpon>
     </Compile>
+    <Compile Include="Mutex\ProgramInfo.cs" />
+    <Compile Include="Mutex\SingleInstance.cs" />
+    <Compile Include="Mutex\WinApi.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>

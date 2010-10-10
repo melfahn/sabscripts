@@ -103,13 +103,15 @@ namespace SABSync
             txtPassword.Text = Config.GetValue("Password").ToString();
             txtApiKey.Text = Config.GetValue("ApiKey").ToString();
             txtPriority.Text = Config.GetValue("Priority").ToString();
-            txtDownloadQuality.Text = Config.GetValue("DownloadQuality").ToString(); ;
             txtDeleteLogs.Text = Config.DeleteLogs.ToString();
             chkReplaceChars.Checked = Config.SabReplaceChars;
             chkVerboseLogging.Checked = Config.VerboseLogging;
             chkDownloadPropers.Checked = Config.DownloadPropers;
             chkSyncOnStart.Checked = Config.SyncOnStart;
             numMinutes.Value = Config.Interval;
+
+            //Get Download Quality as a string
+            comboBoxDefaultQuality.SelectedIndex = Convert.ToInt32(Config.GetValue("DownloadQuality"));
 
             //Get Priority as a String
             txtPriority.Text = GetPriorityAsString(Convert.ToInt32(Config.GetValue("Priority")));
@@ -126,7 +128,6 @@ namespace SABSync
             Config.SaveValue("Username", txtUsername.Text);
             Config.SaveValue("Password", txtPassword.Text);
             Config.SaveValue("ApiKey", txtApiKey.Text);
-            Config.SaveValue("DownloadQuality", txtDownloadQuality.Text);
             Config.SaveValue("SabReplaceChars", chkReplaceChars.Checked);
             Config.SaveValue("VerboseLogging", chkVerboseLogging.Checked);
             Config.SaveValue("DownloadPropers", chkDownloadPropers.Checked);
@@ -134,9 +135,13 @@ namespace SABSync
             Config.SaveValue("Interval", (int)numMinutes.Value);
             Config.SaveValue("SyncOnStart", chkSyncOnStart.Checked);
 
+            //Save DownloadQuality
+            Config.SaveValue("DownloadQuality", comboBoxDefaultQuality.SelectedIndex);
+
             //Save Priority
             Config.SaveValue("Priority", GetPriorityAsInt(txtPriority.Text));
-            Config.SaveConfig();
+
+            Config.SaveConfig(); //Save the Config
         }
 
         private int GetPriorityAsInt(string priority)
@@ -307,29 +312,6 @@ namespace SABSync
         private void btnTvRootClear_Click(object sender, EventArgs e)
         {
             txtTvRoot.Text = null;
-        }
-
-        private void btnSd_Click(object sender, EventArgs e)
-        {
-            if (!txtDownloadQuality.Text.Contains("xvid"))
-            {
-                txtDownloadQuality.Text = txtDownloadQuality.Text + ";" + "xvid";
-                txtDownloadQuality.Text = txtDownloadQuality.Text.TrimStart(';', ' ').TrimEnd(';', ' ');
-            }
-        }
-
-        private void btnHd_Click(object sender, EventArgs e)
-        {
-            if (!txtDownloadQuality.Text.Contains("720p"))
-            {
-                txtDownloadQuality.Text = txtDownloadQuality.Text + ";" + "720p";
-                txtDownloadQuality.Text = txtDownloadQuality.Text.TrimStart(';', ' ').TrimEnd(';', ' ');
-            }
-        }
-
-        private void btnClearDQ_Click(object sender, EventArgs e)
-        {
-            txtDownloadQuality.Text = null;
         }
 
         private void btnPriorityLow_Click(object sender, EventArgs e)

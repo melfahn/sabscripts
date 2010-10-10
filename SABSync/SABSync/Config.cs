@@ -29,13 +29,13 @@ namespace SABSync
         
         public int Interval { get; set; }
         public int DeleteLogs { get; set; }
+        public int DownloadQualities { get; set; }
 
         public string TvTemplate { get; set; }
         public string TvDailyTemplate { get; set; }
 
         public string[] VideoExt { get; set; }
-        public string[] DownloadQualities { get; set; }
-
+        
         public string SabRequest
         {
             get { return _sabRequest ?? (_sabRequest = GetSabRequest()); }
@@ -228,12 +228,12 @@ namespace SABSync
 
             Interval = Settings.Default.Interval;
             DeleteLogs = Settings.Default.DeleteLogs;
+            DownloadQualities = Settings.Default.DownloadQuality;
 
             TvTemplate = Settings.Default.TvTemplate;
             TvDailyTemplate = Settings.Default.TvDailyTemplate;
 
             VideoExt = Settings.Default.VideoExt.Split(';');
-            DownloadQualities = Settings.Default.DownloadQuality.Split(';');
         }
     }
 }

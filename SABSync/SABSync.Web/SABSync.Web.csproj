@@ -70,12 +70,13 @@
   <ItemGroup>
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\ShowsController.cs" />
+    <Compile Include="Controllers\SABSyncController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\HistoryModel.cs" />
     <Compile Include="Models\ShowModel.cs" />
+    <Compile Include="Models\UpcomingModel.cs" />
     <Compile Include="SABSync.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -86,8 +87,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
-    <Content Include="Views\Shows\History.aspx" />
-    <Content Include="Views\Shows\Index.aspx" />
+    <Content Include="Views\SABSync\Upcoming.aspx" />
+    <Content Include="Views\SABSync\History.aspx" />
+    <Content Include="Views\SABSync\Index.aspx" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -143,7 +145,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>49585</DevelopmentServerPort>
+          <DevelopmentServerPort>23335</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>

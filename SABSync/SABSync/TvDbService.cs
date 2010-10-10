@@ -326,7 +326,7 @@ namespace SABSync
             //Do the fetching to get the updates from TvDb
             try
             {
-                string url = string.Format("http://www.thetvdb.com/api/Updates.php?type=all&time={0}", oldTime);
+                string url = string.Format("http://www.thetvdb.com/api/Updates.php?type=series&time={0}", oldTime);
 
                 Logger.Log("Fetching TVDB Updates since {0}: {1}", oldTime, url);
                 XDocument xDoc = XDocument.Load(url);
@@ -336,16 +336,13 @@ namespace SABSync
                            {
                                Time = Convert.ToInt32(s.Element("Time").Value),
                                Series = s.Elements("Series"),
-                               Episodes = s.Elements("Episode")
                            };
 
+                newUpdates.Series = new List<int>();
                 foreach (var update in updates)
                 {
                     foreach (var series in update.Series)
                         newUpdates.Series.Add(Convert.ToInt32(series.Value));
-
-                    foreach (var episode in update.Episodes)
-                        newUpdates.Episodes.Add(Convert.ToInt32(episode.Value));
                 }
 
                 newUpdates.Time = updates.FirstOrDefault().Time; //Return the first Time found (of one)

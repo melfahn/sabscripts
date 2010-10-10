@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Diagnostics;
 
 namespace SABSync
 {
@@ -115,7 +116,7 @@ namespace SABSync
 
                     sabSyncEntities.AddToshows(newItem);
                     sabSyncEntities.SaveChanges(); //Save show to Database after each show
-                    AddNewEpisodes(info.Episodes, Convert.ToInt32(info.SeriesId));//Add all episodes for this show
+                    AddEpisodes(info.Episodes, Convert.ToInt32(info.SeriesId));//Add all episodes for this show
                 }
             }
             catch (Exception ex)
@@ -158,13 +159,15 @@ namespace SABSync
             {
                 using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
                 {
-                    var oldTime = from t in sabSyncEntities.info select t; //Get the time from the DB
-                    TvDbUpdates updates = TvDb.GetUpdates(Convert.ToInt32(oldTime.FirstOrDefault().last_tvdb.Value)); //Get the Updates since oldTime
+                    var oldTime = (from t in sabSyncEntities.info select t).FirstOrDefault(); //Get the time from the DB
 
-                    oldTime.FirstOrDefault().last_tvdb = updates.Time;
-                    sabSyncEntities.info.ApplyCurrentValues(oldTime.FirstOrDefault());
-                    sabSyncEntities.SaveChanges(); //Save the new time to the info table
+                    if (oldTime == null)
+                        return;
 
+                    TvDbUpdates updates = TvDb.GetUpdates(Convert.ToInt32(oldTime.last_tvdb.Value)); //Get the Updates since oldTime
+
+                    oldTime.last_tvdb = updates.Time;
+                    
                     var shows = from s in sabSyncEntities.shows
                                 select s;
 
@@ -193,38 +196,16 @@ namespace SABSync
                         sabSyncEntities.shows.ApplyCurrentValues(show); //Apply the current values
                         sabSyncEntities.SaveChanges(); //Save them to the server
 
-                        AddNewEpisodes(updatedShowInfo.Episodes, seriesId); //Add the new episodes
+                        AddEpisodes(updatedShowInfo.Episodes, seriesId); //Add the new episodes/update the old ones
                     }
-
-                    //Update the Episodes existing Episodes
-                    var episodes = from e in sabSyncEntities.episodes select e;
-
-                    foreach (var episodeId in updates.Episodes)
-                    {
-                        if (!episodes.Any(e => e.tvdb_id == episodeId))
-                            continue;
-
-                        var episode = (from e in episodes where e.tvdb_id == episodeId select e).FirstOrDefault(); //Select the first episode ID matching the TvDB Episode ID
-
-                        var updatedEpisodeInfo = TvDb.GetEpisodeData(episodeId); //Get the info for this episode
-
-                        episode.season_number = updatedEpisodeInfo.SeasonNumber;
-                        episode.episode_number = updatedEpisodeInfo.EpisodeNumber;
-                        episode.episode_name = updatedEpisodeInfo.EpisodeName;
-                        episode.air_date = updatedEpisodeInfo.FirstAired;
-                        episode.overview = updatedEpisodeInfo.Overview;
-
-                        sabSyncEntities.episodes.ApplyCurrentValues(episode);
-                        sabSyncEntities.SaveChanges();
-                    }
+                    sabSyncEntities.info.ApplyCurrentValues(oldTime);
+                    sabSyncEntities.SaveChanges(); //Save the new time to the info table
                 }
             }
             catch (Exception ex)
             {
                 Logger.Log(ex.ToString());
-                throw;
             }
-
         }
 
         public void AddToHistory(Episode episode, NzbInfo nzb)
@@ -329,7 +310,7 @@ namespace SABSync
             return false;
         }
 
-        private void AddNewEpisodes(List<TvDbEpisodeInfo> episodeList, int seriesId)
+        private void AddEpisodes(List<TvDbEpisodeInfo> episodeList, int seriesId)
         {
             //Check if Episode is in table, if not, add it!
             try
@@ -345,8 +326,20 @@ namespace SABSync
 
                     foreach (var episode in episodeList) //Get all Episodes for show
                     {
-                        if (sabSyncEntities.episodes.Any(e => e.tvdb_id == episode.EpisodeId)) //If episode was already added...skip it (use the TVDB episode ID)
+                        if (sabSyncEntities.episodes.Any(e => e.tvdb_id == episode.EpisodeId)) //If episode was already added...update it
+                        {
+                            //Update all existing episodes
+                            var episodeToUpdate = (from e in sabSyncEntities.episodes where e.tvdb_id == episode.EpisodeId select e).FirstOrDefault(); //Select the first episode ID matching the TvDB Episode ID
+
+                            episodeToUpdate.season_number = episode.SeasonNumber;
+                            episodeToUpdate.episode_number = episode.EpisodeNumber;
+                            episodeToUpdate.episode_name = episode.EpisodeName;
+                            episodeToUpdate.air_date = episode.FirstAired;
+                            episodeToUpdate.overview = episode.Overview;
+
+                            sabSyncEntities.episodes.ApplyCurrentValues(episodeToUpdate);
                             continue;
+                        }
 
                         episodes newItem = new episodes
                         {
@@ -373,10 +366,7 @@ namespace SABSync
 
         private int GetQualityForDb()
         {
-            if (Config.DownloadQualities.Count() != 1)
-                return 0;
-
-            return (from q in QualityTable where q.Value.Equals(Config.DownloadQualities[0]) select q.Key).FirstOrDefault(); //Get the first string from Config.DownloadQualities and Return the first matching Key in QualityTable
+            return Config.DownloadQualities;
         }
 
         public void GetEpisodeName(Episode episode)
@@ -444,54 +434,5 @@ namespace SABSync
 
             return result.Trim();
         }
-        
-        //private int GetIgnoredSeasonsForDb(string showName, string tvDbName)
-        //{
-        //    //Get ignored season check for showName and tvDbname
-
-        //    if (!Config.IgnoreSeasons.Contains(showName) || !Config.IgnoreSeasons.Contains(tvDbName))
-        //        return 0;
-
-        //    string[] showsSeasonIgnore = Config.IgnoreSeasons.Trim(';', ' ').Split(';');
-        //    foreach (string showSeasonIgnore in showsSeasonIgnore)
-        //    {
-        //        string[] showNameIgnoreSplit = showSeasonIgnore.Split('=');
-        //        string showNameIgnore = showNameIgnoreSplit[0];
-        //        int seasonIgnore = Convert.ToInt32(showNameIgnoreSplit[1]);
-
-        //        if (showNameIgnore != showName || showNameIgnore != tvDbName)
-        //            continue;
-
-        //        return seasonIgnore;
-        //    }
-
-        //    return 0;
-        //}
-
-        //private int GetQualityForDb(string showName, string tvDbName)
-        //{
-        //    foreach (ShowQuality q in Config.ShowQualities)
-        //    {
-        //        if (showName.ToLower() != q.Name.ToLower() || tvDbName.ToLower() != q.Name.ToLower()) continue;
-
-        //        //string quality;
-
-        //        if (q.Quality.Split(';').Count() != 1)
-        //            return 0; //Use zero for either xvid or 720p
-
-        //        foreach (var quality in QualityTable)
-        //        {
-        //            if (quality.Value == q.Quality.ToLower())
-        //                return quality.Key; //Return the numeric value (key) that coresponds to the quality (value) in QualityTable
-        //        }
-        //    }
-
-        //    if (Config.DownloadQualities.Count() != 1)
-        //        return 0; //Use zero for either xvid or 720p
-
-        //    return (from q in QualityTable
-        //            where q.Value.Equals(Config.DownloadQualities[0], StringComparison.InvariantCultureIgnoreCase)
-        //            select Convert.ToInt32(q.Key)).FirstOrDefault();
-        //}
     }
 }

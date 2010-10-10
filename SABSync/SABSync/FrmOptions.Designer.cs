@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("General");
-            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("SABnzbd");
-            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("TV Shows");
+            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("General");
+            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("SABnzbd");
+            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("TV Shows");
             this.treeViewOptions = new System.Windows.Forms.TreeView();
             this.panelSab = new System.Windows.Forms.Panel();
             this.btnTestSab = new System.Windows.Forms.Button();
@@ -60,11 +60,7 @@
             this.txtSabInfoHost = new System.Windows.Forms.TextBox();
             this.panelShows = new System.Windows.Forms.Panel();
             this.chkDownloadPropers = new System.Windows.Forms.CheckBox();
-            this.btnClearDQ = new System.Windows.Forms.Button();
-            this.btnHd = new System.Windows.Forms.Button();
-            this.btnSd = new System.Windows.Forms.Button();
             this.lblDownloadQuality = new System.Windows.Forms.Label();
-            this.txtDownloadQuality = new System.Windows.Forms.TextBox();
             this.txtVideoExt = new System.Windows.Forms.TextBox();
             this.lblVideoExt = new System.Windows.Forms.Label();
             this.btnTvRootClear = new System.Windows.Forms.Button();
@@ -87,6 +83,7 @@
             this.btnApply = new System.Windows.Forms.Button();
             this.tvRootDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.nzbDirDialog = new System.Windows.Forms.FolderBrowserDialog();
+            this.comboBoxDefaultQuality = new System.Windows.Forms.ComboBox();
             this.panelSab.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.panelShows.SuspendLayout();
@@ -98,16 +95,16 @@
             // 
             this.treeViewOptions.Location = new System.Drawing.Point(13, 13);
             this.treeViewOptions.Name = "treeViewOptions";
-            treeNode1.Name = "NodeGeneral";
-            treeNode1.Text = "General";
-            treeNode2.Name = "NodeSab";
-            treeNode2.Text = "SABnzbd";
-            treeNode3.Name = "NodeShows";
-            treeNode3.Text = "TV Shows";
+            treeNode4.Name = "NodeGeneral";
+            treeNode4.Text = "General";
+            treeNode5.Name = "NodeSab";
+            treeNode5.Text = "SABnzbd";
+            treeNode6.Name = "NodeShows";
+            treeNode6.Text = "TV Shows";
             this.treeViewOptions.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode1,
-            treeNode2,
-            treeNode3});
+            treeNode4,
+            treeNode5,
+            treeNode6});
             this.treeViewOptions.Size = new System.Drawing.Size(121, 347);
             this.treeViewOptions.TabIndex = 0;
             this.treeViewOptions.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewOptions_AfterSelect);
@@ -382,21 +379,18 @@
             // 
             // panelShows
             // 
+            this.panelShows.Controls.Add(this.comboBoxDefaultQuality);
             this.panelShows.Controls.Add(this.chkDownloadPropers);
-            this.panelShows.Controls.Add(this.btnClearDQ);
-            this.panelShows.Controls.Add(this.btnHd);
-            this.panelShows.Controls.Add(this.btnSd);
             this.panelShows.Controls.Add(this.lblDownloadQuality);
-            this.panelShows.Controls.Add(this.txtDownloadQuality);
             this.panelShows.Controls.Add(this.txtVideoExt);
             this.panelShows.Controls.Add(this.lblVideoExt);
             this.panelShows.Controls.Add(this.btnTvRootClear);
             this.panelShows.Controls.Add(this.txtTvRoot);
             this.panelShows.Controls.Add(this.lblTvRoot);
             this.panelShows.Controls.Add(this.tvRootBrowse);
-            this.panelShows.Location = new System.Drawing.Point(33, 164);
+            this.panelShows.Location = new System.Drawing.Point(145, 26);
             this.panelShows.Name = "panelShows";
-            this.panelShows.Size = new System.Drawing.Size(57, 53);
+            this.panelShows.Size = new System.Drawing.Size(434, 204);
             this.panelShows.TabIndex = 3;
             // 
             // chkDownloadPropers
@@ -409,57 +403,14 @@
             this.chkDownloadPropers.Text = "Download PROPERs";
             this.chkDownloadPropers.UseVisualStyleBackColor = true;
             // 
-            // btnClearDQ
-            // 
-            this.btnClearDQ.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnClearDQ.Location = new System.Drawing.Point(302, 142);
-            this.btnClearDQ.Name = "btnClearDQ";
-            this.btnClearDQ.Size = new System.Drawing.Size(120, 20);
-            this.btnClearDQ.TabIndex = 53;
-            this.btnClearDQ.Text = "Clear Quality";
-            this.btnClearDQ.UseVisualStyleBackColor = true;
-            this.btnClearDQ.Click += new System.EventHandler(this.btnClearDQ_Click);
-            // 
-            // btnHd
-            // 
-            this.btnHd.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnHd.Location = new System.Drawing.Point(260, 143);
-            this.btnHd.Name = "btnHd";
-            this.btnHd.Size = new System.Drawing.Size(31, 20);
-            this.btnHd.TabIndex = 52;
-            this.btnHd.Text = "HD";
-            this.btnHd.UseVisualStyleBackColor = true;
-            this.btnHd.Click += new System.EventHandler(this.btnHd_Click);
-            // 
-            // btnSd
-            // 
-            this.btnSd.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSd.Location = new System.Drawing.Point(222, 143);
-            this.btnSd.Margin = new System.Windows.Forms.Padding(1);
-            this.btnSd.Name = "btnSd";
-            this.btnSd.Size = new System.Drawing.Size(30, 20);
-            this.btnSd.TabIndex = 51;
-            this.btnSd.Text = "SD";
-            this.btnSd.UseVisualStyleBackColor = true;
-            this.btnSd.Click += new System.EventHandler(this.btnSd_Click);
-            // 
             // lblDownloadQuality
             // 
             this.lblDownloadQuality.AutoSize = true;
-            this.lblDownloadQuality.Location = new System.Drawing.Point(7, 148);
+            this.lblDownloadQuality.Location = new System.Drawing.Point(21, 147);
             this.lblDownloadQuality.Name = "lblDownloadQuality";
-            this.lblDownloadQuality.Size = new System.Drawing.Size(93, 13);
+            this.lblDownloadQuality.Size = new System.Drawing.Size(79, 13);
             this.lblDownloadQuality.TabIndex = 50;
-            this.lblDownloadQuality.Text = "Download Quality:";
-            // 
-            // txtDownloadQuality
-            // 
-            this.txtDownloadQuality.BackColor = System.Drawing.SystemColors.Window;
-            this.txtDownloadQuality.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtDownloadQuality.Location = new System.Drawing.Point(103, 141);
-            this.txtDownloadQuality.Name = "txtDownloadQuality";
-            this.txtDownloadQuality.Size = new System.Drawing.Size(109, 22);
-            this.txtDownloadQuality.TabIndex = 49;
+            this.lblDownloadQuality.Text = "Default Quality:";
             // 
             // txtVideoExt
             // 
@@ -529,9 +480,9 @@
             this.panelGeneral.Controls.Add(this.txtDeleteLogs);
             this.panelGeneral.Controls.Add(this.lblDeleteLogs);
             this.panelGeneral.Controls.Add(this.chkVerboseLogging);
-            this.panelGeneral.Location = new System.Drawing.Point(33, 96);
+            this.panelGeneral.Location = new System.Drawing.Point(33, 94);
             this.panelGeneral.Name = "panelGeneral";
-            this.panelGeneral.Size = new System.Drawing.Size(60, 55);
+            this.panelGeneral.Size = new System.Drawing.Size(57, 57);
             this.panelGeneral.TabIndex = 4;
             // 
             // chkSyncOnStart
@@ -689,6 +640,19 @@
             this.tvRootDialog.Description = "TV Root Folder";
             this.tvRootDialog.RootFolder = System.Environment.SpecialFolder.MyComputer;
             // 
+            // comboBoxDefaultQuality
+            // 
+            this.comboBoxDefaultQuality.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxDefaultQuality.FormattingEnabled = true;
+            this.comboBoxDefaultQuality.Items.AddRange(new object[] {
+            "Best Possible",
+            "xvid",
+            "720p"});
+            this.comboBoxDefaultQuality.Location = new System.Drawing.Point(103, 139);
+            this.comboBoxDefaultQuality.Name = "comboBoxDefaultQuality";
+            this.comboBoxDefaultQuality.Size = new System.Drawing.Size(121, 21);
+            this.comboBoxDefaultQuality.TabIndex = 55;
+            // 
             // FrmOptions
             // 
             this.AcceptButton = this.btnOk;
@@ -752,11 +716,7 @@
         private System.Windows.Forms.Label lblPriority;
         private System.Windows.Forms.Panel panelShows;
         private System.Windows.Forms.CheckBox chkDownloadPropers;
-        private System.Windows.Forms.Button btnClearDQ;
-        private System.Windows.Forms.Button btnHd;
-        private System.Windows.Forms.Button btnSd;
         private System.Windows.Forms.Label lblDownloadQuality;
-        private System.Windows.Forms.TextBox txtDownloadQuality;
         private System.Windows.Forms.TextBox txtVideoExt;
         private System.Windows.Forms.Label lblVideoExt;
         private System.Windows.Forms.Button btnTvRootClear;
@@ -781,6 +741,7 @@
         private System.Windows.Forms.Label lblTimer;
         internal System.Windows.Forms.NumericUpDown numMinutes;
         private System.Windows.Forms.CheckBox chkSyncOnStart;
+        private System.Windows.Forms.ComboBox comboBoxDefaultQuality;
 
 
 

@@ -22,8 +22,9 @@
             <div id="menucontainer">
             
                 <ul id="menu">              
-                    <li><%: Html.ActionLink("Shows", "Index", "Shows")%></li>
-                    <li><%: Html.ActionLink("History", "History", "Shows")%></li>
+                    <li><%: Html.ActionLink("Shows", "Index", "SABSync")%></li>
+                    <li><%: Html.ActionLink("History", "History", "SABSync")%></li>
+                    <li><%: Html.ActionLink("Upcoming", "Upcoming", "SABSync")%></li>
                 </ul>
             
             </div>
