@@ -32,6 +32,7 @@ namespace SABSync
                 DateTime dt = ((FileSystemInfo)x).LastWriteTime;
                 return new DateTime(dt.Year, dt.Month, dt.Day);
             };
+
             this.logsModified.GroupKeyToTitleConverter = delegate(object x)
             {
                 return ((DateTime)x).ToString("MMMM dd, yyyy");

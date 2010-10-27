@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
+using System.Net;
 using System.Xml;
 using System.Xml.Linq;
+using System.IO;
 
 namespace SABSync
 {
@@ -13,7 +16,9 @@ namespace SABSync
         TvDbEpisodeInfo GetEpisodeData(int episodeId);
         int GetServerTime();
         TvDbUpdates GetUpdates(int time);
-        TvDbShowInfo GetShowUpdates(int seriesId);
+        TvDbShowInfo GetShowUpdates(long? seriesId);
+        string GetBannerUrl(long seriesId);
+        void GetBanner(string bannerUrl, long showId);
     }
 
     public class TvDbService : ITvDbService
@@ -66,7 +71,7 @@ namespace SABSync
             return GetShowInfo(seriesId);
         }
 
-        public TvDbShowInfo GetShowUpdates(int seriesId)
+        public TvDbShowInfo GetShowUpdates(long? seriesId)
         {
             return GetShowInfo(seriesId.ToString());
         }
@@ -84,6 +89,29 @@ namespace SABSync
         public int GetServerTime()
         {
             return ProcessGetServerTime();
+        }
+
+        public string GetBannerUrl(long seriesId)
+        {
+            return ProcessGetBannerUrl(seriesId);
+        }
+
+        public void GetBanner(string bannerUrl, long showId)
+        {
+            //Download the Banner
+            string bannerPath = String.Format("http://www.thetvdb.com/banners/{0}", bannerUrl);
+
+            WebRequest requestPic = WebRequest.Create(bannerPath);
+            WebResponse responsePic = requestPic.GetResponse();
+            Image webImage = Image.FromStream(responsePic.GetResponseStream());
+
+            if (!Directory.Exists(String.Format("Images{0}Banners", Path.DirectorySeparatorChar)))
+                Directory.CreateDirectory(String.Format("Images{0}Banners", Path.DirectorySeparatorChar));
+
+            webImage.Save(String.Format("Images{0}Banners{1}{2}.jpg",
+                          Path.DirectorySeparatorChar, Path.DirectorySeparatorChar, showId));
+
+            responsePic.Close();
         }
 
         #endregion
@@ -219,7 +247,7 @@ namespace SABSync
         {
             try
             {
-                string url = string.Format("http://www.thetvdb.com/data/series/{0}/all",
+                string url = string.Format("http://www.thetvdb.com/api/{0}/series/{1}/all", TvDbApiKey,
                                            seriesId);
 
                 Logger.Log("Fetching Series and Episode info from: {0}", url);
@@ -235,6 +263,7 @@ namespace SABSync
                                  RunTime = Convert.ToInt32(s.Element("Runtime").Value),
                                  Status = s.Element("Status").Value,
                                  PosterUrl = s.Element("poster").Value,
+                                 BannerUrl = s.Element("banner").Value,
                                  ImdbId = s.Element("IMDB_ID").Value,
                                  Genre = s.Element("Genre").Value,
                                  Overview = s.Element("Overview").Value
@@ -318,6 +347,23 @@ namespace SABSync
                 Logger.Log("An Error has occurred while getting show information for Series ID: " + ex);
                 return 0;
             }
+        }
+
+        private string ProcessGetBannerUrl(long seriesId)
+        {
+            string url = string.Format("http://www.thetvdb.com/api/{0}/series/{1}/all", TvDbApiKey,
+                                           seriesId);
+
+            Logger.Log("Fetching Series and Episode info from: {0}", url);
+            XDocument xDoc = XDocument.Load(url);
+
+            var series = (from s in xDoc.Descendants("Series")
+                         select new 
+                         {
+                             BannerUrl = s.Element("banner").Value,
+                         }).FirstOrDefault();
+
+            return series.BannerUrl;
         }
 
         private static TvDbUpdates ProcessGetUpdates(int oldTime)

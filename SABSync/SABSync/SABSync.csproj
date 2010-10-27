@@ -164,6 +164,7 @@
     </Compile>
     <Compile Include="App.cs" />
     <Compile Include="Config.cs" />
+    <Compile Include="EpisodeObject.cs" />
     <Compile Include="FrmLogs.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -248,7 +249,9 @@
     <None Include="Resources\nzbmatrix.com.png" />
     <None Include="Resources\nzbs.org.png" />
     <None Include="Resources\nzbsrus.com.png" />
+    <None Include="Resources\check.png" />
     <Content Include="Resources\favicon.ico" />
+    <None Include="Resources\SABSync_Banner.png" />
     <Content Include="SABSync.ico" />
   </ItemGroup>
   <ItemGroup>

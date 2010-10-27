@@ -24,6 +24,8 @@ namespace SABSync
         private SQLite Sql = new SQLite();
         private Logger Logger = new Logger();
         //private CassiniDev.Server _server;
+        private ComboBox comboBoxShows2_quality_multi =  new ComboBox();
+        private Label labelShows2_quality_multi = new Label();
 
         private bool minimizedToTray;
 
@@ -72,9 +74,10 @@ namespace SABSync
             if (Config.SyncOnStart) //Run a Sync at the Start if Configured to
                 StartSync();
 
-            UpdateCache(); //Update the Cache on start
+            GetBannersAndUpdates(); //Get Banners and Updates
 
             GetShows();
+            GetShows2();
             GetHistory();
             GetFeeds();
             GetUpcoming();
@@ -82,6 +85,14 @@ namespace SABSync
             LoadGuiSettings(); //Load Previously saved settings for the gui
             shows_id.Width = 0;
             shows_id.IsVisible = false;
+
+            //Used for multi-select in Shows2
+            this.comboBoxShows2_quality_multi.Items.AddRange(new object[]
+                                                                {
+                                                                    "Best Possible",
+                                                                    "xvid",
+                                                                    "720p"
+                                                                });
         }
 
         public void ShowWindow()
@@ -264,6 +275,16 @@ namespace SABSync
             objectListViewShows.Sort(shows_show_name); //Sort By The 'Show Name' Column
         }
 
+        private void GetShows2()
+        {
+            using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
+            {
+                var shows = from s in sabSyncEntities.shows select s;
+                objectListViewShows2.SetObjects(shows.ToList());
+            }
+            objectListViewShows2.Sort(shows2_show_name); //Sort By The 'Show Name' Column
+        }
+
         private void GetHistory()
         {
             using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
@@ -354,22 +375,51 @@ namespace SABSync
 
             using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
             {
-                DateTime dateToday = DateTime.Now.Date;
+                DateTime dateYesterday = DateTime.Now.Date.AddDays(-1);
                 DateTime dateWeek = DateTime.Now.Date.AddDays(7);
 
+
                 var shows = from s in sabSyncEntities.episodes.AsEnumerable()
-                            where s.air_date != "" && Convert.ToDateTime(s.air_date) >= dateToday
-                            && Convert.ToDateTime(s.air_date) < dateWeek
+                            where s.air_date != "" && Convert.ToDateTime(s.air_date) >= dateYesterday
+                                  && Convert.ToDateTime(s.air_date) < dateWeek &&
+                                  s.shows.ignore_season < s.season_number
                             select new UpcomingObject()
-                            {
-                                ShowName = s.shows.show_name,
-                                SeasonNumber = s.season_number,
-                                EpisodeNumber = s.episode_number,
-                                EpisodeName = s.episode_name,
-                                AirDate = s.air_date,
-                                AirTime = s.shows.air_time,
-                                Overview = s.overview
-                            };
+                                       {
+                                           ShowName = s.shows.show_name,
+                                           SeasonNumber = s.season_number,
+                                           EpisodeNumber = s.episode_number,
+                                           EpisodeName = s.episode_name,
+                                           AirDate = s.air_date,
+                                           AirTime = s.shows.air_time,
+                                           Overview = s.overview
+                                       };
+
+                // Group by month-year, rather than date
+                this.upcoming_airs.GroupKeyGetter = delegate(object x)
+                {
+                    string airDate = ((UpcomingObject)x).AirDate;
+                    DateTime dt = Convert.ToDateTime(airDate);
+                    return new DateTime(dt.Year, dt.Month, dt.Day);
+                };
+
+                this.upcoming_airs.GroupKeyToTitleConverter = delegate(object x)
+                {
+                    DateTime dt = (DateTime)x;
+                    DateTime yesterday = DateTime.Now.AddDays(-1);
+                    DateTime today = DateTime.Now;
+                    DateTime tomorrow = DateTime.Now.AddDays(1);
+
+                    if (dt.ToShortDateString().Equals(yesterday.ToShortDateString()))
+                        return String.Format("Yesterday ({0})", dt.ToString("MMMM dd, yyyy"));
+
+                    if (dt.ToShortDateString().Equals(today.ToShortDateString()))
+                        return String.Format("Today ({0})", dt.ToString("MMMM dd, yyyy"));
+
+                    if (dt.ToShortDateString().Equals(tomorrow.ToShortDateString()))
+                        return String.Format("Today ({0})", dt.ToString("MMMM dd, yyyy"));
+
+                    return ((DateTime)x).ToString("MMMM dd, yyyy");
+                };
 
                 objectListViewUpcoming.SetObjects(shows.ToList());
             }
@@ -382,6 +432,28 @@ namespace SABSync
             upcoming_airs.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
 
             objectListViewUpcoming.Sort(upcoming_airs); //Sort By The 'Airs' Column
+        }
+
+        private void GetBanners()
+        {
+            Database db = new Database();
+            Thread thread = new Thread(db.GetBanners);
+            thread.Name = "Get Banners Thread";
+            thread.Start();
+        }
+
+        private void GetBannersAndUpdates()
+        {
+            Thread thread = new Thread(GetBannersAndUpdatesThread);
+            thread.Name = "Banner/Update Thread";
+            thread.Start();
+        }
+
+        private void GetBannersAndUpdatesThread()
+        {
+            Database db = new Database();
+            db.GetBanners();
+            db.GetTvDbUpdates();
         }
 
         private void btnScanNewShows_Click(object sender, EventArgs e)
@@ -399,6 +471,15 @@ namespace SABSync
             GetShowsInvoke();
         }
 
+        private void UpdateShows2()
+        {
+            //Config.ReloadConfig();
+            Database db = new Database();
+            db.ProcessingShow += new Database.ProcessingShowHandler(db_ProcessingShow);
+            db.ShowsOnDiskToDatabase();
+            GetShowsInvoke2();
+        }
+
         private void GetShowsInvoke()
         {
             if (this.objectListViewShows.InvokeRequired)
@@ -410,6 +491,19 @@ namespace SABSync
             }
 
             GetShows();
+        }
+
+        private void GetShowsInvoke2()
+        {
+            if (this.objectListViewShows2.InvokeRequired)
+            {
+                this.objectListViewShows2.BeginInvoke(
+                    new MethodInvoker(
+                    delegate() { GetShows2(); }));
+                return;
+            }
+
+            GetShows2();
         }
 
         private void GetHistoryInvoke()
@@ -688,6 +782,10 @@ namespace SABSync
                 Settings.Default.Upgrade();
                 Settings.Default.UpgradeRequired = false;
                 Settings.Default.Save();
+
+                //Show the groups (was saved previously to hide them)
+                objectListViewUpcoming.ShowGroups = true;
+                objectListViewUpcoming.BuildList();
             }
 
             // Set window location
@@ -792,6 +890,342 @@ namespace SABSync
             }
             GetShows();
 
+        }
+
+        private void objectListViewShows2_SelectionChanged(object sender, EventArgs e)
+        {
+            //Create view on left when index is changed
+            //if single item selected show more informaion
+
+            if (objectListViewShows2.SelectedItems.Count == 1)
+            {
+                tableLayoutPanelOverview.Visible = true;
+                tableLayoutPanelShows2_show_details.Visible = true;
+                labelShows2_tvdb_name.Visible = true;
+
+                using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
+                {
+                    //Get all information about the show, grab last and next episode information at some point
+
+                    long id = Convert.ToInt64(objectListViewShows2.SelectedItem.Text);
+
+                    var show =
+                        (from s in sabSyncEntities.shows.AsEnumerable()
+                         where s.id == id
+                         select s).FirstOrDefault();
+
+                    labelShows2_name_value.Text = show.show_name;
+                    labelShows2_tvdb_id_value.Text = show.tvdb_id.ToString();
+                    labelShows2_tvdb_name.Text = show.tvdb_name;
+                    comboBoxShows2_quality.SelectedIndex = (int)show.quality;
+                    numericUpDownShows2_ignore_seasons.Value = (int)show.ignore_season;
+                    textBoxShows2_aliases.Text = show.aliases;
+
+                    labelShows2_air_day_value.Text = show.air_day;
+                    labelShows2_air_time_value.Text = show.air_time;
+                    labelShows2_status_value.Text = show.status;
+                    labelShows2_genre_value.Text = show.genre.Replace('|', '/');
+                    textBoxShows2_overview.Text = show.overview;
+
+                    Stopwatch swAll = new Stopwatch();
+                    swAll.Start();
+
+                    Stopwatch swDb = new Stopwatch();
+                    swDb.Start();
+
+                    var episodes = from n in sabSyncEntities.episodes
+                                where n.shows.id == id select new EpisodeObject
+                                {
+                                    AirDateString = n.air_date,
+                                    SeasonNumber = n.season_number,
+                                    EpisodeNumber = n.episode_number,
+                                    EpisodeName = n.episode_name,
+                                    EpisodeId = n.id
+                                };
+                   
+                    swDb.Stop();
+                    Console.WriteLine("DB Query Time: " + swDb.Elapsed.TotalSeconds);
+
+                    Stopwatch swLamba = new Stopwatch();
+                    swLamba.Start();
+
+                    List<EpisodeObject> episodeList = new List<EpisodeObject>();
+                    episodeList = episodes.ToList();
+                    episodeList.Sort();
+
+                    var last = episodeList.FindLast(d => d.AirDate != new DateTime(1,1,1) && d.AirDate < DateTime.Today);
+                    var next = episodeList.Find(d => d.AirDate != new DateTime(1, 1, 1) && d.AirDate >= DateTime.Today);
+
+                    if (next != null)
+                    {
+                        labelShows2_airs_next_date_value.Text = next.AirDate.ToShortDateString();
+                        labelShows2_airs_next_season_number_value.Text = next.SeasonNumber.ToString();
+                        labelShows2_airs_next_episode_number_value.Text = next.EpisodeNumber.ToString();
+                        labelShows2_airs_next_title_value.Text = next.EpisodeName;
+
+                        //If SABSync downloaded this episode show a check mark!
+                        if (sabSyncEntities.histories.Any(h => h.episode_id == next.EpisodeId))
+                            pictureBoxShows2_next_downloaded.Visible = true;
+
+                        else
+                            pictureBoxShows2_next_downloaded.Visible = false;
+                    }
+
+                    else
+                    {
+                        labelShows2_airs_next_date_value.Text = "N/A";
+                        labelShows2_airs_next_season_number_value.Text = "N/A";
+                        labelShows2_airs_next_episode_number_value.Text = "N/A";
+                        labelShows2_airs_next_title_value.Text = "N/A";
+                    }
+
+                    if (last != null)
+                    {
+                        labelShows2_airs_last_date_value.Text = last.AirDate.ToShortDateString();
+                        labelShows2_airs_last_season_number_value.Text = last.SeasonNumber.ToString();
+                        labelShows2_airs_last_episode_number_value.Text = last.EpisodeNumber.ToString();
+                        labelShows2_airs_last_title_value.Text = last.EpisodeName;
+
+                        //If SABSync downloaded this episode show a check mark!
+                        if (sabSyncEntities.histories.Any(h => h.episode_id == last.EpisodeId))
+                            pictureBoxShows2_last_downloaded.Visible = true;
+
+                        else
+                            pictureBoxShows2_last_downloaded.Visible = false;
+                    }
+
+                    else
+                    {
+                        labelShows2_airs_last_date_value.Text = "N/A";
+                        labelShows2_airs_last_season_number_value.Text = "N/A";
+                        labelShows2_airs_last_episode_number_value.Text = "N/A";
+                        labelShows2_airs_last_title_value.Text = "N/A";
+                    }
+
+                    swLamba.Stop();
+                    Console.WriteLine("Lambda: " + swLamba.Elapsed.TotalSeconds);
+
+                    swAll.Stop();
+                    Console.WriteLine("Total Elapsed: " + swAll.Elapsed.TotalSeconds);
+
+                    //Show the Banner!
+                    string image = String.Format("Images{0}Banners{1}{2}.jpg", Path.DirectorySeparatorChar,
+                                                     Path.DirectorySeparatorChar, objectListViewShows2.SelectedItem.Text);
+
+                    if (File.Exists(image))
+                        pictureBoxShows2_banner.Image = Image.FromFile(image);
+
+                    else
+                        pictureBoxShows2_banner.Image = global::SABSync.Images.SABSync_Banner;
+                }
+            }
+
+            if (objectListViewShows2.SelectedItems.Count > 1) //Multiple Selected
+            {
+                pictureBoxShows2_banner.Image = global::SABSync.Images.SABSync_Banner;
+
+                //Display only Quality (and Ignore seasons options?)
+                tableLayoutPanelOverview.Visible = false;
+                tableLayoutPanelShows2_show_details.Visible = false;
+                labelShows2_tvdb_name.Visible = false;
+                
+                //Create a new Label
+                this.labelShows2_quality_multi.Text = "Quality:";
+                this.labelShows2_quality_multi.AutoSize = true;
+                this.labelShows2_quality_multi.Location = new Point(13, 50);
+                this.labelShows2_quality_multi.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+
+                //Create a new Combobox
+                this.comboBoxShows2_quality_multi.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+                this.comboBoxShows2_quality_multi.SelectedIndex = -1;
+                this.comboBoxShows2_quality_multi.Location = new Point(70, 45);
+                this.comboBoxShows2_quality_multi.Size = new System.Drawing.Size(88, 21);
+                this.comboBoxShows2_quality_multi.Visible = true;
+                
+                //Add the Controls to the Container
+                this.groupBoxShows2_details.Controls.Add(labelShows2_quality_multi);
+                this.groupBoxShows2_details.Controls.Add(comboBoxShows2_quality_multi);
+            }
+
+            else
+            {
+                //Display some default information
+            }
+        }
+
+        private void btnShows2_scan_Click(object sender, EventArgs e)
+        {
+            Thread thread = new Thread(UpdateShows2);
+            thread.Start();
+        }
+
+        private void btnShows2_delete_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Are you sure?", "Confirm Delete", MessageBoxButtons.YesNo) != DialogResult.Yes)
+                return;
+
+            using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
+            {
+                for (int i = 0; i < objectListViewShows2.SelectedItems.Count; i++)
+                {
+                    int id = Convert.ToInt32(objectListViewShows2.SelectedItems[i].Text);
+
+                    var show = (from s in sabSyncEntities.shows where s.id == id select s).FirstOrDefault();
+                    var episodes = from ep in sabSyncEntities.episodes where ep.show_id == id select ep;
+                    var history = from h in sabSyncEntities.histories where h.show_id == id select h;
+
+                    //Delete each item in history for the selected show
+                    foreach (var h in history)
+                        sabSyncEntities.DeleteObject(h);
+
+                    //Delete each episode for the selected show
+                    foreach (var episode in episodes)
+                        sabSyncEntities.DeleteObject(episode);
+                    sabSyncEntities.DeleteObject(show); //Delete the show
+                }
+                sabSyncEntities.SaveChanges(); //Save the changes
+            }
+            GetShows2();
+        }
+
+        private void buttonShows2_details_save_Click(object sender, EventArgs e)
+        {
+            if (objectListViewShows2.SelectedItems.Count == 1)
+            {
+                //showId from selected show
+                //Quality Dropbox Index
+                //NumberSelect Ignore Season value
+                //Aliases
+
+                int showId = Convert.ToInt32(objectListViewShows2.SelectedItem.Text);
+                int quality = comboBoxShows2_quality.SelectedIndex;
+                int ignoreSeasons = Convert.ToInt32(numericUpDownShows2_ignore_seasons.Value);
+                string aliases = textBoxShows2_aliases.Text;
+
+                using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
+                {
+                    var show = (from s in sabSyncEntities.shows where s.id == showId select s).First();
+
+                    show.quality = quality;
+                    show.ignore_season = ignoreSeasons;
+                    show.aliases = aliases;
+
+                    sabSyncEntities.shows.ApplyCurrentValues(show);
+                    sabSyncEntities.SaveChanges();
+                }
+            }
+
+            if (objectListViewShows2.SelectedItems.Count > 1)
+            {
+                //Save Quality (and Ignore Seasons?) for all selected shows
+
+                //return if combobox for quality multi does not have a value selected
+                if (comboBoxShows2_quality_multi.SelectedIndex < 0)
+                    return;
+
+                int quality = comboBoxShows2_quality_multi.SelectedIndex;
+
+                using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
+                {
+                    for (int i = 0; i < objectListViewShows2.SelectedItems.Count; i++)
+                    {
+                        int id = Convert.ToInt32(objectListViewShows2.SelectedItems[i].Text);
+                        var show = (from s in sabSyncEntities.shows where s.id == id select s).First();
+
+                        show.quality = quality;
+                        sabSyncEntities.shows.ApplyCurrentValues(show);
+                    }
+                    sabSyncEntities.SaveChanges();
+                }
+            }
+
+            //Nothing is selected, return
+            else
+                return;
+        }
+
+        private void toolStripMenuItemShows2_list_update_all_Click(object sender, EventArgs e)
+        {
+            //Update all shows (Forced)
+            using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
+            {
+                var seriesIds= from s in sabSyncEntities.shows select s.tvdb_id;
+
+                Database db = new Database();
+                Thread dbThread = new Thread(new ThreadStart(delegate { db.UpdateFromTvDb(seriesIds.ToList()); }));
+                dbThread.Name = "Update Cache Thread (Forced)";
+                dbThread.Start();
+            }
+        }
+
+        private void toolStripMenuItemShows2_list_update_selected_Click(object sender, EventArgs e)
+        {
+            //Update selected shows (1+)
+            using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
+            {
+                List<long?> seriesIdList = new List<long?>();
+                for (int i = 0 ; i < objectListViewShows2.SelectedItems.Count; i++)
+                {
+                    int id = Convert.ToInt32(objectListViewShows2.SelectedItems[i].Text);
+                    var seriesId = (from s in sabSyncEntities.shows where s.id == id select s.tvdb_id).FirstOrDefault();
+                    seriesIdList.Add(seriesId);
+                }
+                
+                Database db = new Database();
+                Thread dbThread = new Thread(new ThreadStart(delegate { db.UpdateFromTvDb(seriesIdList); }));
+                dbThread.Name = "Update Cache Thread (Selected)";
+                dbThread.Start();
+            }
+        }
+
+        private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //Confirm Delete, then delete selected
+            if (MessageBox.Show("Are you sure?", "Confirm Delete", MessageBoxButtons.YesNo) != DialogResult.Yes)
+                return;
+
+            using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
+            {
+                for (int i = 0; i < objectListViewShows2.SelectedItems.Count; i++)
+                {
+                    int id = Convert.ToInt32(objectListViewShows2.SelectedItems[i].Text);
+
+                    var show = (from s in sabSyncEntities.shows where s.id == id select s).FirstOrDefault();
+                    var episodes = from ep in sabSyncEntities.episodes where ep.show_id == id select ep;
+                    var history = from h in sabSyncEntities.histories where h.show_id == id select h;
+
+                    //Delete each item in history for the selected show
+                    foreach (var h in history)
+                        sabSyncEntities.DeleteObject(h);
+
+                    //Delete each episode for the selected show
+                    foreach (var episode in episodes)
+                        sabSyncEntities.DeleteObject(episode);
+                    sabSyncEntities.DeleteObject(show); //Delete the show
+                }
+                sabSyncEntities.SaveChanges(); //Save the changes
+            }
+            GetShows2();
+        }
+
+        private void getBannerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (objectListViewShows2.SelectedItems.Count != 1)
+                return;
+
+            long id = Convert.ToInt64(objectListViewShows2.SelectedItem.Text);
+            int index = objectListViewShows2.SelectedIndex;
+            
+            using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
+            {
+                var showId = (from s in sabSyncEntities.shows where s.id == id select s.id).FirstOrDefault();
+
+                Database db = new Database();
+                db.GetBanner(showId);
+
+                objectListViewShows2.SelectedIndex = 0;
+                objectListViewShows2.SelectedIndex = index;
+            }
         }
     }
 }

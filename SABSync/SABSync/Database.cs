@@ -116,7 +116,9 @@ namespace SABSync
 
                     sabSyncEntities.AddToshows(newItem);
                     sabSyncEntities.SaveChanges(); //Save show to Database after each show
-                    AddEpisodes(info.Episodes, Convert.ToInt32(info.SeriesId));//Add all episodes for this show
+                    var newShow = (from s in sabSyncEntities.shows where s.tvdb_id == info.SeriesId select s).FirstOrDefault(); //Get the PK for the show just added (so we can get the banner)
+                    TvDb.GetBanner(info.BannerUrl, newShow.id); //Get the banner and save to disk
+                    AddEpisodes(info.Episodes, Convert.ToInt32(info.SeriesId)); //Add all episodes for this show
                 }
             }
             catch (Exception ex)
@@ -167,37 +169,20 @@ namespace SABSync
                     TvDbUpdates updates = TvDb.GetUpdates(Convert.ToInt32(oldTime.last_tvdb.Value)); //Get the Updates since oldTime
 
                     oldTime.last_tvdb = updates.Time;
-                    
+
+                    List<long?> seriesToUpdate = new List<long?>(); //Used to store the list of shows that need to be updated
+
                     var shows = from s in sabSyncEntities.shows
                                 select s;
 
-                    //Update the shows (and add new episodes)
                     foreach (var seriesId in updates.Series)
                     {
-                        if (!shows.Any(s => s.tvdb_id == seriesId)) //If we're not watching any of these series continue
-                            continue;
-
-                        var show = (from s in shows where s.tvdb_id == seriesId select s).FirstOrDefault(); //set show to the first (of one) that is found (Should be one, if not something else is FUBAR)
-
-                        //Get the updated series/new episode data for this seriesId
-
-                        var updatedShowInfo = TvDb.GetShowUpdates(seriesId);
-
-                        show.air_day = updatedShowInfo.AirDay;
-                        show.air_time = updatedShowInfo.AirTime;
-                        show.run_time = updatedShowInfo.RunTime;
-                        show.genre = updatedShowInfo.Genre.Trim('|');
-                        show.tvdb_name = updatedShowInfo.SeriesName;
-                        show.overview = updatedShowInfo.Overview;
-                        show.status = updatedShowInfo.Status;
-                        show.poster_url = updatedShowInfo.PosterUrl;
-                        show.banner_url = updatedShowInfo.BannerUrl;
-
-                        sabSyncEntities.shows.ApplyCurrentValues(show); //Apply the current values
-                        sabSyncEntities.SaveChanges(); //Save them to the server
-
-                        AddEpisodes(updatedShowInfo.Episodes, seriesId); //Add the new episodes/update the old ones
+                        if (shows.Any(s => s.tvdb_id == seriesId)) //If we're watching this show add to the list
+                            seriesToUpdate.Add(seriesId);
                     }
+
+                    UpdateFromTvDb(seriesToUpdate); //Update the list of shows we are watching
+
                     sabSyncEntities.info.ApplyCurrentValues(oldTime);
                     sabSyncEntities.SaveChanges(); //Save the new time to the info table
                 }
@@ -208,10 +193,48 @@ namespace SABSync
             }
         }
 
+        public void UpdateFromTvDb (List<long?> seriesIdList)
+        {
+            using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
+            {
+                var shows = from s in sabSyncEntities.shows
+                            select s;
+
+                //Update the shows (and add new episodes)
+                foreach (var seriesId in seriesIdList)
+                {
+                    var show = (from s in shows where s.tvdb_id == seriesId select s).FirstOrDefault();
+                        //set show to the first (of one) that is found (Should be one, if not something else is FUBAR)
+
+                    //Get the updated series/new episode data for this seriesId
+                    var updatedShowInfo = TvDb.GetShowUpdates(seriesId);
+
+                    show.air_day = updatedShowInfo.AirDay;
+                    show.air_time = updatedShowInfo.AirTime;
+                    show.run_time = updatedShowInfo.RunTime;
+                    show.genre = updatedShowInfo.Genre.Trim('|');
+                    show.tvdb_name = updatedShowInfo.SeriesName;
+                    show.overview = updatedShowInfo.Overview;
+                    show.status = updatedShowInfo.Status;
+                    show.poster_url = updatedShowInfo.PosterUrl;
+                    show.banner_url = updatedShowInfo.BannerUrl;
+
+                    sabSyncEntities.shows.ApplyCurrentValues(show); //Apply the current values
+                    sabSyncEntities.SaveChanges(); //Save them to the server
+
+                    AddEpisodes(updatedShowInfo.Episodes, seriesId); //Add the new episodes/update the old ones
+                }
+            }
+        }
+
         public void AddToHistory(Episode episode, NzbInfo nzb)
         {
             using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
             {
+                var test = from e in sabSyncEntities.episodes.AsEnumerable()
+                           where e.shows.show_name.Equals(episode.ShowName, StringComparison.InvariantCultureIgnoreCase)
+                           select e;
+
                 var data = from e in sabSyncEntities.episodes.AsEnumerable()
                            where
                                e.shows.show_name.Equals(episode.ShowName, StringComparison.InvariantCultureIgnoreCase) && e.episode_number == episode.EpisodeNumber &&
@@ -310,7 +333,7 @@ namespace SABSync
             return false;
         }
 
-        private void AddEpisodes(List<TvDbEpisodeInfo> episodeList, int seriesId)
+        private void AddEpisodes(List<TvDbEpisodeInfo> episodeList, long? seriesId)
         {
             //Check if Episode is in table, if not, add it!
             try
@@ -419,6 +442,69 @@ namespace SABSync
             }
 
             return aliases.Trim(';');
+        }
+
+        public void GetBanners()
+        {
+            try
+            {
+                using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
+                {
+                    var shows = from s in sabSyncEntities.shows
+                                where String.IsNullOrEmpty(s.banner_url)
+                                select s;
+
+                    foreach (var show in shows)
+                    {
+                        //Get Banner URL for DB then download Banner
+                        show.banner_url = TvDb.GetBannerUrl((long)show.tvdb_id);
+                        sabSyncEntities.shows.ApplyCurrentValues(show);
+
+                        Logger.Log("Attempting to get banner for: {0}", show.show_name);
+
+                        //If banner comes back null or empty go onto the next
+                        if (String.IsNullOrEmpty(show.banner_url))
+                            continue;
+
+                        TvDb.GetBanner(show.banner_url, show.id);
+                    }
+                    sabSyncEntities.SaveChanges(); //Save the Banner URLs
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(ex.ToString());
+            }
+        }
+
+        public void GetBanner(long showId)
+        {
+            try
+            {
+                using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
+                {
+                    var show = (from s in sabSyncEntities.shows
+                                where s.id == showId
+                                select s).FirstOrDefault();
+                    
+                    //Get Banner URL for DB then download Banner
+                    show.banner_url = TvDb.GetBannerUrl((long)show.tvdb_id);
+                    sabSyncEntities.shows.ApplyCurrentValues(show);
+
+                    Logger.Log("Attempting to get banner for: {0}", show.show_name);
+
+                    //If banner comes back null or empty return
+                    if (String.IsNullOrEmpty(show.banner_url))
+                        return;
+
+                    TvDb.GetBanner(show.banner_url, show.id);
+                    sabSyncEntities.SaveChanges(); //Save the Banner URLs
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(ex.ToString());
+            }
         }
 
         private string CleanString(string name)

@@ -60,6 +60,13 @@ namespace SABSync {
             }
         }
         
+        internal static System.Drawing.Bitmap check {
+            get {
+                object obj = ResourceManager.GetObject("check", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap newzbin_com {
             get {
                 object obj = ResourceManager.GetObject("newzbin_com", resourceCulture);
@@ -84,6 +91,13 @@ namespace SABSync {
         internal static System.Drawing.Bitmap nzbsrus_com {
             get {
                 object obj = ResourceManager.GetObject("nzbsrus_com", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap SABSync_Banner {
+            get {
+                object obj = ResourceManager.GetObject("SABSync_Banner", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -96,6 +96,73 @@
             this.upcoming_overview = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
             this.btnRefreshUpcoming = new System.Windows.Forms.Button();
+            this.tabShows2 = new System.Windows.Forms.TabPage();
+            this.tableLayoutPanelShows2 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
+            this.btnShows2_delete = new System.Windows.Forms.Button();
+            this.btnShows2_scan = new System.Windows.Forms.Button();
+            this.splitContainerShows = new System.Windows.Forms.SplitContainer();
+            this.objectListViewShows2 = new BrightIdeasSoftware.ObjectListView();
+            this.shows2_id = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.shows2_show_name = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.contextMenuStripShows2_list = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.toolStripMenuItemShows2_list_update = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemShows2_list_update_all = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemShows2_list_update_selected = new System.Windows.Forms.ToolStripMenuItem();
+            this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tableLayoutPanelShows2_details_full = new System.Windows.Forms.TableLayoutPanel();
+            this.panelShows2Details = new System.Windows.Forms.Panel();
+            this.tableLayoutPanelShows2_details = new System.Windows.Forms.TableLayoutPanel();
+            this.labelShows2_tvdb_name = new System.Windows.Forms.Label();
+            this.groupBoxShows2_details = new System.Windows.Forms.GroupBox();
+            this.tableLayoutPanelShows2_show_details = new System.Windows.Forms.TableLayoutPanel();
+            this.groupBoxShows2_details_editable = new System.Windows.Forms.GroupBox();
+            this.textBoxShows2_aliases = new System.Windows.Forms.TextBox();
+            this.numericUpDownShows2_ignore_seasons = new System.Windows.Forms.NumericUpDown();
+            this.labelShows2_tvdb_id_value = new System.Windows.Forms.Label();
+            this.comboBoxShows2_quality = new System.Windows.Forms.ComboBox();
+            this.labelShows2_name = new System.Windows.Forms.Label();
+            this.labelShows2_aliases = new System.Windows.Forms.Label();
+            this.labelShows2_quality = new System.Windows.Forms.Label();
+            this.labelShows2_ignore_season = new System.Windows.Forms.Label();
+            this.labelShows2_tvdb_id = new System.Windows.Forms.Label();
+            this.labelShows2_name_value = new System.Windows.Forms.Label();
+            this.groupBoxShows2_airs_next = new System.Windows.Forms.GroupBox();
+            this.pictureBoxShows2_next_downloaded = new System.Windows.Forms.PictureBox();
+            this.labelShows2_airs_next_episode_number = new System.Windows.Forms.Label();
+            this.labelShows2_airs_next_episode_number_value = new System.Windows.Forms.Label();
+            this.labelShows2_airs_next_season_number = new System.Windows.Forms.Label();
+            this.labelShows2_airs_next_season_number_value = new System.Windows.Forms.Label();
+            this.labelShows_airs_next_title = new System.Windows.Forms.Label();
+            this.labelShows2_airs_next_title_value = new System.Windows.Forms.Label();
+            this.labelShows2_airs_next_date = new System.Windows.Forms.Label();
+            this.labelShows2_airs_next_date_value = new System.Windows.Forms.Label();
+            this.groupBoxShows2_airs_last = new System.Windows.Forms.GroupBox();
+            this.pictureBoxShows2_last_downloaded = new System.Windows.Forms.PictureBox();
+            this.labelShows2_airs_last_episode_number = new System.Windows.Forms.Label();
+            this.labelShows2_airs_last_episode_number_value = new System.Windows.Forms.Label();
+            this.labelShows2_airs_last_season_number = new System.Windows.Forms.Label();
+            this.labelShows2_airs_last_season_number_value = new System.Windows.Forms.Label();
+            this.labelShows2_airs_last_title = new System.Windows.Forms.Label();
+            this.labelShows2_airs_last_title_value = new System.Windows.Forms.Label();
+            this.labelShows2_airs_last_date = new System.Windows.Forms.Label();
+            this.labelShows2_airs_last_date_value = new System.Windows.Forms.Label();
+            this.groupBoxShows2_details_air = new System.Windows.Forms.GroupBox();
+            this.labelShows2_status_value = new System.Windows.Forms.Label();
+            this.labelShows2_genre_value = new System.Windows.Forms.Label();
+            this.labelShows2_air_time_value = new System.Windows.Forms.Label();
+            this.labelShows2_air_day_value = new System.Windows.Forms.Label();
+            this.labelShows2_air_time = new System.Windows.Forms.Label();
+            this.labelShows2_air_day = new System.Windows.Forms.Label();
+            this.labelShows2_status = new System.Windows.Forms.Label();
+            this.labelShows2_genre = new System.Windows.Forms.Label();
+            this.pictureBoxShows2_banner = new System.Windows.Forms.PictureBox();
+            this.tableLayoutPanelOverview = new System.Windows.Forms.TableLayoutPanel();
+            this.labelShows2_overview = new System.Windows.Forms.Label();
+            this.textBoxShows2_overview = new System.Windows.Forms.TextBox();
+            this.tableLayoutPanelShows2_details_buttons = new System.Windows.Forms.TableLayoutPanel();
+            this.buttonShows2_details_save = new System.Windows.Forms.Button();
+            this.shows2id = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.menuStripMain = new System.Windows.Forms.MenuStrip();
             this.toolStripMenuItemFile = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemRun = new System.Windows.Forms.ToolStripMenuItem();
@@ -115,6 +182,7 @@
             this.StatusStripLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.timerUpdateCache = new System.Windows.Forms.Timer(this.components);
             this.tableLayoutPanelMain = new System.Windows.Forms.TableLayoutPanel();
+            this.getBannerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStripTray.SuspendLayout();
             this.tabControlMain.SuspendLayout();
             this.tabShows.SuspendLayout();
@@ -133,6 +201,30 @@
             this.tableLayoutPanelUpcoming.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.objectListViewUpcoming)).BeginInit();
             this.tableLayoutPanel4.SuspendLayout();
+            this.tabShows2.SuspendLayout();
+            this.tableLayoutPanelShows2.SuspendLayout();
+            this.tableLayoutPanel3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainerShows)).BeginInit();
+            this.splitContainerShows.Panel1.SuspendLayout();
+            this.splitContainerShows.Panel2.SuspendLayout();
+            this.splitContainerShows.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.objectListViewShows2)).BeginInit();
+            this.contextMenuStripShows2_list.SuspendLayout();
+            this.tableLayoutPanelShows2_details_full.SuspendLayout();
+            this.panelShows2Details.SuspendLayout();
+            this.tableLayoutPanelShows2_details.SuspendLayout();
+            this.groupBoxShows2_details.SuspendLayout();
+            this.tableLayoutPanelShows2_show_details.SuspendLayout();
+            this.groupBoxShows2_details_editable.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownShows2_ignore_seasons)).BeginInit();
+            this.groupBoxShows2_airs_next.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxShows2_next_downloaded)).BeginInit();
+            this.groupBoxShows2_airs_last.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxShows2_last_downloaded)).BeginInit();
+            this.groupBoxShows2_details_air.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxShows2_banner)).BeginInit();
+            this.tableLayoutPanelOverview.SuspendLayout();
+            this.tableLayoutPanelShows2_details_buttons.SuspendLayout();
             this.menuStripMain.SuspendLayout();
             this.statusMain.SuspendLayout();
             this.tableLayoutPanelMain.SuspendLayout();
@@ -171,11 +263,12 @@
             this.tabControlMain.Controls.Add(this.tabHistory);
             this.tabControlMain.Controls.Add(this.tabPageFeeds);
             this.tabControlMain.Controls.Add(this.tabPageUpcoming);
+            this.tabControlMain.Controls.Add(this.tabShows2);
             this.tabControlMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControlMain.Location = new System.Drawing.Point(3, 26);
             this.tabControlMain.Name = "tabControlMain";
             this.tabControlMain.SelectedIndex = 0;
-            this.tabControlMain.Size = new System.Drawing.Size(978, 483);
+            this.tabControlMain.Size = new System.Drawing.Size(978, 563);
             this.tabControlMain.TabIndex = 1;
             // 
             // tabShows
@@ -184,7 +277,7 @@
             this.tabShows.Location = new System.Drawing.Point(4, 22);
             this.tabShows.Name = "tabShows";
             this.tabShows.Padding = new System.Windows.Forms.Padding(3);
-            this.tabShows.Size = new System.Drawing.Size(970, 457);
+            this.tabShows.Size = new System.Drawing.Size(970, 537);
             this.tabShows.TabIndex = 0;
             this.tabShows.Text = "Shows";
             this.tabShows.UseVisualStyleBackColor = true;
@@ -202,7 +295,7 @@
             this.tableLayoutPanelShows.RowCount = 2;
             this.tableLayoutPanelShows.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanelShows.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 27F));
-            this.tableLayoutPanelShows.Size = new System.Drawing.Size(964, 451);
+            this.tableLayoutPanelShows.Size = new System.Drawing.Size(964, 531);
             this.tableLayoutPanelShows.TabIndex = 2;
             // 
             // objectListViewShows
@@ -244,7 +337,7 @@
             this.objectListViewShows.Name = "objectListViewShows";
             this.objectListViewShows.ShowGroups = false;
             this.objectListViewShows.ShowImagesOnSubItems = true;
-            this.objectListViewShows.Size = new System.Drawing.Size(958, 418);
+            this.objectListViewShows.Size = new System.Drawing.Size(958, 498);
             this.objectListViewShows.TabIndex = 2;
             this.objectListViewShows.UseAlternatingBackColors = true;
             this.objectListViewShows.UseCompatibleStateImageBehavior = false;
@@ -396,7 +489,7 @@
             this.tableLayoutPanel2.Controls.Add(this.btnSetQualityShows, 2, 0);
             this.tableLayoutPanel2.Controls.Add(this.comboBoxQualityShows, 3, 0);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 424);
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 504);
             this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 1;
@@ -457,7 +550,7 @@
             this.tabHistory.Location = new System.Drawing.Point(4, 22);
             this.tabHistory.Name = "tabHistory";
             this.tabHistory.Padding = new System.Windows.Forms.Padding(3);
-            this.tabHistory.Size = new System.Drawing.Size(970, 457);
+            this.tabHistory.Size = new System.Drawing.Size(970, 537);
             this.tabHistory.TabIndex = 1;
             this.tabHistory.Text = "History";
             this.tabHistory.UseVisualStyleBackColor = true;
@@ -475,7 +568,7 @@
             this.tableLayoutPanelHistory.RowCount = 2;
             this.tableLayoutPanelHistory.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanelHistory.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 27F));
-            this.tableLayoutPanelHistory.Size = new System.Drawing.Size(964, 451);
+            this.tableLayoutPanelHistory.Size = new System.Drawing.Size(964, 531);
             this.tableLayoutPanelHistory.TabIndex = 1;
             // 
             // tableLayoutPanel1
@@ -487,7 +580,7 @@
             this.tableLayoutPanel1.Controls.Add(this.btnPurgeHistory, 2, 0);
             this.tableLayoutPanel1.Controls.Add(this.btnDeleteHistory, 1, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 424);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 504);
             this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
@@ -557,7 +650,7 @@
             this.objectListViewHistory.ShowImagesOnSubItems = true;
             this.objectListViewHistory.ShowItemCountOnGroups = true;
             this.objectListViewHistory.ShowItemToolTips = true;
-            this.objectListViewHistory.Size = new System.Drawing.Size(958, 418);
+            this.objectListViewHistory.Size = new System.Drawing.Size(958, 498);
             this.objectListViewHistory.SmallImageList = this.imageListProvider;
             this.objectListViewHistory.TabIndex = 0;
             this.objectListViewHistory.UseAlternatingBackColors = true;
@@ -654,7 +747,7 @@
             this.tabPageFeeds.Location = new System.Drawing.Point(4, 22);
             this.tabPageFeeds.Name = "tabPageFeeds";
             this.tabPageFeeds.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageFeeds.Size = new System.Drawing.Size(970, 457);
+            this.tabPageFeeds.Size = new System.Drawing.Size(970, 537);
             this.tabPageFeeds.TabIndex = 2;
             this.tabPageFeeds.Text = "RSS Feeds";
             this.tabPageFeeds.UseVisualStyleBackColor = true;
@@ -672,7 +765,7 @@
             this.tableLayoutPanelFeeds.RowCount = 2;
             this.tableLayoutPanelFeeds.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanelFeeds.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 27F));
-            this.tableLayoutPanelFeeds.Size = new System.Drawing.Size(964, 451);
+            this.tableLayoutPanelFeeds.Size = new System.Drawing.Size(964, 531);
             this.tableLayoutPanelFeeds.TabIndex = 1;
             // 
             // objectListViewFeeds
@@ -692,7 +785,7 @@
             this.objectListViewFeeds.MultiSelect = false;
             this.objectListViewFeeds.Name = "objectListViewFeeds";
             this.objectListViewFeeds.ShowGroups = false;
-            this.objectListViewFeeds.Size = new System.Drawing.Size(958, 418);
+            this.objectListViewFeeds.Size = new System.Drawing.Size(958, 498);
             this.objectListViewFeeds.TabIndex = 0;
             this.objectListViewFeeds.UseAlternatingBackColors = true;
             this.objectListViewFeeds.UseCompatibleStateImageBehavior = false;
@@ -732,7 +825,7 @@
             this.tableLayoutPanelButtons.Controls.Add(this.btnAddFeed, 2, 0);
             this.tableLayoutPanelButtons.Controls.Add(this.btnDeleteFeeds, 1, 0);
             this.tableLayoutPanelButtons.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanelButtons.Location = new System.Drawing.Point(0, 424);
+            this.tableLayoutPanelButtons.Location = new System.Drawing.Point(0, 504);
             this.tableLayoutPanelButtons.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanelButtons.Name = "tableLayoutPanelButtons";
             this.tableLayoutPanelButtons.RowCount = 1;
@@ -770,7 +863,7 @@
             this.tabPageUpcoming.Location = new System.Drawing.Point(4, 22);
             this.tabPageUpcoming.Name = "tabPageUpcoming";
             this.tabPageUpcoming.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageUpcoming.Size = new System.Drawing.Size(970, 457);
+            this.tabPageUpcoming.Size = new System.Drawing.Size(970, 537);
             this.tabPageUpcoming.TabIndex = 3;
             this.tabPageUpcoming.Text = "Upcoming";
             this.tabPageUpcoming.UseVisualStyleBackColor = true;
@@ -788,7 +881,7 @@
             this.tableLayoutPanelUpcoming.RowCount = 2;
             this.tableLayoutPanelUpcoming.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanelUpcoming.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 27F));
-            this.tableLayoutPanelUpcoming.Size = new System.Drawing.Size(964, 451);
+            this.tableLayoutPanelUpcoming.Size = new System.Drawing.Size(964, 531);
             this.tableLayoutPanelUpcoming.TabIndex = 2;
             // 
             // objectListViewUpcoming
@@ -812,8 +905,7 @@
             this.objectListViewUpcoming.Location = new System.Drawing.Point(3, 3);
             this.objectListViewUpcoming.MultiSelect = false;
             this.objectListViewUpcoming.Name = "objectListViewUpcoming";
-            this.objectListViewUpcoming.ShowGroups = false;
-            this.objectListViewUpcoming.Size = new System.Drawing.Size(958, 418);
+            this.objectListViewUpcoming.Size = new System.Drawing.Size(958, 498);
             this.objectListViewUpcoming.TabIndex = 0;
             this.objectListViewUpcoming.UseAlternatingBackColors = true;
             this.objectListViewUpcoming.UseCompatibleStateImageBehavior = false;
@@ -824,6 +916,7 @@
             this.upcoming_show_name.AspectName = "ShowName";
             this.upcoming_show_name.MinimumWidth = 70;
             this.upcoming_show_name.Text = "Show Name";
+            this.upcoming_show_name.UseInitialLetterForGroup = true;
             this.upcoming_show_name.Width = 70;
             // 
             // upcoming_season_number
@@ -852,6 +945,7 @@
             this.upcoming_airs.AspectName = "Airs";
             this.upcoming_airs.MinimumWidth = 85;
             this.upcoming_airs.Text = "Air Date & Time";
+            this.upcoming_airs.UseInitialLetterForGroup = true;
             this.upcoming_airs.Width = 85;
             // 
             // upcoming_overview
@@ -868,7 +962,7 @@
             this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 77F));
             this.tableLayoutPanel4.Controls.Add(this.btnRefreshUpcoming, 2, 0);
             this.tableLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel4.Location = new System.Drawing.Point(0, 424);
+            this.tableLayoutPanel4.Location = new System.Drawing.Point(0, 504);
             this.tableLayoutPanel4.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel4.Name = "tableLayoutPanel4";
             this.tableLayoutPanel4.RowCount = 1;
@@ -887,6 +981,814 @@
             this.btnRefreshUpcoming.Text = "Refresh";
             this.btnRefreshUpcoming.UseVisualStyleBackColor = true;
             this.btnRefreshUpcoming.Click += new System.EventHandler(this.btnRefreshUpcoming_Click);
+            // 
+            // tabShows2
+            // 
+            this.tabShows2.Controls.Add(this.tableLayoutPanelShows2);
+            this.tabShows2.Location = new System.Drawing.Point(4, 22);
+            this.tabShows2.Name = "tabShows2";
+            this.tabShows2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabShows2.Size = new System.Drawing.Size(970, 537);
+            this.tabShows2.TabIndex = 4;
+            this.tabShows2.Text = "Shows2";
+            this.tabShows2.UseVisualStyleBackColor = true;
+            // 
+            // tableLayoutPanelShows2
+            // 
+            this.tableLayoutPanelShows2.ColumnCount = 1;
+            this.tableLayoutPanelShows2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanelShows2.Controls.Add(this.tableLayoutPanel3, 0, 1);
+            this.tableLayoutPanelShows2.Controls.Add(this.splitContainerShows, 0, 0);
+            this.tableLayoutPanelShows2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanelShows2.Location = new System.Drawing.Point(3, 3);
+            this.tableLayoutPanelShows2.Margin = new System.Windows.Forms.Padding(0);
+            this.tableLayoutPanelShows2.Name = "tableLayoutPanelShows2";
+            this.tableLayoutPanelShows2.RowCount = 2;
+            this.tableLayoutPanelShows2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanelShows2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 27F));
+            this.tableLayoutPanelShows2.Size = new System.Drawing.Size(964, 531);
+            this.tableLayoutPanelShows2.TabIndex = 0;
+            // 
+            // tableLayoutPanel3
+            // 
+            this.tableLayoutPanel3.ColumnCount = 6;
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 77F));
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 288F));
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 71F));
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 95F));
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 77F));
+            this.tableLayoutPanel3.Controls.Add(this.btnShows2_delete, 0, 0);
+            this.tableLayoutPanel3.Controls.Add(this.btnShows2_scan, 5, 0);
+            this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel3.Location = new System.Drawing.Point(0, 504);
+            this.tableLayoutPanel3.Margin = new System.Windows.Forms.Padding(0);
+            this.tableLayoutPanel3.Name = "tableLayoutPanel3";
+            this.tableLayoutPanel3.RowCount = 1;
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(964, 27);
+            this.tableLayoutPanel3.TabIndex = 4;
+            // 
+            // btnShows2_delete
+            // 
+            this.btnShows2_delete.Location = new System.Drawing.Point(5, 1);
+            this.btnShows2_delete.Margin = new System.Windows.Forms.Padding(5, 1, 1, 0);
+            this.btnShows2_delete.Name = "btnShows2_delete";
+            this.btnShows2_delete.Size = new System.Drawing.Size(71, 26);
+            this.btnShows2_delete.TabIndex = 3;
+            this.btnShows2_delete.Text = "Delete";
+            this.btnShows2_delete.UseVisualStyleBackColor = true;
+            this.btnShows2_delete.Click += new System.EventHandler(this.btnShows2_delete_Click);
+            // 
+            // btnShows2_scan
+            // 
+            this.btnShows2_scan.Location = new System.Drawing.Point(888, 1);
+            this.btnShows2_scan.Margin = new System.Windows.Forms.Padding(1, 1, 5, 0);
+            this.btnShows2_scan.Name = "btnShows2_scan";
+            this.btnShows2_scan.Size = new System.Drawing.Size(71, 26);
+            this.btnShows2_scan.TabIndex = 2;
+            this.btnShows2_scan.Text = "Scan";
+            this.btnShows2_scan.UseVisualStyleBackColor = true;
+            this.btnShows2_scan.Click += new System.EventHandler(this.btnShows2_scan_Click);
+            // 
+            // splitContainerShows
+            // 
+            this.splitContainerShows.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.splitContainerShows.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainerShows.Location = new System.Drawing.Point(3, 3);
+            this.splitContainerShows.Name = "splitContainerShows";
+            // 
+            // splitContainerShows.Panel1
+            // 
+            this.splitContainerShows.Panel1.Controls.Add(this.objectListViewShows2);
+            this.splitContainerShows.Panel1MinSize = 200;
+            // 
+            // splitContainerShows.Panel2
+            // 
+            this.splitContainerShows.Panel2.Controls.Add(this.tableLayoutPanelShows2_details_full);
+            this.splitContainerShows.Size = new System.Drawing.Size(958, 498);
+            this.splitContainerShows.SplitterDistance = 250;
+            this.splitContainerShows.TabIndex = 0;
+            // 
+            // objectListViewShows2
+            // 
+            this.objectListViewShows2.AllColumns.Add(this.shows2_id);
+            this.objectListViewShows2.AllColumns.Add(this.shows2_show_name);
+            this.objectListViewShows2.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.shows2_id,
+            this.shows2_show_name});
+            this.objectListViewShows2.ContextMenuStrip = this.contextMenuStripShows2_list;
+            this.objectListViewShows2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.objectListViewShows2.FullRowSelect = true;
+            this.objectListViewShows2.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+            this.objectListViewShows2.HideSelection = false;
+            this.objectListViewShows2.Location = new System.Drawing.Point(0, 0);
+            this.objectListViewShows2.Margin = new System.Windows.Forms.Padding(0);
+            this.objectListViewShows2.Name = "objectListViewShows2";
+            this.objectListViewShows2.ShowGroups = false;
+            this.objectListViewShows2.Size = new System.Drawing.Size(248, 496);
+            this.objectListViewShows2.TabIndex = 0;
+            this.objectListViewShows2.UseCompatibleStateImageBehavior = false;
+            this.objectListViewShows2.View = System.Windows.Forms.View.Details;
+            this.objectListViewShows2.SelectionChanged += new System.EventHandler(this.objectListViewShows2_SelectionChanged);
+            // 
+            // shows2_id
+            // 
+            this.shows2_id.AspectName = "id";
+            this.shows2_id.IsVisible = false;
+            this.shows2_id.Text = "ID";
+            this.shows2_id.Width = 0;
+            // 
+            // shows2_show_name
+            // 
+            this.shows2_show_name.AspectName = "show_name";
+            this.shows2_show_name.FillsFreeSpace = true;
+            this.shows2_show_name.Text = "Show Name";
+            // 
+            // contextMenuStripShows2_list
+            // 
+            this.contextMenuStripShows2_list.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItemShows2_list_update,
+            this.deleteToolStripMenuItem,
+            this.getBannerToolStripMenuItem});
+            this.contextMenuStripShows2_list.Name = "contextMenuStripShows2_list";
+            this.contextMenuStripShows2_list.Size = new System.Drawing.Size(153, 92);
+            // 
+            // toolStripMenuItemShows2_list_update
+            // 
+            this.toolStripMenuItemShows2_list_update.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItemShows2_list_update_all,
+            this.toolStripMenuItemShows2_list_update_selected});
+            this.toolStripMenuItemShows2_list_update.Name = "toolStripMenuItemShows2_list_update";
+            this.toolStripMenuItemShows2_list_update.Size = new System.Drawing.Size(152, 22);
+            this.toolStripMenuItemShows2_list_update.Text = "Update";
+            // 
+            // toolStripMenuItemShows2_list_update_all
+            // 
+            this.toolStripMenuItemShows2_list_update_all.Name = "toolStripMenuItemShows2_list_update_all";
+            this.toolStripMenuItemShows2_list_update_all.Size = new System.Drawing.Size(118, 22);
+            this.toolStripMenuItemShows2_list_update_all.Text = "All";
+            this.toolStripMenuItemShows2_list_update_all.Click += new System.EventHandler(this.toolStripMenuItemShows2_list_update_all_Click);
+            // 
+            // toolStripMenuItemShows2_list_update_selected
+            // 
+            this.toolStripMenuItemShows2_list_update_selected.Name = "toolStripMenuItemShows2_list_update_selected";
+            this.toolStripMenuItemShows2_list_update_selected.Size = new System.Drawing.Size(118, 22);
+            this.toolStripMenuItemShows2_list_update_selected.Text = "Selected";
+            this.toolStripMenuItemShows2_list_update_selected.Click += new System.EventHandler(this.toolStripMenuItemShows2_list_update_selected_Click);
+            // 
+            // deleteToolStripMenuItem
+            // 
+            this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.deleteToolStripMenuItem.Text = "Delete";
+            this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
+            // 
+            // tableLayoutPanelShows2_details_full
+            // 
+            this.tableLayoutPanelShows2_details_full.ColumnCount = 1;
+            this.tableLayoutPanelShows2_details_full.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanelShows2_details_full.Controls.Add(this.panelShows2Details, 0, 1);
+            this.tableLayoutPanelShows2_details_full.Controls.Add(this.pictureBoxShows2_banner, 0, 0);
+            this.tableLayoutPanelShows2_details_full.Controls.Add(this.tableLayoutPanelOverview, 0, 2);
+            this.tableLayoutPanelShows2_details_full.Controls.Add(this.tableLayoutPanelShows2_details_buttons, 0, 3);
+            this.tableLayoutPanelShows2_details_full.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanelShows2_details_full.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanelShows2_details_full.Margin = new System.Windows.Forms.Padding(0);
+            this.tableLayoutPanelShows2_details_full.Name = "tableLayoutPanelShows2_details_full";
+            this.tableLayoutPanelShows2_details_full.RowCount = 4;
+            this.tableLayoutPanelShows2_details_full.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 27.27273F));
+            this.tableLayoutPanelShows2_details_full.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 72.72727F));
+            this.tableLayoutPanelShows2_details_full.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 70F));
+            this.tableLayoutPanelShows2_details_full.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 27F));
+            this.tableLayoutPanelShows2_details_full.Size = new System.Drawing.Size(702, 496);
+            this.tableLayoutPanelShows2_details_full.TabIndex = 0;
+            // 
+            // panelShows2Details
+            // 
+            this.panelShows2Details.Controls.Add(this.tableLayoutPanelShows2_details);
+            this.panelShows2Details.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelShows2Details.Location = new System.Drawing.Point(3, 108);
+            this.panelShows2Details.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.panelShows2Details.Name = "panelShows2Details";
+            this.panelShows2Details.Size = new System.Drawing.Size(696, 290);
+            this.panelShows2Details.TabIndex = 1;
+            // 
+            // tableLayoutPanelShows2_details
+            // 
+            this.tableLayoutPanelShows2_details.ColumnCount = 1;
+            this.tableLayoutPanelShows2_details.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanelShows2_details.Controls.Add(this.labelShows2_tvdb_name, 0, 0);
+            this.tableLayoutPanelShows2_details.Controls.Add(this.groupBoxShows2_details, 0, 1);
+            this.tableLayoutPanelShows2_details.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanelShows2_details.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanelShows2_details.Margin = new System.Windows.Forms.Padding(0);
+            this.tableLayoutPanelShows2_details.Name = "tableLayoutPanelShows2_details";
+            this.tableLayoutPanelShows2_details.RowCount = 2;
+            this.tableLayoutPanelShows2_details.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 44F));
+            this.tableLayoutPanelShows2_details.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanelShows2_details.Size = new System.Drawing.Size(696, 290);
+            this.tableLayoutPanelShows2_details.TabIndex = 12;
+            // 
+            // labelShows2_tvdb_name
+            // 
+            this.labelShows2_tvdb_name.AutoSize = true;
+            this.labelShows2_tvdb_name.Font = new System.Drawing.Font("Calibri", 27.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelShows2_tvdb_name.Location = new System.Drawing.Point(3, 0);
+            this.labelShows2_tvdb_name.Name = "labelShows2_tvdb_name";
+            this.labelShows2_tvdb_name.Size = new System.Drawing.Size(204, 44);
+            this.labelShows2_tvdb_name.TabIndex = 0;
+            this.labelShows2_tvdb_name.Text = "Show Name";
+            // 
+            // groupBoxShows2_details
+            // 
+            this.groupBoxShows2_details.Controls.Add(this.tableLayoutPanelShows2_show_details);
+            this.groupBoxShows2_details.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBoxShows2_details.Location = new System.Drawing.Point(3, 44);
+            this.groupBoxShows2_details.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.groupBoxShows2_details.Name = "groupBoxShows2_details";
+            this.groupBoxShows2_details.Padding = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.groupBoxShows2_details.Size = new System.Drawing.Size(690, 246);
+            this.groupBoxShows2_details.TabIndex = 11;
+            this.groupBoxShows2_details.TabStop = false;
+            // 
+            // tableLayoutPanelShows2_show_details
+            // 
+            this.tableLayoutPanelShows2_show_details.ColumnCount = 2;
+            this.tableLayoutPanelShows2_show_details.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 51.02339F));
+            this.tableLayoutPanelShows2_show_details.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 48.97661F));
+            this.tableLayoutPanelShows2_show_details.Controls.Add(this.groupBoxShows2_details_editable, 0, 0);
+            this.tableLayoutPanelShows2_show_details.Controls.Add(this.groupBoxShows2_airs_next, 1, 1);
+            this.tableLayoutPanelShows2_show_details.Controls.Add(this.groupBoxShows2_airs_last, 0, 1);
+            this.tableLayoutPanelShows2_show_details.Controls.Add(this.groupBoxShows2_details_air, 1, 0);
+            this.tableLayoutPanelShows2_show_details.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanelShows2_show_details.Location = new System.Drawing.Point(3, 13);
+            this.tableLayoutPanelShows2_show_details.Margin = new System.Windows.Forms.Padding(0);
+            this.tableLayoutPanelShows2_show_details.Name = "tableLayoutPanelShows2_show_details";
+            this.tableLayoutPanelShows2_show_details.RowCount = 2;
+            this.tableLayoutPanelShows2_show_details.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 63.9485F));
+            this.tableLayoutPanelShows2_show_details.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 36.0515F));
+            this.tableLayoutPanelShows2_show_details.Size = new System.Drawing.Size(684, 233);
+            this.tableLayoutPanelShows2_show_details.TabIndex = 23;
+            // 
+            // groupBoxShows2_details_editable
+            // 
+            this.groupBoxShows2_details_editable.Controls.Add(this.textBoxShows2_aliases);
+            this.groupBoxShows2_details_editable.Controls.Add(this.numericUpDownShows2_ignore_seasons);
+            this.groupBoxShows2_details_editable.Controls.Add(this.labelShows2_tvdb_id_value);
+            this.groupBoxShows2_details_editable.Controls.Add(this.comboBoxShows2_quality);
+            this.groupBoxShows2_details_editable.Controls.Add(this.labelShows2_name);
+            this.groupBoxShows2_details_editable.Controls.Add(this.labelShows2_aliases);
+            this.groupBoxShows2_details_editable.Controls.Add(this.labelShows2_quality);
+            this.groupBoxShows2_details_editable.Controls.Add(this.labelShows2_ignore_season);
+            this.groupBoxShows2_details_editable.Controls.Add(this.labelShows2_tvdb_id);
+            this.groupBoxShows2_details_editable.Controls.Add(this.labelShows2_name_value);
+            this.groupBoxShows2_details_editable.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBoxShows2_details_editable.Font = new System.Drawing.Font("Microsoft Sans Serif", 1.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBoxShows2_details_editable.Location = new System.Drawing.Point(3, 0);
+            this.groupBoxShows2_details_editable.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
+            this.groupBoxShows2_details_editable.Name = "groupBoxShows2_details_editable";
+            this.groupBoxShows2_details_editable.Padding = new System.Windows.Forms.Padding(1);
+            this.groupBoxShows2_details_editable.Size = new System.Drawing.Size(342, 146);
+            this.groupBoxShows2_details_editable.TabIndex = 12;
+            this.groupBoxShows2_details_editable.TabStop = false;
+            // 
+            // textBoxShows2_aliases
+            // 
+            this.textBoxShows2_aliases.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBoxShows2_aliases.Location = new System.Drawing.Point(130, 116);
+            this.textBoxShows2_aliases.Name = "textBoxShows2_aliases";
+            this.textBoxShows2_aliases.Size = new System.Drawing.Size(206, 20);
+            this.textBoxShows2_aliases.TabIndex = 18;
+            // 
+            // numericUpDownShows2_ignore_seasons
+            // 
+            this.numericUpDownShows2_ignore_seasons.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.numericUpDownShows2_ignore_seasons.Location = new System.Drawing.Point(130, 91);
+            this.numericUpDownShows2_ignore_seasons.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.numericUpDownShows2_ignore_seasons.Name = "numericUpDownShows2_ignore_seasons";
+            this.numericUpDownShows2_ignore_seasons.Size = new System.Drawing.Size(51, 20);
+            this.numericUpDownShows2_ignore_seasons.TabIndex = 16;
+            // 
+            // labelShows2_tvdb_id_value
+            // 
+            this.labelShows2_tvdb_id_value.AutoSize = true;
+            this.labelShows2_tvdb_id_value.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelShows2_tvdb_id_value.Location = new System.Drawing.Point(125, 44);
+            this.labelShows2_tvdb_id_value.Margin = new System.Windows.Forms.Padding(1, 7, 5, 5);
+            this.labelShows2_tvdb_id_value.Name = "labelShows2_tvdb_id_value";
+            this.labelShows2_tvdb_id_value.Size = new System.Drawing.Size(53, 13);
+            this.labelShows2_tvdb_id_value.TabIndex = 12;
+            this.labelShows2_tvdb_id_value.Text = "TVDB_ID";
+            // 
+            // comboBoxShows2_quality
+            // 
+            this.comboBoxShows2_quality.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxShows2_quality.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.comboBoxShows2_quality.FormattingEnabled = true;
+            this.comboBoxShows2_quality.Items.AddRange(new object[] {
+            "Best Possible",
+            "xvid",
+            "720p"});
+            this.comboBoxShows2_quality.Location = new System.Drawing.Point(130, 64);
+            this.comboBoxShows2_quality.Name = "comboBoxShows2_quality";
+            this.comboBoxShows2_quality.Size = new System.Drawing.Size(88, 21);
+            this.comboBoxShows2_quality.TabIndex = 17;
+            // 
+            // labelShows2_name
+            // 
+            this.labelShows2_name.AutoSize = true;
+            this.labelShows2_name.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelShows2_name.Location = new System.Drawing.Point(4, 19);
+            this.labelShows2_name.Margin = new System.Windows.Forms.Padding(3, 5, 1, 5);
+            this.labelShows2_name.Name = "labelShows2_name";
+            this.labelShows2_name.Size = new System.Drawing.Size(103, 15);
+            this.labelShows2_name.TabIndex = 1;
+            this.labelShows2_name.Text = "Name On Disk:";
+            // 
+            // labelShows2_aliases
+            // 
+            this.labelShows2_aliases.AutoSize = true;
+            this.labelShows2_aliases.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelShows2_aliases.Location = new System.Drawing.Point(4, 119);
+            this.labelShows2_aliases.Margin = new System.Windows.Forms.Padding(3, 5, 1, 5);
+            this.labelShows2_aliases.Name = "labelShows2_aliases";
+            this.labelShows2_aliases.Size = new System.Drawing.Size(57, 15);
+            this.labelShows2_aliases.TabIndex = 4;
+            this.labelShows2_aliases.Text = "Aliases:";
+            // 
+            // labelShows2_quality
+            // 
+            this.labelShows2_quality.AutoSize = true;
+            this.labelShows2_quality.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelShows2_quality.Location = new System.Drawing.Point(4, 69);
+            this.labelShows2_quality.Margin = new System.Windows.Forms.Padding(3, 5, 1, 5);
+            this.labelShows2_quality.Name = "labelShows2_quality";
+            this.labelShows2_quality.Size = new System.Drawing.Size(55, 15);
+            this.labelShows2_quality.TabIndex = 2;
+            this.labelShows2_quality.Text = "Quality:";
+            // 
+            // labelShows2_ignore_season
+            // 
+            this.labelShows2_ignore_season.AutoSize = true;
+            this.labelShows2_ignore_season.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelShows2_ignore_season.Location = new System.Drawing.Point(4, 94);
+            this.labelShows2_ignore_season.Margin = new System.Windows.Forms.Padding(3, 5, 1, 5);
+            this.labelShows2_ignore_season.Name = "labelShows2_ignore_season";
+            this.labelShows2_ignore_season.Size = new System.Drawing.Size(111, 15);
+            this.labelShows2_ignore_season.TabIndex = 3;
+            this.labelShows2_ignore_season.Text = "Ignore Seasons:";
+            // 
+            // labelShows2_tvdb_id
+            // 
+            this.labelShows2_tvdb_id.AutoSize = true;
+            this.labelShows2_tvdb_id.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelShows2_tvdb_id.Location = new System.Drawing.Point(4, 44);
+            this.labelShows2_tvdb_id.Margin = new System.Windows.Forms.Padding(3, 5, 1, 5);
+            this.labelShows2_tvdb_id.Name = "labelShows2_tvdb_id";
+            this.labelShows2_tvdb_id.Size = new System.Drawing.Size(64, 15);
+            this.labelShows2_tvdb_id.TabIndex = 0;
+            this.labelShows2_tvdb_id.Text = "TVDB ID:";
+            // 
+            // labelShows2_name_value
+            // 
+            this.labelShows2_name_value.AutoSize = true;
+            this.labelShows2_name_value.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelShows2_name_value.Location = new System.Drawing.Point(125, 21);
+            this.labelShows2_name_value.Margin = new System.Windows.Forms.Padding(1, 7, 5, 5);
+            this.labelShows2_name_value.MinimumSize = new System.Drawing.Size(15, 10);
+            this.labelShows2_name_value.Name = "labelShows2_name_value";
+            this.labelShows2_name_value.Size = new System.Drawing.Size(82, 13);
+            this.labelShows2_name_value.TabIndex = 11;
+            this.labelShows2_name_value.Text = "Name_On_Disk";
+            // 
+            // groupBoxShows2_airs_next
+            // 
+            this.groupBoxShows2_airs_next.Controls.Add(this.pictureBoxShows2_next_downloaded);
+            this.groupBoxShows2_airs_next.Controls.Add(this.labelShows2_airs_next_episode_number);
+            this.groupBoxShows2_airs_next.Controls.Add(this.labelShows2_airs_next_episode_number_value);
+            this.groupBoxShows2_airs_next.Controls.Add(this.labelShows2_airs_next_season_number);
+            this.groupBoxShows2_airs_next.Controls.Add(this.labelShows2_airs_next_season_number_value);
+            this.groupBoxShows2_airs_next.Controls.Add(this.labelShows_airs_next_title);
+            this.groupBoxShows2_airs_next.Controls.Add(this.labelShows2_airs_next_title_value);
+            this.groupBoxShows2_airs_next.Controls.Add(this.labelShows2_airs_next_date);
+            this.groupBoxShows2_airs_next.Controls.Add(this.labelShows2_airs_next_date_value);
+            this.groupBoxShows2_airs_next.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBoxShows2_airs_next.Location = new System.Drawing.Point(351, 152);
+            this.groupBoxShows2_airs_next.Margin = new System.Windows.Forms.Padding(3, 3, 3, 7);
+            this.groupBoxShows2_airs_next.Name = "groupBoxShows2_airs_next";
+            this.groupBoxShows2_airs_next.Size = new System.Drawing.Size(330, 74);
+            this.groupBoxShows2_airs_next.TabIndex = 21;
+            this.groupBoxShows2_airs_next.TabStop = false;
+            this.groupBoxShows2_airs_next.Text = "Airs Next";
+            // 
+            // pictureBoxShows2_next_downloaded
+            // 
+            this.pictureBoxShows2_next_downloaded.Image = global::SABSync.Images.check;
+            this.pictureBoxShows2_next_downloaded.Location = new System.Drawing.Point(296, 10);
+            this.pictureBoxShows2_next_downloaded.Margin = new System.Windows.Forms.Padding(0);
+            this.pictureBoxShows2_next_downloaded.Name = "pictureBoxShows2_next_downloaded";
+            this.pictureBoxShows2_next_downloaded.Size = new System.Drawing.Size(29, 26);
+            this.pictureBoxShows2_next_downloaded.TabIndex = 28;
+            this.pictureBoxShows2_next_downloaded.TabStop = false;
+            this.pictureBoxShows2_next_downloaded.Visible = false;
+            // 
+            // labelShows2_airs_next_episode_number
+            // 
+            this.labelShows2_airs_next_episode_number.AutoSize = true;
+            this.labelShows2_airs_next_episode_number.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelShows2_airs_next_episode_number.Location = new System.Drawing.Point(204, 45);
+            this.labelShows2_airs_next_episode_number.Margin = new System.Windows.Forms.Padding(3, 5, 1, 5);
+            this.labelShows2_airs_next_episode_number.Name = "labelShows2_airs_next_episode_number";
+            this.labelShows2_airs_next_episode_number.Size = new System.Drawing.Size(63, 15);
+            this.labelShows2_airs_next_episode_number.TabIndex = 25;
+            this.labelShows2_airs_next_episode_number.Text = "Episode:";
+            // 
+            // labelShows2_airs_next_episode_number_value
+            // 
+            this.labelShows2_airs_next_episode_number_value.AutoSize = true;
+            this.labelShows2_airs_next_episode_number_value.Location = new System.Drawing.Point(269, 47);
+            this.labelShows2_airs_next_episode_number_value.Margin = new System.Windows.Forms.Padding(1, 7, 5, 5);
+            this.labelShows2_airs_next_episode_number_value.Name = "labelShows2_airs_next_episode_number_value";
+            this.labelShows2_airs_next_episode_number_value.Size = new System.Drawing.Size(27, 13);
+            this.labelShows2_airs_next_episode_number_value.TabIndex = 26;
+            this.labelShows2_airs_next_episode_number_value.Text = "N/A";
+            // 
+            // labelShows2_airs_next_season_number
+            // 
+            this.labelShows2_airs_next_season_number.AutoSize = true;
+            this.labelShows2_airs_next_season_number.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelShows2_airs_next_season_number.Location = new System.Drawing.Point(204, 20);
+            this.labelShows2_airs_next_season_number.Margin = new System.Windows.Forms.Padding(3, 5, 1, 5);
+            this.labelShows2_airs_next_season_number.Name = "labelShows2_airs_next_season_number";
+            this.labelShows2_airs_next_season_number.Size = new System.Drawing.Size(59, 15);
+            this.labelShows2_airs_next_season_number.TabIndex = 23;
+            this.labelShows2_airs_next_season_number.Text = "Season:";
+            // 
+            // labelShows2_airs_next_season_number_value
+            // 
+            this.labelShows2_airs_next_season_number_value.AutoSize = true;
+            this.labelShows2_airs_next_season_number_value.Location = new System.Drawing.Point(269, 22);
+            this.labelShows2_airs_next_season_number_value.Margin = new System.Windows.Forms.Padding(1, 7, 5, 5);
+            this.labelShows2_airs_next_season_number_value.Name = "labelShows2_airs_next_season_number_value";
+            this.labelShows2_airs_next_season_number_value.Size = new System.Drawing.Size(27, 13);
+            this.labelShows2_airs_next_season_number_value.TabIndex = 24;
+            this.labelShows2_airs_next_season_number_value.Text = "N/A";
+            // 
+            // labelShows_airs_next_title
+            // 
+            this.labelShows_airs_next_title.AutoSize = true;
+            this.labelShows_airs_next_title.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelShows_airs_next_title.Location = new System.Drawing.Point(6, 46);
+            this.labelShows_airs_next_title.Margin = new System.Windows.Forms.Padding(3, 5, 1, 5);
+            this.labelShows_airs_next_title.Name = "labelShows_airs_next_title";
+            this.labelShows_airs_next_title.Size = new System.Drawing.Size(39, 15);
+            this.labelShows_airs_next_title.TabIndex = 21;
+            this.labelShows_airs_next_title.Text = "Title:";
+            // 
+            // labelShows2_airs_next_title_value
+            // 
+            this.labelShows2_airs_next_title_value.AutoSize = true;
+            this.labelShows2_airs_next_title_value.Location = new System.Drawing.Point(49, 48);
+            this.labelShows2_airs_next_title_value.Margin = new System.Windows.Forms.Padding(1, 7, 5, 5);
+            this.labelShows2_airs_next_title_value.Name = "labelShows2_airs_next_title_value";
+            this.labelShows2_airs_next_title_value.Size = new System.Drawing.Size(27, 13);
+            this.labelShows2_airs_next_title_value.TabIndex = 22;
+            this.labelShows2_airs_next_title_value.Text = "N/A";
+            // 
+            // labelShows2_airs_next_date
+            // 
+            this.labelShows2_airs_next_date.AutoSize = true;
+            this.labelShows2_airs_next_date.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelShows2_airs_next_date.Location = new System.Drawing.Point(6, 21);
+            this.labelShows2_airs_next_date.Margin = new System.Windows.Forms.Padding(3, 5, 1, 5);
+            this.labelShows2_airs_next_date.Name = "labelShows2_airs_next_date";
+            this.labelShows2_airs_next_date.Size = new System.Drawing.Size(41, 15);
+            this.labelShows2_airs_next_date.TabIndex = 14;
+            this.labelShows2_airs_next_date.Text = "Date:";
+            // 
+            // labelShows2_airs_next_date_value
+            // 
+            this.labelShows2_airs_next_date_value.AutoSize = true;
+            this.labelShows2_airs_next_date_value.Location = new System.Drawing.Point(49, 23);
+            this.labelShows2_airs_next_date_value.Margin = new System.Windows.Forms.Padding(1, 7, 5, 5);
+            this.labelShows2_airs_next_date_value.Name = "labelShows2_airs_next_date_value";
+            this.labelShows2_airs_next_date_value.Size = new System.Drawing.Size(27, 13);
+            this.labelShows2_airs_next_date_value.TabIndex = 20;
+            this.labelShows2_airs_next_date_value.Text = "N/A";
+            // 
+            // groupBoxShows2_airs_last
+            // 
+            this.groupBoxShows2_airs_last.Controls.Add(this.pictureBoxShows2_last_downloaded);
+            this.groupBoxShows2_airs_last.Controls.Add(this.labelShows2_airs_last_episode_number);
+            this.groupBoxShows2_airs_last.Controls.Add(this.labelShows2_airs_last_episode_number_value);
+            this.groupBoxShows2_airs_last.Controls.Add(this.labelShows2_airs_last_season_number);
+            this.groupBoxShows2_airs_last.Controls.Add(this.labelShows2_airs_last_season_number_value);
+            this.groupBoxShows2_airs_last.Controls.Add(this.labelShows2_airs_last_title);
+            this.groupBoxShows2_airs_last.Controls.Add(this.labelShows2_airs_last_title_value);
+            this.groupBoxShows2_airs_last.Controls.Add(this.labelShows2_airs_last_date);
+            this.groupBoxShows2_airs_last.Controls.Add(this.labelShows2_airs_last_date_value);
+            this.groupBoxShows2_airs_last.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBoxShows2_airs_last.Location = new System.Drawing.Point(3, 152);
+            this.groupBoxShows2_airs_last.Margin = new System.Windows.Forms.Padding(3, 3, 3, 7);
+            this.groupBoxShows2_airs_last.Name = "groupBoxShows2_airs_last";
+            this.groupBoxShows2_airs_last.Size = new System.Drawing.Size(342, 74);
+            this.groupBoxShows2_airs_last.TabIndex = 22;
+            this.groupBoxShows2_airs_last.TabStop = false;
+            this.groupBoxShows2_airs_last.Text = "Airs Last";
+            // 
+            // pictureBoxShows2_last_downloaded
+            // 
+            this.pictureBoxShows2_last_downloaded.Image = global::SABSync.Images.check;
+            this.pictureBoxShows2_last_downloaded.Location = new System.Drawing.Point(308, 10);
+            this.pictureBoxShows2_last_downloaded.Margin = new System.Windows.Forms.Padding(0);
+            this.pictureBoxShows2_last_downloaded.Name = "pictureBoxShows2_last_downloaded";
+            this.pictureBoxShows2_last_downloaded.Size = new System.Drawing.Size(29, 26);
+            this.pictureBoxShows2_last_downloaded.TabIndex = 27;
+            this.pictureBoxShows2_last_downloaded.TabStop = false;
+            this.pictureBoxShows2_last_downloaded.Visible = false;
+            // 
+            // labelShows2_airs_last_episode_number
+            // 
+            this.labelShows2_airs_last_episode_number.AutoSize = true;
+            this.labelShows2_airs_last_episode_number.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelShows2_airs_last_episode_number.Location = new System.Drawing.Point(204, 45);
+            this.labelShows2_airs_last_episode_number.Margin = new System.Windows.Forms.Padding(3, 5, 1, 5);
+            this.labelShows2_airs_last_episode_number.Name = "labelShows2_airs_last_episode_number";
+            this.labelShows2_airs_last_episode_number.Size = new System.Drawing.Size(63, 15);
+            this.labelShows2_airs_last_episode_number.TabIndex = 25;
+            this.labelShows2_airs_last_episode_number.Text = "Episode:";
+            // 
+            // labelShows2_airs_last_episode_number_value
+            // 
+            this.labelShows2_airs_last_episode_number_value.AutoSize = true;
+            this.labelShows2_airs_last_episode_number_value.Location = new System.Drawing.Point(269, 47);
+            this.labelShows2_airs_last_episode_number_value.Margin = new System.Windows.Forms.Padding(1, 7, 5, 5);
+            this.labelShows2_airs_last_episode_number_value.Name = "labelShows2_airs_last_episode_number_value";
+            this.labelShows2_airs_last_episode_number_value.Size = new System.Drawing.Size(27, 13);
+            this.labelShows2_airs_last_episode_number_value.TabIndex = 26;
+            this.labelShows2_airs_last_episode_number_value.Text = "N/A";
+            // 
+            // labelShows2_airs_last_season_number
+            // 
+            this.labelShows2_airs_last_season_number.AutoSize = true;
+            this.labelShows2_airs_last_season_number.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelShows2_airs_last_season_number.Location = new System.Drawing.Point(204, 20);
+            this.labelShows2_airs_last_season_number.Margin = new System.Windows.Forms.Padding(3, 5, 1, 5);
+            this.labelShows2_airs_last_season_number.Name = "labelShows2_airs_last_season_number";
+            this.labelShows2_airs_last_season_number.Size = new System.Drawing.Size(59, 15);
+            this.labelShows2_airs_last_season_number.TabIndex = 23;
+            this.labelShows2_airs_last_season_number.Text = "Season:";
+            // 
+            // labelShows2_airs_last_season_number_value
+            // 
+            this.labelShows2_airs_last_season_number_value.AutoSize = true;
+            this.labelShows2_airs_last_season_number_value.Location = new System.Drawing.Point(269, 22);
+            this.labelShows2_airs_last_season_number_value.Margin = new System.Windows.Forms.Padding(1, 7, 5, 5);
+            this.labelShows2_airs_last_season_number_value.Name = "labelShows2_airs_last_season_number_value";
+            this.labelShows2_airs_last_season_number_value.Size = new System.Drawing.Size(27, 13);
+            this.labelShows2_airs_last_season_number_value.TabIndex = 24;
+            this.labelShows2_airs_last_season_number_value.Text = "N/A";
+            // 
+            // labelShows2_airs_last_title
+            // 
+            this.labelShows2_airs_last_title.AutoSize = true;
+            this.labelShows2_airs_last_title.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelShows2_airs_last_title.Location = new System.Drawing.Point(6, 46);
+            this.labelShows2_airs_last_title.Margin = new System.Windows.Forms.Padding(3, 5, 1, 5);
+            this.labelShows2_airs_last_title.Name = "labelShows2_airs_last_title";
+            this.labelShows2_airs_last_title.Size = new System.Drawing.Size(39, 15);
+            this.labelShows2_airs_last_title.TabIndex = 21;
+            this.labelShows2_airs_last_title.Text = "Title:";
+            // 
+            // labelShows2_airs_last_title_value
+            // 
+            this.labelShows2_airs_last_title_value.AutoSize = true;
+            this.labelShows2_airs_last_title_value.Location = new System.Drawing.Point(49, 48);
+            this.labelShows2_airs_last_title_value.Margin = new System.Windows.Forms.Padding(1, 7, 5, 5);
+            this.labelShows2_airs_last_title_value.Name = "labelShows2_airs_last_title_value";
+            this.labelShows2_airs_last_title_value.Size = new System.Drawing.Size(27, 13);
+            this.labelShows2_airs_last_title_value.TabIndex = 22;
+            this.labelShows2_airs_last_title_value.Text = "N/A";
+            // 
+            // labelShows2_airs_last_date
+            // 
+            this.labelShows2_airs_last_date.AutoSize = true;
+            this.labelShows2_airs_last_date.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelShows2_airs_last_date.Location = new System.Drawing.Point(6, 21);
+            this.labelShows2_airs_last_date.Margin = new System.Windows.Forms.Padding(3, 5, 1, 5);
+            this.labelShows2_airs_last_date.Name = "labelShows2_airs_last_date";
+            this.labelShows2_airs_last_date.Size = new System.Drawing.Size(41, 15);
+            this.labelShows2_airs_last_date.TabIndex = 14;
+            this.labelShows2_airs_last_date.Text = "Date:";
+            // 
+            // labelShows2_airs_last_date_value
+            // 
+            this.labelShows2_airs_last_date_value.AutoSize = true;
+            this.labelShows2_airs_last_date_value.Location = new System.Drawing.Point(49, 23);
+            this.labelShows2_airs_last_date_value.Margin = new System.Windows.Forms.Padding(1, 7, 5, 5);
+            this.labelShows2_airs_last_date_value.Name = "labelShows2_airs_last_date_value";
+            this.labelShows2_airs_last_date_value.Size = new System.Drawing.Size(27, 13);
+            this.labelShows2_airs_last_date_value.TabIndex = 20;
+            this.labelShows2_airs_last_date_value.Text = "N/A";
+            // 
+            // groupBoxShows2_details_air
+            // 
+            this.groupBoxShows2_details_air.Controls.Add(this.labelShows2_status_value);
+            this.groupBoxShows2_details_air.Controls.Add(this.labelShows2_genre_value);
+            this.groupBoxShows2_details_air.Controls.Add(this.labelShows2_air_time_value);
+            this.groupBoxShows2_details_air.Controls.Add(this.labelShows2_air_day_value);
+            this.groupBoxShows2_details_air.Controls.Add(this.labelShows2_air_time);
+            this.groupBoxShows2_details_air.Controls.Add(this.labelShows2_air_day);
+            this.groupBoxShows2_details_air.Controls.Add(this.labelShows2_status);
+            this.groupBoxShows2_details_air.Controls.Add(this.labelShows2_genre);
+            this.groupBoxShows2_details_air.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBoxShows2_details_air.Font = new System.Drawing.Font("Microsoft Sans Serif", 1.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBoxShows2_details_air.Location = new System.Drawing.Point(351, 0);
+            this.groupBoxShows2_details_air.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
+            this.groupBoxShows2_details_air.Name = "groupBoxShows2_details_air";
+            this.groupBoxShows2_details_air.Padding = new System.Windows.Forms.Padding(1);
+            this.groupBoxShows2_details_air.Size = new System.Drawing.Size(330, 146);
+            this.groupBoxShows2_details_air.TabIndex = 7;
+            this.groupBoxShows2_details_air.TabStop = false;
+            this.groupBoxShows2_details_air.UseCompatibleTextRendering = true;
+            // 
+            // labelShows2_status_value
+            // 
+            this.labelShows2_status_value.AutoSize = true;
+            this.labelShows2_status_value.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelShows2_status_value.Location = new System.Drawing.Point(82, 86);
+            this.labelShows2_status_value.Margin = new System.Windows.Forms.Padding(5, 7, 5, 5);
+            this.labelShows2_status_value.Name = "labelShows2_status_value";
+            this.labelShows2_status_value.Size = new System.Drawing.Size(37, 13);
+            this.labelShows2_status_value.TabIndex = 15;
+            this.labelShows2_status_value.Text = "Status";
+            // 
+            // labelShows2_genre_value
+            // 
+            this.labelShows2_genre_value.AutoSize = true;
+            this.labelShows2_genre_value.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelShows2_genre_value.Location = new System.Drawing.Point(82, 111);
+            this.labelShows2_genre_value.Margin = new System.Windows.Forms.Padding(5, 7, 5, 5);
+            this.labelShows2_genre_value.Name = "labelShows2_genre_value";
+            this.labelShows2_genre_value.Size = new System.Drawing.Size(36, 13);
+            this.labelShows2_genre_value.TabIndex = 14;
+            this.labelShows2_genre_value.Text = "Genre";
+            // 
+            // labelShows2_air_time_value
+            // 
+            this.labelShows2_air_time_value.AutoSize = true;
+            this.labelShows2_air_time_value.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelShows2_air_time_value.Location = new System.Drawing.Point(82, 61);
+            this.labelShows2_air_time_value.Margin = new System.Windows.Forms.Padding(5, 7, 5, 5);
+            this.labelShows2_air_time_value.Name = "labelShows2_air_time_value";
+            this.labelShows2_air_time_value.Size = new System.Drawing.Size(45, 13);
+            this.labelShows2_air_time_value.TabIndex = 13;
+            this.labelShows2_air_time_value.Text = "Air Time";
+            // 
+            // labelShows2_air_day_value
+            // 
+            this.labelShows2_air_day_value.AutoSize = true;
+            this.labelShows2_air_day_value.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelShows2_air_day_value.Location = new System.Drawing.Point(82, 36);
+            this.labelShows2_air_day_value.Margin = new System.Windows.Forms.Padding(5, 7, 5, 5);
+            this.labelShows2_air_day_value.Name = "labelShows2_air_day_value";
+            this.labelShows2_air_day_value.Size = new System.Drawing.Size(41, 13);
+            this.labelShows2_air_day_value.TabIndex = 12;
+            this.labelShows2_air_day_value.Text = "Air Day";
+            // 
+            // labelShows2_air_time
+            // 
+            this.labelShows2_air_time.AutoSize = true;
+            this.labelShows2_air_time.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelShows2_air_time.Location = new System.Drawing.Point(14, 59);
+            this.labelShows2_air_time.Margin = new System.Windows.Forms.Padding(5);
+            this.labelShows2_air_time.Name = "labelShows2_air_time";
+            this.labelShows2_air_time.Size = new System.Drawing.Size(64, 15);
+            this.labelShows2_air_time.TabIndex = 6;
+            this.labelShows2_air_time.Text = "Air Time:";
+            // 
+            // labelShows2_air_day
+            // 
+            this.labelShows2_air_day.AutoSize = true;
+            this.labelShows2_air_day.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelShows2_air_day.Location = new System.Drawing.Point(14, 34);
+            this.labelShows2_air_day.Margin = new System.Windows.Forms.Padding(5);
+            this.labelShows2_air_day.Name = "labelShows2_air_day";
+            this.labelShows2_air_day.Size = new System.Drawing.Size(56, 15);
+            this.labelShows2_air_day.TabIndex = 5;
+            this.labelShows2_air_day.Text = "Air Day:";
+            // 
+            // labelShows2_status
+            // 
+            this.labelShows2_status.AutoSize = true;
+            this.labelShows2_status.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelShows2_status.Location = new System.Drawing.Point(14, 84);
+            this.labelShows2_status.Margin = new System.Windows.Forms.Padding(5);
+            this.labelShows2_status.Name = "labelShows2_status";
+            this.labelShows2_status.Size = new System.Drawing.Size(51, 15);
+            this.labelShows2_status.TabIndex = 7;
+            this.labelShows2_status.Text = "Status:";
+            // 
+            // labelShows2_genre
+            // 
+            this.labelShows2_genre.AutoSize = true;
+            this.labelShows2_genre.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelShows2_genre.Location = new System.Drawing.Point(14, 109);
+            this.labelShows2_genre.Margin = new System.Windows.Forms.Padding(5);
+            this.labelShows2_genre.Name = "labelShows2_genre";
+            this.labelShows2_genre.Size = new System.Drawing.Size(50, 15);
+            this.labelShows2_genre.TabIndex = 8;
+            this.labelShows2_genre.Text = "Genre:";
+            // 
+            // pictureBoxShows2_banner
+            // 
+            this.pictureBoxShows2_banner.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pictureBoxShows2_banner.Image = global::SABSync.Images.SABSync_Banner;
+            this.pictureBoxShows2_banner.Location = new System.Drawing.Point(1, 1);
+            this.pictureBoxShows2_banner.Margin = new System.Windows.Forms.Padding(1);
+            this.pictureBoxShows2_banner.Name = "pictureBoxShows2_banner";
+            this.pictureBoxShows2_banner.Size = new System.Drawing.Size(700, 106);
+            this.pictureBoxShows2_banner.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBoxShows2_banner.TabIndex = 3;
+            this.pictureBoxShows2_banner.TabStop = false;
+            // 
+            // tableLayoutPanelOverview
+            // 
+            this.tableLayoutPanelOverview.ColumnCount = 1;
+            this.tableLayoutPanelOverview.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanelOverview.Controls.Add(this.labelShows2_overview, 0, 0);
+            this.tableLayoutPanelOverview.Controls.Add(this.textBoxShows2_overview, 0, 1);
+            this.tableLayoutPanelOverview.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanelOverview.Location = new System.Drawing.Point(0, 398);
+            this.tableLayoutPanelOverview.Margin = new System.Windows.Forms.Padding(0);
+            this.tableLayoutPanelOverview.Name = "tableLayoutPanelOverview";
+            this.tableLayoutPanelOverview.RowCount = 2;
+            this.tableLayoutPanelOverview.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanelOverview.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 48F));
+            this.tableLayoutPanelOverview.Size = new System.Drawing.Size(702, 70);
+            this.tableLayoutPanelOverview.TabIndex = 4;
+            // 
+            // labelShows2_overview
+            // 
+            this.labelShows2_overview.AutoSize = true;
+            this.labelShows2_overview.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelShows2_overview.Location = new System.Drawing.Point(0, 0);
+            this.labelShows2_overview.Margin = new System.Windows.Forms.Padding(0);
+            this.labelShows2_overview.Name = "labelShows2_overview";
+            this.labelShows2_overview.Size = new System.Drawing.Size(68, 15);
+            this.labelShows2_overview.TabIndex = 9;
+            this.labelShows2_overview.Text = "Overview:";
+            // 
+            // textBoxShows2_overview
+            // 
+            this.textBoxShows2_overview.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.textBoxShows2_overview.Location = new System.Drawing.Point(5, 17);
+            this.textBoxShows2_overview.Margin = new System.Windows.Forms.Padding(5, 2, 5, 2);
+            this.textBoxShows2_overview.Multiline = true;
+            this.textBoxShows2_overview.Name = "textBoxShows2_overview";
+            this.textBoxShows2_overview.ReadOnly = true;
+            this.textBoxShows2_overview.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textBoxShows2_overview.Size = new System.Drawing.Size(692, 51);
+            this.textBoxShows2_overview.TabIndex = 2;
+            // 
+            // tableLayoutPanelShows2_details_buttons
+            // 
+            this.tableLayoutPanelShows2_details_buttons.ColumnCount = 3;
+            this.tableLayoutPanelShows2_details_buttons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanelShows2_details_buttons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanelShows2_details_buttons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
+            this.tableLayoutPanelShows2_details_buttons.Controls.Add(this.buttonShows2_details_save, 2, 0);
+            this.tableLayoutPanelShows2_details_buttons.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanelShows2_details_buttons.Location = new System.Drawing.Point(0, 468);
+            this.tableLayoutPanelShows2_details_buttons.Margin = new System.Windows.Forms.Padding(0);
+            this.tableLayoutPanelShows2_details_buttons.Name = "tableLayoutPanelShows2_details_buttons";
+            this.tableLayoutPanelShows2_details_buttons.RowCount = 1;
+            this.tableLayoutPanelShows2_details_buttons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanelShows2_details_buttons.Size = new System.Drawing.Size(702, 28);
+            this.tableLayoutPanelShows2_details_buttons.TabIndex = 5;
+            // 
+            // buttonShows2_details_save
+            // 
+            this.buttonShows2_details_save.Location = new System.Drawing.Point(603, 1);
+            this.buttonShows2_details_save.Margin = new System.Windows.Forms.Padding(1, 1, 5, 0);
+            this.buttonShows2_details_save.Name = "buttonShows2_details_save";
+            this.buttonShows2_details_save.Size = new System.Drawing.Size(71, 26);
+            this.buttonShows2_details_save.TabIndex = 3;
+            this.buttonShows2_details_save.Text = "Save";
+            this.buttonShows2_details_save.UseVisualStyleBackColor = true;
+            this.buttonShows2_details_save.Click += new System.EventHandler(this.buttonShows2_details_save_Click);
+            // 
+            // shows2id
+            // 
+            this.shows2id.AspectName = "id";
+            this.shows2id.IsVisible = false;
+            this.shows2id.Text = "ID";
+            this.shows2id.Width = 0;
             // 
             // menuStripMain
             // 
@@ -1010,7 +1912,7 @@
             // 
             this.statusMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.StatusStripLabel});
-            this.statusMain.Location = new System.Drawing.Point(0, 512);
+            this.statusMain.Location = new System.Drawing.Point(0, 592);
             this.statusMain.Name = "statusMain";
             this.statusMain.Size = new System.Drawing.Size(984, 20);
             this.statusMain.TabIndex = 3;
@@ -1024,7 +1926,7 @@
             // 
             // timerUpdateCache
             // 
-            this.timerUpdateCache.Interval = 21600000;
+            this.timerUpdateCache.Interval = 14400000;
             this.timerUpdateCache.Tick += new System.EventHandler(this.timerUpdateCache_Tick);
             // 
             // tableLayoutPanelMain
@@ -1041,15 +1943,23 @@
             this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 23F));
             this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanelMain.Size = new System.Drawing.Size(984, 532);
+            this.tableLayoutPanelMain.Size = new System.Drawing.Size(984, 612);
             this.tableLayoutPanelMain.TabIndex = 4;
+            // 
+            // getBannerToolStripMenuItem
+            // 
+            this.getBannerToolStripMenuItem.Name = "getBannerToolStripMenuItem";
+            this.getBannerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.getBannerToolStripMenuItem.Text = "Get Banner";
+            this.getBannerToolStripMenuItem.Click += new System.EventHandler(this.getBannerToolStripMenuItem_Click);
             // 
             // FrmMain
             // 
-            this.ClientSize = new System.Drawing.Size(984, 532);
+            this.ClientSize = new System.Drawing.Size(984, 612);
             this.Controls.Add(this.tableLayoutPanelMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStripMain;
+            this.MinimumSize = new System.Drawing.Size(1000, 650);
             this.Name = "FrmMain";
             this.Text = "SABSync";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmMain_FormClosing);
@@ -1073,6 +1983,36 @@
             this.tableLayoutPanelUpcoming.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.objectListViewUpcoming)).EndInit();
             this.tableLayoutPanel4.ResumeLayout(false);
+            this.tabShows2.ResumeLayout(false);
+            this.tableLayoutPanelShows2.ResumeLayout(false);
+            this.tableLayoutPanel3.ResumeLayout(false);
+            this.splitContainerShows.Panel1.ResumeLayout(false);
+            this.splitContainerShows.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainerShows)).EndInit();
+            this.splitContainerShows.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.objectListViewShows2)).EndInit();
+            this.contextMenuStripShows2_list.ResumeLayout(false);
+            this.tableLayoutPanelShows2_details_full.ResumeLayout(false);
+            this.panelShows2Details.ResumeLayout(false);
+            this.tableLayoutPanelShows2_details.ResumeLayout(false);
+            this.tableLayoutPanelShows2_details.PerformLayout();
+            this.groupBoxShows2_details.ResumeLayout(false);
+            this.tableLayoutPanelShows2_show_details.ResumeLayout(false);
+            this.groupBoxShows2_details_editable.ResumeLayout(false);
+            this.groupBoxShows2_details_editable.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownShows2_ignore_seasons)).EndInit();
+            this.groupBoxShows2_airs_next.ResumeLayout(false);
+            this.groupBoxShows2_airs_next.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxShows2_next_downloaded)).EndInit();
+            this.groupBoxShows2_airs_last.ResumeLayout(false);
+            this.groupBoxShows2_airs_last.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxShows2_last_downloaded)).EndInit();
+            this.groupBoxShows2_details_air.ResumeLayout(false);
+            this.groupBoxShows2_details_air.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxShows2_banner)).EndInit();
+            this.tableLayoutPanelOverview.ResumeLayout(false);
+            this.tableLayoutPanelOverview.PerformLayout();
+            this.tableLayoutPanelShows2_details_buttons.ResumeLayout(false);
             this.menuStripMain.ResumeLayout(false);
             this.menuStripMain.PerformLayout();
             this.statusMain.ResumeLayout(false);
@@ -1170,6 +2110,74 @@
         private System.Windows.Forms.Button btnDeleteShows;
         private System.Windows.Forms.Button btnSetQualityShows;
         private System.Windows.Forms.ComboBox comboBoxQualityShows;
+        private System.Windows.Forms.TabPage tabShows2;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanelShows2;
+        private System.Windows.Forms.SplitContainer splitContainerShows;
+        private BrightIdeasSoftware.OLVColumn shows2id;
+        private BrightIdeasSoftware.ObjectListView objectListViewShows2;
+        private BrightIdeasSoftware.OLVColumn shows2_id;
+        private BrightIdeasSoftware.OLVColumn shows2_show_name;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanelShows2_details_full;
+        private System.Windows.Forms.Panel panelShows2Details;
+        private System.Windows.Forms.Label labelShows2_tvdb_name;
+        private System.Windows.Forms.Label labelShows2_overview;
+        private System.Windows.Forms.TextBox textBoxShows2_overview;
+        private System.Windows.Forms.GroupBox groupBoxShows2_details;
+        private System.Windows.Forms.Label labelShows2_tvdb_id_value;
+        private System.Windows.Forms.Label labelShows2_name_value;
+        private System.Windows.Forms.Label labelShows2_name;
+        private System.Windows.Forms.Label labelShows2_tvdb_id;
+        private System.Windows.Forms.Label labelShows2_quality;
+        private System.Windows.Forms.Label labelShows2_aliases;
+        private System.Windows.Forms.Label labelShows2_ignore_season;
+        private System.Windows.Forms.NumericUpDown numericUpDownShows2_ignore_seasons;
+        private System.Windows.Forms.ComboBox comboBoxShows2_quality;
+        private System.Windows.Forms.TextBox textBoxShows2_aliases;
+        private System.Windows.Forms.GroupBox groupBoxShows2_details_air;
+        private System.Windows.Forms.Label labelShows2_status_value;
+        private System.Windows.Forms.Label labelShows2_genre_value;
+        private System.Windows.Forms.Label labelShows2_air_time_value;
+        private System.Windows.Forms.Label labelShows2_air_day_value;
+        private System.Windows.Forms.Label labelShows2_air_time;
+        private System.Windows.Forms.Label labelShows2_air_day;
+        private System.Windows.Forms.Label labelShows2_status;
+        private System.Windows.Forms.Label labelShows2_genre;
+        private System.Windows.Forms.GroupBox groupBoxShows2_details_editable;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
+        private System.Windows.Forms.Button btnShows2_delete;
+        private System.Windows.Forms.Button btnShows2_scan;
+        private System.Windows.Forms.PictureBox pictureBoxShows2_banner;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanelOverview;
+        private System.Windows.Forms.Label labelShows2_airs_next_date_value;
+        private System.Windows.Forms.Label labelShows2_airs_next_date;
+        private System.Windows.Forms.GroupBox groupBoxShows2_airs_next;
+        private System.Windows.Forms.Label labelShows2_airs_next_episode_number;
+        private System.Windows.Forms.Label labelShows2_airs_next_episode_number_value;
+        private System.Windows.Forms.Label labelShows2_airs_next_season_number;
+        private System.Windows.Forms.Label labelShows2_airs_next_season_number_value;
+        private System.Windows.Forms.Label labelShows_airs_next_title;
+        private System.Windows.Forms.Label labelShows2_airs_next_title_value;
+        private System.Windows.Forms.GroupBox groupBoxShows2_airs_last;
+        private System.Windows.Forms.Label labelShows2_airs_last_episode_number;
+        private System.Windows.Forms.Label labelShows2_airs_last_episode_number_value;
+        private System.Windows.Forms.Label labelShows2_airs_last_season_number;
+        private System.Windows.Forms.Label labelShows2_airs_last_season_number_value;
+        private System.Windows.Forms.Label labelShows2_airs_last_title;
+        private System.Windows.Forms.Label labelShows2_airs_last_title_value;
+        private System.Windows.Forms.Label labelShows2_airs_last_date;
+        private System.Windows.Forms.Label labelShows2_airs_last_date_value;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanelShows2_details;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanelShows2_show_details;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanelShows2_details_buttons;
+        private System.Windows.Forms.Button buttonShows2_details_save;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStripShows2_list;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemShows2_list_update;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemShows2_list_update_all;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemShows2_list_update_selected;
+        private System.Windows.Forms.PictureBox pictureBoxShows2_last_downloaded;
+        private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
+        private System.Windows.Forms.PictureBox pictureBoxShows2_next_downloaded;
+        private System.Windows.Forms.ToolStripMenuItem getBannerToolStripMenuItem;
 
 
 
