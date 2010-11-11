@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("General");
-            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("SABnzbd");
-            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("TV Shows");
+            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("General");
+            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("SABnzbd");
+            System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("TV Shows");
             this.treeViewOptions = new System.Windows.Forms.TreeView();
             this.panelSab = new System.Windows.Forms.Panel();
             this.btnTestSab = new System.Windows.Forms.Button();
@@ -59,6 +59,7 @@
             this.lblSabInfoHost = new System.Windows.Forms.Label();
             this.txtSabInfoHost = new System.Windows.Forms.TextBox();
             this.panelShows = new System.Windows.Forms.Panel();
+            this.comboBoxDefaultQuality = new System.Windows.Forms.ComboBox();
             this.chkDownloadPropers = new System.Windows.Forms.CheckBox();
             this.lblDownloadQuality = new System.Windows.Forms.Label();
             this.txtVideoExt = new System.Windows.Forms.TextBox();
@@ -83,7 +84,7 @@
             this.btnApply = new System.Windows.Forms.Button();
             this.tvRootDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.nzbDirDialog = new System.Windows.Forms.FolderBrowserDialog();
-            this.comboBoxDefaultQuality = new System.Windows.Forms.ComboBox();
+            this.labelOptionsSab_test = new System.Windows.Forms.Label();
             this.panelSab.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.panelShows.SuspendLayout();
@@ -95,22 +96,23 @@
             // 
             this.treeViewOptions.Location = new System.Drawing.Point(13, 13);
             this.treeViewOptions.Name = "treeViewOptions";
-            treeNode4.Name = "NodeGeneral";
-            treeNode4.Text = "General";
-            treeNode5.Name = "NodeSab";
-            treeNode5.Text = "SABnzbd";
-            treeNode6.Name = "NodeShows";
-            treeNode6.Text = "TV Shows";
+            treeNode7.Name = "NodeGeneral";
+            treeNode7.Text = "General";
+            treeNode8.Name = "NodeSab";
+            treeNode8.Text = "SABnzbd";
+            treeNode9.Name = "NodeShows";
+            treeNode9.Text = "TV Shows";
             this.treeViewOptions.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode4,
-            treeNode5,
-            treeNode6});
+            treeNode7,
+            treeNode8,
+            treeNode9});
             this.treeViewOptions.Size = new System.Drawing.Size(121, 347);
             this.treeViewOptions.TabIndex = 0;
             this.treeViewOptions.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewOptions_AfterSelect);
             // 
             // panelSab
             // 
+            this.panelSab.Controls.Add(this.labelOptionsSab_test);
             this.panelSab.Controls.Add(this.btnTestSab);
             this.panelSab.Controls.Add(this.chkReplaceChars);
             this.panelSab.Controls.Add(this.btnPriorityHigh);
@@ -126,15 +128,15 @@
             this.panelSab.Controls.Add(this.lblNzbDir);
             this.panelSab.Controls.Add(this.nzbDirBrowse);
             this.panelSab.Controls.Add(this.groupBox1);
-            this.panelSab.Location = new System.Drawing.Point(45, 227);
+            this.panelSab.Location = new System.Drawing.Point(145, 13);
             this.panelSab.Name = "panelSab";
-            this.panelSab.Size = new System.Drawing.Size(59, 65);
+            this.panelSab.Size = new System.Drawing.Size(445, 322);
             this.panelSab.TabIndex = 1;
             this.panelSab.Visible = false;
             // 
             // btnTestSab
             // 
-            this.btnTestSab.Location = new System.Drawing.Point(358, 283);
+            this.btnTestSab.Location = new System.Drawing.Point(39, 286);
             this.btnTestSab.Name = "btnTestSab";
             this.btnTestSab.Size = new System.Drawing.Size(64, 23);
             this.btnTestSab.TabIndex = 50;
@@ -388,10 +390,23 @@
             this.panelShows.Controls.Add(this.txtTvRoot);
             this.panelShows.Controls.Add(this.lblTvRoot);
             this.panelShows.Controls.Add(this.tvRootBrowse);
-            this.panelShows.Location = new System.Drawing.Point(145, 26);
+            this.panelShows.Location = new System.Drawing.Point(42, 176);
             this.panelShows.Name = "panelShows";
-            this.panelShows.Size = new System.Drawing.Size(434, 204);
+            this.panelShows.Size = new System.Drawing.Size(48, 54);
             this.panelShows.TabIndex = 3;
+            // 
+            // comboBoxDefaultQuality
+            // 
+            this.comboBoxDefaultQuality.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxDefaultQuality.FormattingEnabled = true;
+            this.comboBoxDefaultQuality.Items.AddRange(new object[] {
+            "Best Possible",
+            "xvid",
+            "720p"});
+            this.comboBoxDefaultQuality.Location = new System.Drawing.Point(103, 139);
+            this.comboBoxDefaultQuality.Name = "comboBoxDefaultQuality";
+            this.comboBoxDefaultQuality.Size = new System.Drawing.Size(121, 21);
+            this.comboBoxDefaultQuality.TabIndex = 55;
             // 
             // chkDownloadPropers
             // 
@@ -640,18 +655,15 @@
             this.tvRootDialog.Description = "TV Root Folder";
             this.tvRootDialog.RootFolder = System.Environment.SpecialFolder.MyComputer;
             // 
-            // comboBoxDefaultQuality
+            // labelOptionsSab_test
             // 
-            this.comboBoxDefaultQuality.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxDefaultQuality.FormattingEnabled = true;
-            this.comboBoxDefaultQuality.Items.AddRange(new object[] {
-            "Best Possible",
-            "xvid",
-            "720p"});
-            this.comboBoxDefaultQuality.Location = new System.Drawing.Point(103, 139);
-            this.comboBoxDefaultQuality.Name = "comboBoxDefaultQuality";
-            this.comboBoxDefaultQuality.Size = new System.Drawing.Size(121, 21);
-            this.comboBoxDefaultQuality.TabIndex = 55;
+            this.labelOptionsSab_test.AutoSize = true;
+            this.labelOptionsSab_test.ForeColor = System.Drawing.Color.Red;
+            this.labelOptionsSab_test.Location = new System.Drawing.Point(110, 292);
+            this.labelOptionsSab_test.Name = "labelOptionsSab_test";
+            this.labelOptionsSab_test.Size = new System.Drawing.Size(107, 13);
+            this.labelOptionsSab_test.TabIndex = 51;
+            this.labelOptionsSab_test.Text = "labelOptionsSab_test";
             // 
             // FrmOptions
             // 
@@ -742,6 +754,7 @@
         internal System.Windows.Forms.NumericUpDown numMinutes;
         private System.Windows.Forms.CheckBox chkSyncOnStart;
         private System.Windows.Forms.ComboBox comboBoxDefaultQuality;
+        private System.Windows.Forms.Label labelOptionsSab_test;
 
 
 

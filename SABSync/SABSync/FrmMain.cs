@@ -71,20 +71,19 @@ namespace SABSync
 
             CreateDatabase(); //Create the Database if needed
             SetSyncInterval(); //Set the Interval for Sync
-            if (Config.SyncOnStart) //Run a Sync at the Start if Configured to
-                StartSync();
 
-            GetBannersAndUpdates(); //Get Banners and Updates
+            //Hide some controls on Shows2 when nothing is selected at startup
+            tableLayoutPanelOverview.Visible = false;
+            tableLayoutPanelShows2_show_details.Visible = false;
+            labelShows2_tvdb_name.Visible = false;
+            buttonShows2_details_save.Visible = false;
 
             GetShows();
-            GetShows2();
             GetHistory();
             GetFeeds();
             GetUpcoming();
 
             LoadGuiSettings(); //Load Previously saved settings for the gui
-            shows_id.Width = 0;
-            shows_id.IsVisible = false;
 
             //Used for multi-select in Shows2
             this.comboBoxShows2_quality_multi.Items.AddRange(new object[]
@@ -93,6 +92,10 @@ namespace SABSync
                                                                     "xvid",
                                                                     "720p"
                                                                 });
+            if (Config.SyncOnStart) //Run a Sync at the Start if Configured to
+                StartSync();
+
+            GetBannersAndUpdates(); //Get Banners and Updates
         }
 
         public void ShowWindow()
@@ -237,45 +240,6 @@ namespace SABSync
         }
 
         private void GetShows()
-        {
-            using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
-            {
-                var shows = from s in sabSyncEntities.shows select s;
-                objectListViewShows.SetObjects(shows.ToList());
-            }
-
-            shows_quality.AspectToStringConverter = delegate(object obj)
-            {
-                Int64 quality = (Int64)obj;
-
-                if (quality == 0)
-                    return "Best Possible";
-
-                if (quality == 1)
-                    return "xvid";
-
-                if (quality == 2)
-                    return "720p";
-
-                return "unknown"; //Default to unknown if well... unknown
-            };
-
-            //Auto-Size the columns
-            //id.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
-            shows_show_name.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
-            shows_tvdb_name.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
-            shows_quality.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
-            shows_aliases.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
-            shows_air_day.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
-            shows_air_time.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
-            shows_status.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
-            shows_imdb_id.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
-            shows_genre.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
-
-            objectListViewShows.Sort(shows_show_name); //Sort By The 'Show Name' Column
-        }
-
-        private void GetShows2()
         {
             using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
             {
@@ -452,14 +416,9 @@ namespace SABSync
         private void GetBannersAndUpdatesThread()
         {
             Database db = new Database();
+            db.ProcessingShow += new Database.ProcessingShowHandler(db_ProcessingShow);
             db.GetBanners();
             db.GetTvDbUpdates();
-        }
-
-        private void btnScanNewShows_Click(object sender, EventArgs e)
-        {
-            Thread thread = new Thread(UpdateShows);
-            thread.Start();
         }
 
         private void UpdateShows()
@@ -471,20 +430,11 @@ namespace SABSync
             GetShowsInvoke();
         }
 
-        private void UpdateShows2()
-        {
-            //Config.ReloadConfig();
-            Database db = new Database();
-            db.ProcessingShow += new Database.ProcessingShowHandler(db_ProcessingShow);
-            db.ShowsOnDiskToDatabase();
-            GetShowsInvoke2();
-        }
-
         private void GetShowsInvoke()
         {
-            if (this.objectListViewShows.InvokeRequired)
+            if (this.objectListViewShows2.InvokeRequired)
             {
-                this.objectListViewShows.BeginInvoke(
+                this.objectListViewShows2.BeginInvoke(
                     new MethodInvoker(
                     delegate() { GetShows(); }));
                 return;
@@ -493,24 +443,11 @@ namespace SABSync
             GetShows();
         }
 
-        private void GetShowsInvoke2()
-        {
-            if (this.objectListViewShows2.InvokeRequired)
-            {
-                this.objectListViewShows2.BeginInvoke(
-                    new MethodInvoker(
-                    delegate() { GetShows2(); }));
-                return;
-            }
-
-            GetShows2();
-        }
-
         private void GetHistoryInvoke()
         {
             if (this.objectListViewHistory.InvokeRequired)
             {
-                this.objectListViewShows.BeginInvoke(
+                this.objectListViewHistory.BeginInvoke(
                     new MethodInvoker(
                     delegate() { GetHistory(); }));
                 return;
@@ -542,6 +479,7 @@ namespace SABSync
         {
             Database db = new Database();
             Thread thread = new Thread(db.GetTvDbUpdates);
+            db.ProcessingShow += new Database.ProcessingShowHandler(db_ProcessingShow);
             thread.Name = "Update Cache Thread";
             thread.Start();
         }
@@ -664,89 +602,6 @@ namespace SABSync
             GetHistory();
         }
 
-        private void objectListViewShows_CellEditStarting(object sender, CellEditEventArgs e)
-        {
-            //Return if not the Quality Column
-            if (e.Column.Text != "Quality")
-                return;
-
-            ComboBox cb = new ComboBox();
-            cb.Bounds = e.CellBounds;
-            cb.Width = 70;
-            cb.Font = ((ObjectListView)sender).Font;
-            cb.DropDownStyle = ComboBoxStyle.DropDownList;
-            cb.Items.AddRange(new String[] { "Best Possible", "xvid", "720p" });
-            cb.SelectedIndex = Convert.ToInt32(e.Value);
-            cb.SelectedIndexChanged += new EventHandler(cb_SelectedIndexChanged);
-            cb.Tag = e.RowObject; // remember which person we are editing
-            e.Control = cb;
-        }
-
-        private void cb_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            ComboBox cb = (ComboBox)sender;
-            ((shows)cb.Tag).quality = cb.SelectedIndex;
-        }
-
-        private void objectListViewShows_CellEditFinishing(object sender, CellEditEventArgs e)
-        {
-            //Only work on the Quality Column
-            if (e.Column.Text == "Quality")
-            {
-                long id = ((shows)e.RowObject).id;
-                long? quality = ((shows)e.RowObject).quality;
-
-                using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
-                {
-                    var show = (from s in sabSyncEntities.shows where s.id == id select s).FirstOrDefault();
-                    show.quality = quality;
-                    sabSyncEntities.shows.ApplyCurrentValues(show);
-                    sabSyncEntities.SaveChanges();
-                }
-
-                // Stop listening for change events
-                ((ComboBox)e.Control).SelectedIndexChanged -= new EventHandler(cb_SelectedIndexChanged);
-
-                // Any updating will have been down in the SelectedIndexChanged event handler
-                // Here we simply make the list redraw the involved ListViewItem
-                ((ObjectListView)sender).RefreshItem(e.ListViewItem);
-
-                // We have updated the model object, so we cancel the auto update
-                e.Cancel = true;
-            }
-
-            if (e.Column.Text == "Ignore Season")
-            {
-                //Ignore Season - Update DB
-                long id = ((shows)e.RowObject).id;
-
-                using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
-                {
-                    var show = (from s in sabSyncEntities.shows where s.id == id select s).FirstOrDefault();
-                    show.ignore_season = Convert.ToInt32(e.NewValue);
-                    sabSyncEntities.shows.ApplyCurrentValues(show);
-                    sabSyncEntities.SaveChanges();
-                }
-                ((ObjectListView)sender).RefreshItem(e.ListViewItem);
-            }
-
-            if (e.Column.Text == "Aliases")
-            {
-                //Ignore Season - Update DB
-                long id = ((shows)e.RowObject).id;
-
-                using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
-                {
-                    var show = (from s in sabSyncEntities.shows where s.id == id select s).FirstOrDefault();
-                    show.aliases = Convert.ToString(e.NewValue);
-                    sabSyncEntities.shows.ApplyCurrentValues(show);
-                    sabSyncEntities.SaveChanges();
-                }
-                ((ObjectListView)sender).RefreshItem(e.ListViewItem);
-                shows_aliases.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
-            }
-        }
-
         private void btnRefreshUpcoming_Click(object sender, EventArgs e)
         {
             GetUpcoming();
@@ -797,7 +652,6 @@ namespace SABSync
                 this.Size = Settings.Default.WindowSize;
 
             //Load OLV Data
-            objectListViewShows.RestoreState(Encoding.Default.GetBytes(Settings.Default.olvShows));
             objectListViewHistory.RestoreState(Encoding.Default.GetBytes(Settings.Default.olvHistory));
             objectListViewFeeds.RestoreState(Encoding.Default.GetBytes(Settings.Default.olvFeeds));
             objectListViewUpcoming.RestoreState(Encoding.Default.GetBytes(Settings.Default.olvUpcoming));
@@ -815,7 +669,6 @@ namespace SABSync
                 Settings.Default.WindowSize = this.RestoreBounds.Size;
 
             //Save the OLVs
-            Settings.Default.olvShows = Encoding.Default.GetString(objectListViewShows.SaveState());
             Settings.Default.olvHistory = Encoding.Default.GetString(objectListViewHistory.SaveState());
             Settings.Default.olvFeeds = Encoding.Default.GetString(objectListViewFeeds.SaveState());
             Settings.Default.olvUpcoming = Encoding.Default.GetString(objectListViewUpcoming.SaveState());
@@ -836,62 +689,6 @@ namespace SABSync
             this.Close();
         }
 
-        private void btnDeleteShows_Click(object sender, EventArgs e)
-        {
-            if (MessageBox.Show("Are you sure?", "Confirm Delete", MessageBoxButtons.YesNo) != DialogResult.Yes)
-                return;
-
-            using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
-            {
-                for (int i = 0; i < objectListViewShows.SelectedItems.Count; i++)
-                {
-                    int id = Convert.ToInt32(objectListViewShows.SelectedItems[i].Text);
-
-                    var show = (from s in sabSyncEntities.shows where s.id == id select s).FirstOrDefault();
-                    var episodes = from ep in sabSyncEntities.episodes where ep.show_id == id select ep;
-                    var history = from h in sabSyncEntities.histories where h.show_id == id select h;
-
-                    //Delete each item in history for the selected show
-                    foreach (var h in history)
-                        sabSyncEntities.DeleteObject(h);
-
-                    //Delete each episode for the selected show
-                    foreach (var episode in episodes)
-                        sabSyncEntities.DeleteObject(episode);
-                    sabSyncEntities.DeleteObject(show); //Delete the show
-                }
-                sabSyncEntities.SaveChanges(); //Save the changes
-            }
-            GetShows();
-        }
-
-        private void btnSetQualityShows_Click(object sender, EventArgs e)
-        {
-            if (comboBoxQualityShows.SelectedIndex < 0) //If quality combobox does not have a selected it, return
-                return;
-
-            if (objectListViewShows.SelectedItems.Count < 1) //If no shows are selected, return
-                return;
-
-            int quality = comboBoxQualityShows.SelectedIndex;
-
-            using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
-            {
-                for (int i = 0; i < objectListViewShows.SelectedItems.Count; i++)
-                {
-                    int id = Convert.ToInt32(objectListViewShows.SelectedItems[i].Text);
-
-                    var show = (from s in sabSyncEntities.shows where s.id == id select s).FirstOrDefault();
-                    show.quality = quality;
-
-                    sabSyncEntities.shows.ApplyCurrentValues(show); //Update the show
-                }
-                sabSyncEntities.SaveChanges(); //Save the changes
-            }
-            GetShows();
-
-        }
-
         private void objectListViewShows2_SelectionChanged(object sender, EventArgs e)
         {
             //Create view on left when index is changed
@@ -902,6 +699,7 @@ namespace SABSync
                 tableLayoutPanelOverview.Visible = true;
                 tableLayoutPanelShows2_show_details.Visible = true;
                 labelShows2_tvdb_name.Visible = true;
+                buttonShows2_details_save.Visible = true;
 
                 using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
                 {
@@ -927,38 +725,27 @@ namespace SABSync
                     labelShows2_genre_value.Text = show.genre.Replace('|', '/');
                     textBoxShows2_overview.Text = show.overview;
 
-                    Stopwatch swAll = new Stopwatch();
-                    swAll.Start();
-
-                    Stopwatch swDb = new Stopwatch();
-                    swDb.Start();
-
                     var episodes = from n in sabSyncEntities.episodes
                                 where n.shows.id == id select new EpisodeObject
                                 {
-                                    AirDateString = n.air_date,
+                                    AirDate = n.air_date,
+                                    AirTime = n.shows.air_time,
                                     SeasonNumber = n.season_number,
                                     EpisodeNumber = n.episode_number,
                                     EpisodeName = n.episode_name,
                                     EpisodeId = n.id
                                 };
-                   
-                    swDb.Stop();
-                    Console.WriteLine("DB Query Time: " + swDb.Elapsed.TotalSeconds);
-
-                    Stopwatch swLamba = new Stopwatch();
-                    swLamba.Start();
 
                     List<EpisodeObject> episodeList = new List<EpisodeObject>();
                     episodeList = episodes.ToList();
                     episodeList.Sort();
 
-                    var last = episodeList.FindLast(d => d.AirDate != new DateTime(1,1,1) && d.AirDate < DateTime.Today);
-                    var next = episodeList.Find(d => d.AirDate != new DateTime(1, 1, 1) && d.AirDate >= DateTime.Today);
+                    var last = episodeList.FindLast(d => d.Airs != new DateTime(1,1,1) && d.Airs < DateTime.Today);
+                    var next = episodeList.Find(d => d.Airs != new DateTime(1, 1, 1) && d.Airs >= DateTime.Today);
 
                     if (next != null)
                     {
-                        labelShows2_airs_next_date_value.Text = next.AirDate.ToShortDateString();
+                        labelShows2_airs_next_date_value.Text = GetDateString(next.Airs);
                         labelShows2_airs_next_season_number_value.Text = next.SeasonNumber.ToString();
                         labelShows2_airs_next_episode_number_value.Text = next.EpisodeNumber.ToString();
                         labelShows2_airs_next_title_value.Text = next.EpisodeName;
@@ -981,7 +768,7 @@ namespace SABSync
 
                     if (last != null)
                     {
-                        labelShows2_airs_last_date_value.Text = last.AirDate.ToShortDateString();
+                        labelShows2_airs_last_date_value.Text = GetDateString(last.Airs);
                         labelShows2_airs_last_season_number_value.Text = last.SeasonNumber.ToString();
                         labelShows2_airs_last_episode_number_value.Text = last.EpisodeNumber.ToString();
                         labelShows2_airs_last_title_value.Text = last.EpisodeName;
@@ -1001,12 +788,6 @@ namespace SABSync
                         labelShows2_airs_last_episode_number_value.Text = "N/A";
                         labelShows2_airs_last_title_value.Text = "N/A";
                     }
-
-                    swLamba.Stop();
-                    Console.WriteLine("Lambda: " + swLamba.Elapsed.TotalSeconds);
-
-                    swAll.Stop();
-                    Console.WriteLine("Total Elapsed: " + swAll.Elapsed.TotalSeconds);
 
                     //Show the Banner!
                     string image = String.Format("Images{0}Banners{1}{2}.jpg", Path.DirectorySeparatorChar,
@@ -1028,6 +809,7 @@ namespace SABSync
                 tableLayoutPanelOverview.Visible = false;
                 tableLayoutPanelShows2_show_details.Visible = false;
                 labelShows2_tvdb_name.Visible = false;
+                buttonShows2_details_save.Visible = true;
                 
                 //Create a new Label
                 this.labelShows2_quality_multi.Text = "Quality:";
@@ -1055,37 +837,8 @@ namespace SABSync
 
         private void btnShows2_scan_Click(object sender, EventArgs e)
         {
-            Thread thread = new Thread(UpdateShows2);
+            Thread thread = new Thread(UpdateShows);
             thread.Start();
-        }
-
-        private void btnShows2_delete_Click(object sender, EventArgs e)
-        {
-            if (MessageBox.Show("Are you sure?", "Confirm Delete", MessageBoxButtons.YesNo) != DialogResult.Yes)
-                return;
-
-            using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
-            {
-                for (int i = 0; i < objectListViewShows2.SelectedItems.Count; i++)
-                {
-                    int id = Convert.ToInt32(objectListViewShows2.SelectedItems[i].Text);
-
-                    var show = (from s in sabSyncEntities.shows where s.id == id select s).FirstOrDefault();
-                    var episodes = from ep in sabSyncEntities.episodes where ep.show_id == id select ep;
-                    var history = from h in sabSyncEntities.histories where h.show_id == id select h;
-
-                    //Delete each item in history for the selected show
-                    foreach (var h in history)
-                        sabSyncEntities.DeleteObject(h);
-
-                    //Delete each episode for the selected show
-                    foreach (var episode in episodes)
-                        sabSyncEntities.DeleteObject(episode);
-                    sabSyncEntities.DeleteObject(show); //Delete the show
-                }
-                sabSyncEntities.SaveChanges(); //Save the changes
-            }
-            GetShows2();
         }
 
         private void buttonShows2_details_save_Click(object sender, EventArgs e)
@@ -1149,11 +902,14 @@ namespace SABSync
             //Update all shows (Forced)
             using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
             {
-                var seriesIds= from s in sabSyncEntities.shows select s.tvdb_id;
+                var seriesIds = from s in sabSyncEntities.shows select s.tvdb_id;
+
+                List<long?> seriesIdList = seriesIds.ToList();
 
                 Database db = new Database();
-                Thread dbThread = new Thread(new ThreadStart(delegate { db.UpdateFromTvDb(seriesIds.ToList()); }));
-                dbThread.Name = "Update Cache Thread (Forced)";
+                Thread dbThread = new Thread(new ThreadStart(delegate { db.UpdateFromTvDb(seriesIdList); }));
+                db.ProcessingShow += new Database.ProcessingShowHandler(db_ProcessingShow);
+                dbThread.Name = "Update Cache Thread Forced (All)";
                 dbThread.Start();
             }
         }
@@ -1173,7 +929,8 @@ namespace SABSync
                 
                 Database db = new Database();
                 Thread dbThread = new Thread(new ThreadStart(delegate { db.UpdateFromTvDb(seriesIdList); }));
-                dbThread.Name = "Update Cache Thread (Selected)";
+                db.ProcessingShow += new Database.ProcessingShowHandler(db_ProcessingShow);
+                dbThread.Name = "Update Cache Thread Forced (Selected)";
                 dbThread.Start();
             }
         }
@@ -1205,7 +962,7 @@ namespace SABSync
                 }
                 sabSyncEntities.SaveChanges(); //Save the changes
             }
-            GetShows2();
+            GetShows();
         }
 
         private void getBannerToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1226,6 +983,29 @@ namespace SABSync
                 objectListViewShows2.SelectedIndex = 0;
                 objectListViewShows2.SelectedIndex = index;
             }
+        }
+
+        private string GetDateString(DateTime date)
+        {
+            if (date.Date == DateTime.Today)
+                return "Today, " + date.ToString("h:mm tt");
+
+            if (date.Date == DateTime.Today.AddDays(-1))
+                return "Yesterday, " + date.ToString("h:mm tt");
+
+            if (date.Date > DateTime.Today && date.Date < DateTime.Today.AddDays(7))
+                return date.ToString("dddd (MMM d), h:mm tt");
+
+            if (date.Date > DateTime.Today.AddDays(7))
+                return date.ToString("dddd, MMMM d, yyyy, h:mm tt");
+
+            return date.ToString("dddd, MMMM d, yyyy, h:mm tt");
+        }
+
+        private void scanToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Thread thread = new Thread(UpdateShows);
+            thread.Start();
         }
     }
 }

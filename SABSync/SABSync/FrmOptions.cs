@@ -240,6 +240,7 @@ namespace SABSync
                 panelSab.Height = 315;
                 panelSab.Location = new Point(140, 13);
                 panelSab.Visible = true;
+                labelOptionsSab_test.Visible = false;
             }
 
             else if (this.treeViewOptions.SelectedNode.Name == "NodeConfig")
@@ -263,6 +264,8 @@ namespace SABSync
         private void btnTestSab_Click(object sender, EventArgs e)
         {
             string response = TestConnection(txtSabInfoHost.Text, txtSabInfoPort.Text, txtApiKey.Text, txtUsername.Text, txtPassword.Text);
+            labelOptionsSab_test.Text = response;
+            labelOptionsSab_test.Visible = true;
         }
 
         private void tvRootBrowse_Click(object sender, EventArgs e)

@@ -661,7 +661,8 @@ namespace SABSync
 
                     if (Config.VerboseLogging)
                         Log("DEBUG: Show Alias={0}", showName);
-                    break;
+
+                    return showName; //Return the show name, no need to clean it up any more
                 }
             }
 

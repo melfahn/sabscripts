@@ -206,6 +206,8 @@ namespace SABSync
                     var show = (from s in shows where s.tvdb_id == seriesId select s).FirstOrDefault();
                         //set show to the first (of one) that is found (Should be one, if not something else is FUBAR)
 
+                    ProcessingShow("Updating: " + show.show_name);
+
                     //Get the updated series/new episode data for this seriesId
                     var updatedShowInfo = TvDb.GetShowUpdates(seriesId);
 
@@ -224,6 +226,7 @@ namespace SABSync
 
                     AddEpisodes(updatedShowInfo.Episodes, seriesId); //Add the new episodes/update the old ones
                 }
+                ProcessingShow("Shows updated: " + seriesIdList.Count);
             }
         }
 
@@ -231,11 +234,7 @@ namespace SABSync
         {
             using (SABSyncEntities sabSyncEntities = new SABSyncEntities())
             {
-                var test = from e in sabSyncEntities.episodes.AsEnumerable()
-                           where e.shows.show_name.Equals(episode.ShowName, StringComparison.InvariantCultureIgnoreCase)
-                           select e;
-
-                var data = from e in sabSyncEntities.episodes.AsEnumerable()
+                var data = (from e in sabSyncEntities.episodes.AsEnumerable()
                            where
                                e.shows.show_name.Equals(episode.ShowName, StringComparison.InvariantCultureIgnoreCase) && e.episode_number == episode.EpisodeNumber &&
                                e.season_number == episode.SeasonNumber
@@ -243,13 +242,26 @@ namespace SABSync
                            {
                                ShowId = e.shows.id,
                                EpisodeId = e.id
-                           };
+                           }).FirstOrDefault();
+
+                if (data == null)
+                {
+                    data = (from e in sabSyncEntities.episodes.AsEnumerable()
+                            where
+                                e.shows.show_name.Equals(episode.ShowName, StringComparison.InvariantCultureIgnoreCase) &&
+                                Convert.ToDateTime(e.air_date) == episode.AirDate
+                            select new
+                                       {
+                                           ShowId = e.shows.id,
+                                           EpisodeId = e.id
+                                       }).FirstOrDefault();
+                }
 
                 histories newItem = new histories
                 {
                     id = new long(),
-                    show_id = data.FirstOrDefault().ShowId,
-                    episode_id = data.FirstOrDefault().EpisodeId,
+                    show_id = data.ShowId,
+                    episode_id = data.EpisodeId,
                     feed_title = episode.FeedItem.Title,
                     quality = episode.Quality,
                     proper = Convert.ToInt32(episode.IsProper),
@@ -260,6 +272,7 @@ namespace SABSync
                 Logger.Log("Episode added to History Database: {0} - S{1}E{2}", episode.ShowName, episode.SeasonNumber.ToString("00"), episode.EpisodeNumber.ToString("00"));
                 sabSyncEntities.AddTohistories(newItem);
                 sabSyncEntities.SaveChanges();
+
             }
         }
 

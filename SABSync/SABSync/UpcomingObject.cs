@@ -32,7 +32,6 @@ namespace SABSync
         {
             get { return _airTime; }
             set { _airTime = value; }
-
         }
 
         private void GetAirs()

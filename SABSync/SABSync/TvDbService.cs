@@ -260,8 +260,7 @@ namespace SABSync
                                  SeriesName = s.Element("SeriesName").Value,
                                  AirDay = s.Element("Airs_DayOfWeek").Value,
                                  AirTime = s.Element("Airs_Time").Value,
-                                 RunTime = Convert.ToInt32(s.Element("Runtime").Value),
-                                 Status = s.Element("Status").Value,
+                                 RunTime = ParseInt(s.Element("Runtime").Value),
                                  PosterUrl = s.Element("poster").Value,
                                  BannerUrl = s.Element("banner").Value,
                                  ImdbId = s.Element("IMDB_ID").Value,
@@ -415,6 +414,13 @@ namespace SABSync
             }
 
             return result.Trim();
+        }
+
+        private static int ParseInt(string timeString)
+        {
+            int time = 30;
+            Int32.TryParse(timeString, out time);
+            return time;
         }
     }
 }
