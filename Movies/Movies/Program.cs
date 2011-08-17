@@ -268,11 +268,7 @@ namespace Movies
         {
             string movieFilename;
 
-            if (_movieDir.ToString().EndsWith(PATH_SEP.ToString()))
-                movieFilename = _movieDir + movieName + ".avi"; //Create movieFilename from movieDir + movieName
-
-            else
-                movieFilename = _movieDir + PATH_SEP.ToString() + movieName + ".avi"; //Create movieFilename from movieDir + movieName
+            movieFilename = Path.Combine(_movieDir.FullName, movieName + ".avi");
             
             string[] aviFiles = Directory.GetFiles(moviePath, "*.avi", SearchOption.AllDirectories);
             //Search moviePath for AVI Files, including sub-folders
@@ -352,20 +348,20 @@ namespace Movies
 
                     else
                     {
-                        string aviMovieDir = _movieDir + "\\" + movieName;
-                        movieFilename = aviMovieDir + "\\" + movieName + ".avi";
+                        string aviMovieDir = Path.Combine(_movieDir.FullName, movieName);
+                        movieFilename = Path.Combine(aviMovieDir, movieName + ".avi");
                         Directory.CreateDirectory(aviMovieDir);
 
-                        string mencoderCommand = _mencoderOptions + " \"" + movieFilename + "\" \"" + aviFileOne +
-                                                 "\" \"" + aviFileTwoInfo + "\"";
                         //Create string to hold commands to pass to mencoder
+                        string mencoderCommand = _mencoderOptions + " \"" + movieFilename + "\" \"" + aviFileOne +
+                                                 "\" \"" + aviFileTwoInfo + "\"";  
 
                         if (_overwriteFile && File.Exists(movieFilename)) //If overwriteFile & File already exists, then delete it
                             DeleteExistingFile(movieFilename);
 
                         Log("Running mencoder on {0}", movieName);
-                        Process.Start("mencoder.exe", mencoderCommand).WaitForExit();
                         //Run mencoder on the two AVIs & wait for finish
+                        Process.Start("mencoder.exe", mencoderCommand).WaitForExit();
                         Directory.Delete(moviePath, true); //Delete old directory + all files
                         Log("{0} moved, Folder was kept", movieName);
                     }
